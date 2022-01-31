@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -36,8 +37,13 @@ public class Chassis extends SubsystemBase {
     public boolean bool(){return Constants.botName == BotName.COMP ? this.compbot : this.practicebot;};
   }
 
-  CANSparkMax left;
-  CANSparkMax right;
+  private CANSparkMax left;
+  private CANSparkMax right;
+  private CANSparkMax leftA;
+  private CANSparkMax leftB;
+  private CANSparkMax rightA;
+  private CANSparkMax rightB;
+
   DifferentialDrive chassis;
   Solenoid shifter;
   private AHRS navx;
@@ -47,14 +53,24 @@ public class Chassis extends SubsystemBase {
 
     //Instantiate motors.
     left = new CANSparkMax(1,MotorType.kBrushless);
+    leftA = new CANSparkMax(2,MotorType.kBrushless);
+    leftB = new CANSparkMax(3,MotorType.kBrushless);
     right = new CANSparkMax(4,MotorType.kBrushless);
+    rightA = new CANSparkMax(5,MotorType.kBrushless);
+    rightB = new CANSparkMax(6,MotorType.kBrushless);
 
     //loop through motors and set common parameters
     for(CANSparkMax m : new CANSparkMax[]{left,right}){
       m.setOpenLoopRampRate(0.2);
+      m.setIdleMode(IdleMode.kBrake);
     }
+    //configure followers
+    for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){ m.follow(left); }
+    for(CANSparkMax m : new CANSparkMax[]{rightA,rightB}){ m.follow(right); }
+
 
     //Set other non-common parameters for motors
+    //TODO: Verify that only the lead motor needs to be inverted. This should be the case
     left.setInverted(true);
     right.setInverted(!left.getInverted());
 

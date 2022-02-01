@@ -83,11 +83,15 @@ public class RobotContainer {
 
     //configure default commands
     chassis.setDefaultCommand(
-      //this one's really basic, but needed to get systems moving right away.
+      // this one's really basic, but needed to get systems moving right away.
       new RunCommand(
-        ()->{chassis.arcadeDrive(driver.getRawAxis(1),driver.getRawAxis(3));}
+        ()->{chassis.arcadeDrive(-driver.getRawAxis(1),driver.getRawAxis(2));}
         ,chassis)
       );
+      // new RunCommand(
+      //   ()->{chassis.tankDrive(.25,.25);}
+      //   ,chassis)
+      // );
 
 
 

@@ -1,17 +1,77 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Passthrough extends SubsystemBase {
-  /** Creates a new Passthrough. */
-  public Passthrough() {}
+  /** Creates a new ExampleSubsystem. */
+    CANSparkMax motorPTFront = new CANSparkMax(9,MotorType.kBrushless);
+    CANSparkMax motorPTBack = new CANSparkMax(10,MotorType.kBrushless);
+    
+    
+    public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
+    
+    private double kPTSpeed;
+    
+    
+    public Passthrough() {
+        switch(Constants.botName){
+        case PRACTICE:
+        
+        //Set Inversions TODO Tune Inversions
+        motorPTFront.setInverted(true);
+        motorPTBack.setInverted(false);
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+        //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
+        motorPTFront.setSmartCurrentLimit(30);
+        motorPTBack.setSmartCurrentLimit(30);
+        
+        Ultrasonic.setAutomaticMode(true);
+        break;
+        case COMP:
+        }
+    
+        
+    }
+
+    
+    public void ptRun(){
+      motorPTFront.set(kPTSpeed);
+      motorPTBack.set(kPTSpeed);
+    }
+    
+    public void ptOff(){
+      motorPTFront.set(0.0);
+      motorPTBack.set(0.0);
+    }
+
+    public void ptEject(){
+      motorPTFront.set(kPTSpeed);
+      motorPTBack.set(-kPTSpeed);
+    }
+
+    public Boolean getUltrasonicRange(){
+      if(passthroughUltrasonic.getRangeInches() < 12){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+
+    
+    @Override
+    public void periodic() {
+    
+    }
+    @Override
+    public void simulationPeriodic() {
+        // This method   will be called once per scheduler run during simulation
+    }
 }
+

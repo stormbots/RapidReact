@@ -10,11 +10,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class CargoColorSensor extends SubsystemBase {
   I2C.Port port; 
 
+  public enum CargoColor{RED,BLUE,UNDEFINED};
+
   /** Creates a new CargoColorSensor. */
   public CargoColorSensor(I2C.Port port) {
     // NOTE: just future proofing, don't worry about this quite yet.
     // just declare things how you normally do I think.
     this.port = port;
+  }
+
+  public CargoColor getColor(){
+    return CargoColor.UNDEFINED;
   }
 
   @Override

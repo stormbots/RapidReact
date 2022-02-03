@@ -18,7 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.FeederHoldCargo;
+import frc.robot.commands.PTEjectCargo;
+import frc.robot.commands.PTLoadCargo;
 import frc.robot.subsystems.CargoColorSensor;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
@@ -42,6 +47,8 @@ public class RobotContainer {
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
   public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard);
   public Vision vision = new Vision();
+  
+
   // 
   // SUBSYSTEMS
   //
@@ -82,6 +89,7 @@ public class RobotContainer {
 
 
     //configure default commands
+    
     chassis.setDefaultCommand(
       // this one's really basic, but needed to get systems moving right away.
       new RunCommand(
@@ -111,6 +119,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
 
+    Trigger ejectCargo = new Trigger(
+      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*Note this needs to be changed to teamcolor*/;}
+    );
+    ejectCargo.whenActive(new PTEjectCargo(passthrough));
+    Trigger loadCargo = new Trigger(
+      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*Note this needs to be changed to  !teamcolor*/;}
+    );
+    loadCargo.whenActive(new PTLoadCargo(passthrough));
+    Trigger loadFeeder = new Trigger(
+      ()->{return passthrough.getUltrasonicRange();}
+    );
+    loadFeeder.whenActive(new FeederHoldCargo(feeder));
   }
 
   /**

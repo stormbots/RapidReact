@@ -25,13 +25,14 @@ public class FeederHoldCargo extends CommandBase {
   @Override
   public void execute() {
     feeder.feederIntake();
+    feeder.getFeederEncoders();
   }
     
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     feeder.feederOff();
-
+    
   }
 
   // Returns true when the command should end.

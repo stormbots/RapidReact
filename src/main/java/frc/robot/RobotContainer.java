@@ -125,11 +125,11 @@ public class RobotContainer {
     ejectPTButton.whileHeld(new PTEjectCargo(passthrough));
 
     Trigger ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*Note this needs to be changed to teamcolor*/;}
+      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
     );
     ejectCargo.whenActive(new PTEjectCargo(passthrough));
     Trigger loadCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*Note this needs to be changed to  !teamcolor*/;}
+      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
     );
     loadCargo.whenActive(new PTLoadCargo(passthrough));
     Trigger loadFeeder = new Trigger(

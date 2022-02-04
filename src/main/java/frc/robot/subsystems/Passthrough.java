@@ -17,7 +17,7 @@ public class Passthrough extends SubsystemBase {
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
     private double kPTSpeed;
-    
+    private boolean isCargoInPT;
     
     public Passthrough() {
         switch(Constants.botName){
@@ -32,6 +32,7 @@ public class Passthrough extends SubsystemBase {
         motorPTBack.setSmartCurrentLimit(30);
         
         Ultrasonic.setAutomaticMode(true);
+        isCargoInPT = true;
         break;
         case COMP:
         }
@@ -57,10 +58,10 @@ public class Passthrough extends SubsystemBase {
 
     public Boolean getUltrasonicRange(){
       if(passthroughUltrasonic.getRangeInches() < 12){
-        return true;
+        return isCargoInPT;
       }
       else{
-        return false;
+        return !isCargoInPT;
       }
     }
 

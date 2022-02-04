@@ -40,6 +40,7 @@ public class Feeder extends SubsystemBase {
 
         kFeederSpeed = 0.1;
         
+        
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
         

@@ -14,7 +14,6 @@ public class Passthrough extends SubsystemBase {
     CANSparkMax motorPTFront = new CANSparkMax(9,MotorType.kBrushless);
     CANSparkMax motorPTBack = new CANSparkMax(10,MotorType.kBrushless);
     
-    
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
     private double kPTSpeed;

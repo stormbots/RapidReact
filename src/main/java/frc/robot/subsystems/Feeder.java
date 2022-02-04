@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -38,7 +39,6 @@ public class Feeder extends SubsystemBase {
         motorFeederBack.setSmartCurrentLimit(30);
 
         kFeederSpeed = 0.1;
-       
         
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
@@ -71,7 +71,7 @@ public class Feeder extends SubsystemBase {
     
     @Override
     public void periodic() {
-    
+      SmartDashboard.getNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
     }
     @Override
     public void simulationPeriodic() {

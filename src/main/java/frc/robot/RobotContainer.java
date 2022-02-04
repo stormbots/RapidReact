@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.FeederHoldCargo;
 import frc.robot.commands.PTEjectCargo;
@@ -72,7 +73,9 @@ public class RobotContainer {
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
   public Joystick operator = new Joystick(1);
-
+  JoystickButton ejectPTButton = new JoystickButton(operator, 1);
+  JoystickButton loadPTButton = new JoystickButton(operator, 2);
+  JoystickButton loadFeederButton = new JoystickButton(operator, 4);
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -117,7 +120,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    loadFeederButton.whileHeld(new FeederHoldCargo(feeder));
+    loadPTButton.whileHeld(new PTLoadCargo(passthrough));
+    ejectPTButton.whileHeld(new PTEjectCargo(passthrough));
 
     Trigger ejectCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*Note this needs to be changed to teamcolor*/;}

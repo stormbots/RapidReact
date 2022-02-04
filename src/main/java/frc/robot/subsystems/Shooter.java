@@ -21,8 +21,8 @@ public class Shooter extends SubsystemBase {
   private final double kShooterMotorRatio = .9;
   private final double kRPMTargetBound = 100;
 
-  private CANSparkMax topMotor = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax bottomMotor = new CANSparkMax(4, MotorType.kBrushless);
+  private CANSparkMax topMotor = new CANSparkMax(13, MotorType.kBrushless);
+  private CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
   private RelativeEncoder encoderTop;
   private RelativeEncoder encoderBottom;
   private final SparkMaxPIDController pidTop;
@@ -45,8 +45,7 @@ public class Shooter extends SubsystemBase {
     encoderTop = topMotor.getEncoder();
     encoderBottom = bottomMotor.getEncoder();
 
-    // TODO
-    // NOT FINISHED NOT FINISHED THESE NUMBERS ARE GARBO
+    // TODO: configure PID values for Shooter Motors
     pidTop.setP(1.6233E-07);
     pidTop.setI(0);
     pidTop.setD(0);
@@ -58,38 +57,34 @@ public class Shooter extends SubsystemBase {
     pidBottom.setFF(1/(5850 * (14/72)));
 
     pidTop.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-    // TODO
+    // TODO: configure SmartMotion values
     pidTop.setSmartMotionMaxAccel(1, 0);
     pidTop.setSmartMotionMaxVelocity(1000, 0);
-    //pidTop.setFF(1/5850);
     pidBottom.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
     pidBottom.setSmartMotionMaxAccel(1, 0);
     pidBottom.setSmartMotionMaxVelocity(1000, 0);
-    //pidBottom.setFF(1/5850);
   }
 
     public void setRPM(double rpmSetpoint){
       this.rpmSetpoint = rpmSetpoint;
     }
-
+    public void setRPMForDistance(double distanceIN){
+      this.rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
+    }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;
     }
-
     public double getRPMTop(){
       return encoderTop.getVelocity();
     }
-
     public double getRPMBottom(){
       return encoderBottom.getVelocity();
     }
-
     boolean isOnTargetRPM(){
       return
       (Clamp.bounded(rpmSetpoint * kShooterMotorRatio, encoderTop.getVelocity()-kRPMTargetBound, encoderTop.getVelocity()+kRPMTargetBound) &&
        Clamp.bounded(rpmSetpoint, encoderBottom.getVelocity()-kRPMTargetBound, encoderBottom.getVelocity()+kRPMTargetBound));
     }
-
 
   @Override
   public void periodic() {

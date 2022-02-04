@@ -67,8 +67,6 @@ public class Vision extends SubsystemBase {
 
   }
 
-//TODO make getter for hasValidTarget
-
   public boolean hasValidTarget(){
     return hasTargets;
   }
@@ -81,11 +79,9 @@ public class Vision extends SubsystemBase {
   public void lightsOn(){
      table.getEntry("ledMode").setNumber(3);
   }
-
   public void lightsOff(){
      table.getEntry("ledMode").setNumber(1);
   }
-
   private void driverPipeline(){
     table.getEntry("pipeline").setNumber(1);
   }

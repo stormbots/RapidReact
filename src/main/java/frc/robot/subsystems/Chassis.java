@@ -8,10 +8,16 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.BotName;
@@ -41,12 +47,21 @@ public class Chassis extends SubsystemBase {
   private CANSparkMax rightA;
   private CANSparkMax rightB;
 
+  public RelativeEncoder leftEncoder;
+  public RelativeEncoder rightEncoder;
+
+  public DifferentialDriveOdometry odometry;
+  
   DifferentialDrive chassis;
   Solenoid shifter;
   private AHRS navx;
   
-  public Chassis(AHRS navx) {
-    this.navx = navx;
+  public Chassis(AHRS navX) {
+    this.navx = navX;
+    navx.calibrate();
+    navx.reset();
+
+    odometry = new DifferentialDriveOdometry(navx.getRotation2d());
 
     //Instantiate motors.
     left = new CANSparkMax(1,MotorType.kBrushless);
@@ -55,6 +70,18 @@ public class Chassis extends SubsystemBase {
     right = new CANSparkMax(4,MotorType.kBrushless);
     rightA = new CANSparkMax(5,MotorType.kBrushless);
     rightB = new CANSparkMax(6,MotorType.kBrushless);
+
+    //Get encoder references and apply conversions
+    leftEncoder = left.getEncoder();
+    rightEncoder = right.getEncoder();
+
+    leftEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
+    leftEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60);
+    rightEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
+    rightEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60);
+
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
 
     //loop through motors and set common parameters
     for(CANSparkMax m : new CANSparkMax[]{left,right}){
@@ -88,16 +115,35 @@ public class Chassis extends SubsystemBase {
     chassis.tankDrive(powerLeft, powerRight);
   }
 
+  public void tankDriveVolts(double leftVolts, double rightVolts)
+  {
+    left.setVoltage(leftVolts);
+    right.setVoltage(rightVolts);
+    chassis.feed();
+  }
+
+  public void resetOdometry(Pose2d pose)
+  {
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
+    odometry.resetPosition(pose, navx.getRotation2d());
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
+  }
+  
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+  
   public void setGear(Gear gear){
     shifter.set(gear.bool());
   }
 
-
-
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    SmartDashboard.putNumberArray("Pose", new double[] {odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()});
   }
-
 }

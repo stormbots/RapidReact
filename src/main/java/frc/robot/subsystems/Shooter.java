@@ -49,12 +49,12 @@ public class Shooter extends SubsystemBase {
     pidTop.setP(1.6233E-07);
     pidTop.setI(0);
     pidTop.setD(0);
-    pidTop.setFF(1/(5850 * (14/72)));
+    //pidTop.setFF(1/(5850 * (14/72)));
 
     pidBottom.setP(1.6233E-07);
     pidBottom.setI(0);
     pidBottom.setD(0);
-    pidBottom.setFF(1/(5850 * (14/72)));
+    //pidBottom.setFF(1/(5850 * (14/72)));
 
     pidTop.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
     // TODO: configure SmartMotion values

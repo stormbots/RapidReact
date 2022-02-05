@@ -17,6 +17,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -144,6 +145,5 @@ public class Chassis extends SubsystemBase {
   @Override
   public void periodic() {
     odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
-    SmartDashboard.putNumberArray("Pose", new double[] {odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()});
   }
 }

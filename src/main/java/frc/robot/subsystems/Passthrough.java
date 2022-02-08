@@ -23,9 +23,12 @@ public class Passthrough extends SubsystemBase {
         switch(Constants.botName){
         case PRACTICE:
         
-        //Set Inversions TODO Tune Inversions
-        motorPTFront.setInverted(true);
-        motorPTBack.setInverted(false);
+        break;
+        case COMP:
+        }
+
+        motorPTFront.setInverted(false);
+        motorPTBack.setInverted(true);
 
         //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
         motorPTFront.setSmartCurrentLimit(30);
@@ -33,11 +36,7 @@ public class Passthrough extends SubsystemBase {
         
         Ultrasonic.setAutomaticMode(true);
         isCargoInPT = true;
-        break;
-        case COMP:
-        }
-    
-        
+        kPTSpeed = 0.6;
     }
 
     

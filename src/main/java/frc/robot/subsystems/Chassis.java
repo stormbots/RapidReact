@@ -58,7 +58,7 @@ public class Chassis extends SubsystemBase {
     rightB = new CANSparkMax(6,MotorType.kBrushless);
 
     //loop through motors and set common parameters
-    for(CANSparkMax m : new CANSparkMax[]{left,right}){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
     }

@@ -27,26 +27,24 @@ public class Feeder extends SubsystemBase {
     double previousDistance = 15;
     
     public Feeder() {
-        switch(Constants.botName){
+
+      switch(Constants.botName){
         case PRACTICE:
-        
-        //Set Inversions TODO Tune Inversions
-        motorFeederFront.setInverted(true);
-        motorFeederBack.setInverted(false);
-
-        //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
-        motorFeederFront.setSmartCurrentLimit(30);
-        motorFeederBack.setSmartCurrentLimit(30);
-
-        kFeederSpeed = 0.1;
-        
-        
-        encoderFeederFront.setPosition(0.0);
-        encoderFeederBack.setPosition(0.0);
-        
         break;
         case COMP:
         }
+        
+        motorFeederFront.setInverted(false);
+        motorFeederBack.setInverted(true);
+
+        motorFeederFront.setSmartCurrentLimit(30);
+        motorFeederBack.setSmartCurrentLimit(30);
+
+        kFeederSpeed = 0.6;
+
+        encoderFeederFront.setPosition(0.0);
+        encoderFeederBack.setPosition(0.0);
+        
         
     }
 

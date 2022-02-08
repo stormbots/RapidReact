@@ -19,12 +19,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.FeederHoldCargo;
 import frc.robot.commands.PTEjectCargo;
 import frc.robot.commands.PTLoadCargo;
 import frc.robot.subsystems.CargoColorSensor;
-import frc.robot.subsystems.CargoColorSensor.CargoColor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
@@ -54,7 +52,7 @@ public class RobotContainer {
   // SUBSYSTEMS
   //
   public Chassis chassis = new Chassis(navx);
-  public Intake intake = new Intake(new CANSparkMax(19,MotorType.kBrushless));
+  public Intake intake = new Intake(new CANSparkMax(7,MotorType.kBrushless));
   public Climber climber = new Climber();
   public Passthrough passthrough = new Passthrough();
   public Feeder feeder = new Feeder();
@@ -73,10 +71,13 @@ public class RobotContainer {
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
   public Joystick operator = new Joystick(1);
-  JoystickButton ejectPTButton = new JoystickButton(operator, 1);
+  JoystickButton ejectPTButton = new JoystickButton(operator, 6);
   JoystickButton loadPTButton = new JoystickButton(operator, 2);
   JoystickButton loadFeederButton = new JoystickButton(operator, 4);
-
+  JoystickButton intakeButton = new JoystickButton(operator, 1);
+  JoystickButton shootButton = new JoystickButton(operator, 5);
+  JoystickButton climbButton = new JoystickButton(operator, 7);
+  JoystickButton climbButton2 = new JoystickButton(operator, 8);
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -103,7 +104,6 @@ public class RobotContainer {
       //   ()->{chassis.tankDrive(.25,.25);}
       //   ,chassis)
       // );
-
 
 
     // Configure the button bindings

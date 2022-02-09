@@ -20,6 +20,7 @@ public final class Constants {
    public enum BotName {COMP,PRACTICE};
    public static BotName botName = BotName.COMP;
 
+   private double kChassisLength = 32;
 
   public static void Initialize() {
     // Called before robot subsystems are generated, and can safely set or re-set values

@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ChassisDriveArcade;
 import frc.robot.subsystems.CargoColorSensor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -66,6 +69,9 @@ public class RobotContainer {
   public Joystick driver = new Joystick(0);
   public Joystick operator = new Joystick(1);
 
+  //Other part of the test code
+  public JoystickButton testclimbButton= new JoystickButton(operator, 7);
+
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -93,6 +99,19 @@ public class RobotContainer {
       //   ,chassis)
       // );
 
+      //TODO This is climber test code, be careful
+      testclimbButton.whileHeld(
+        // this one's really basic, but needed to get systems moving right away.
+        new RunCommand(
+          ()->{climber.setWinchPower(-operator.getRawAxis(1)*0.5);}
+          ,climber
+          )
+         );
+      testclimbButton.whenReleased(new InstantCommand(()->climber.setWinchPower(0)));
+
+      SmartDashboard.putData("climber/hook/setAngle0",new InstantCommand(()->{climber.setHookAngle(0);}));
+      SmartDashboard.putData("climber/hook/setAngle180",new InstantCommand(()->{climber.setHookAngle(180);}));
+      SmartDashboard.putData("climber/hook/setAngle90",new InstantCommand(()->{climber.setHookAngle(90);}));
 
 
     // Configure the button bindings
@@ -122,4 +141,19 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return autoChooser.getSelected();
   }
+
+
+  public Command climbSequenceBlue = new InstantCommand(()->{})
+    .andThen(new ChassisDriveArcade(chassis).withInterrupt(()->{return true /*if over line*/;}))
+    .andThen(()->{/*command that drives X distance forward */})
+    .andThen(()->{/*command that rotates to find sensor */})
+    .andThen(()->{/*climber goes to position */})
+    .andThen(()->{climber.setHookAngle(90);}) //Hook setup, 0 is a temp value
+    .andThen(()->{climber.setHeight(45);}) //Have the climber go up
+    .andThen(new RunCommand(()->{}).withInterrupt(()->climber.getHeight()>44))
+    .andThen(()->{climber.setHookAngle(0); /*latch to bar? if seperate process */})
+    .andThen(()->{/*climber.setClimbFeedForward();*/})
+    .andThen(()->{climber.setHeight(35);}) //Have the climber go down
+    ;
+
 }

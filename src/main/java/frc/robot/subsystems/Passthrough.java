@@ -57,7 +57,7 @@ public class Passthrough extends SubsystemBase {
     }
 
     public void ptEject(){
-      motorPTFront.set(kPTSpeed);
+      motorPTFront.set(kPTSpeed*.9);
       motorPTBack.set(-kPTSpeed);
     }
 

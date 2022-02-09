@@ -48,24 +48,19 @@ public class Feeder extends SubsystemBase {
         
     }
 
-    public void feederIntake(){
-        motorFeederFront.set(kFeederSpeed);
-        motorFeederBack.set(kFeederSpeed);
-       
+    public void feederRun(){
+      motorFeederFront.set(kFeederSpeed);
+      motorFeederBack.set(kFeederSpeed); 
     }
 
-    public void getFeederEncoders(){
-      if (encoderFeederFront.getPosition() > 100){
-        motorFeederFront.set(0.0);
-        motorFeederBack.set(0.0);
-        encoderFeederFront.setPosition(0.0);
-        encoderFeederBack.setPosition(0.0);
-      }
+    public void feederEject(){
+      motorFeederFront.set(-kFeederSpeed);
+      motorFeederBack.set(-kFeederSpeed);
     }
 
     public void feederOff(){
-        motorFeederFront.set(0.0);
-        motorFeederBack.set(0.0);
+      motorFeederFront.set(0.0);
+      motorFeederBack.set(0.0);
     }
     
     @Override

@@ -4,14 +4,72 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
-  /** Creates a new Feeder. */
-  public Feeder() {}
+  /** Creates a new ExampleSubsystem. */
+    CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
+    CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
+    
+    RelativeEncoder encoderFeederFront = motorFeederFront.getEncoder();
+    RelativeEncoder encoderFeederBack = motorFeederBack.getEncoder();
+    
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    private double kFeederSpeed;
+    
+    boolean isCargoInFeeder = false;
+    double previousDistance = 15;
+    
+    public Feeder() {
+
+      switch(Constants.botName){
+        case PRACTICE:
+        break;
+        case COMP:
+        }
+        
+        motorFeederFront.setInverted(false);
+        motorFeederBack.setInverted(true);
+
+        motorFeederFront.setSmartCurrentLimit(30);
+        motorFeederBack.setSmartCurrentLimit(30);
+
+        kFeederSpeed = 0.6;
+
+        encoderFeederFront.setPosition(0.0);
+        encoderFeederBack.setPosition(0.0);
+        
+        
+    }
+
+    public void feederRun(){
+      motorFeederFront.set(kFeederSpeed);
+      motorFeederBack.set(kFeederSpeed); 
+    }
+
+    public void feederEject(){
+      motorFeederFront.set(-kFeederSpeed);
+      motorFeederBack.set(-kFeederSpeed);
+    }
+
+    public void feederOff(){
+      motorFeederFront.set(0.0);
+      motorFeederBack.set(0.0);
+    }
+    
+    @Override
+    public void periodic() {
+      SmartDashboard.getNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
+    }
+    @Override
+    public void simulationPeriodic() {
+        // This method   will be called once per scheduler run during simulation
+    }
 }
+

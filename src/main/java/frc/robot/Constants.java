@@ -22,6 +22,7 @@ public final class Constants {
    public enum BotName {COMP,PRACTICE};
    public static BotName botName = BotName.COMP;
 
+   private double kChassisLength = 32;
 
   public static PiecewiseLerp distanceToRPM;
   public static void Initialize() {

@@ -31,8 +31,6 @@ public class CargoColorSensor extends SubsystemBase {
   private final Color kRedTarget = new Color(0.543, 0.338, 0.118);
   ColorMatchResult match = colorMatcher.matchClosestColor(color);
 
-  public enum CargoColor{RED,BLUE,UNDEFINED};
-
   /** Creates a new CargoColorSensor. */
   public CargoColorSensor(I2C.Port colorPort, Rev2mDistanceSensor.Port distancePort) {
     // NOTE: just future proofing, don't worry about this quite yet.
@@ -89,10 +87,6 @@ public class CargoColorSensor extends SubsystemBase {
     }
   }
 
-  public CargoColor getColor(){
-    return CargoColor.UNDEFINED;
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -101,6 +95,6 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/green", colorSensor.getColor().green);
     SmartDashboard.putNumber("ColorSensor/blue", colorSensor.getColor().blue);
     SmartDashboard.putNumber("ColorSensor/confidence", match.confidence);
-    SmartDashboard.putNumber("DistanceSensor/distance", distanceSensor.getRange());
+    SmartDashboard.putNumber("ColorSensor/distance", distanceSensor.getRange());
   }
 }

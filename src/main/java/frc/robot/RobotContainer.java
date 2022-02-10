@@ -19,12 +19,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.FeederEjectCargo;
+import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.PTEjectCargo;
 import frc.robot.commands.PTLoadCargo;
 import frc.robot.subsystems.CargoColorSensor;
-import frc.robot.subsystems.CargoColorSensor.CargoColor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
@@ -132,7 +131,7 @@ public class RobotContainer {
     
     shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.85)));
     shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.85*.9)));
-    shootButton.whileHeld(new FeederEjectCargo(feeder));
+    shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTLoadCargo(passthrough));
     
     shootButton.whenReleased(new RunCommand(()->shooter.shooterMotorTop.set(0.0)));
@@ -151,20 +150,21 @@ public class RobotContainer {
 
 
 
-    Trigger ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
-    );
-    ejectCargo.toggleWhenActive(new PTEjectCargo(passthrough).withTimeout(3));//TODO needs to be tuned
+    // Trigger ejectCargo = new Trigger(
+    //   ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
+    // );
+    // ejectCargo.toggleWhenActive(new PTEjectCargo(passthrough).withTimeout(3));//TODO needs to be tuned
 
-    Trigger loadCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
-    );
-    loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
+    // Trigger loadCargo = new Trigger(
+    //   ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
+    // );
+    // loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
     
-    Trigger moveCargoToFeeder = new Trigger(
-      ()->{return passthrough.ptCargoInPT() == true;}
-    );
-    moveCargoToFeeder.whileActiveContinuous(new PTLoadCargo(passthrough));
+    // Trigger moveCargoToFeeder = new Trigger(
+    //   ()->{return passthrough.ptCargoInPT() == true;}
+    // );
+    // moveCargoToFeeder.whileActiveContinuous(new PTLoadCargo(passthrough));
+    
   }
 
   /**

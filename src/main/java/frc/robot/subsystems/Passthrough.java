@@ -30,12 +30,17 @@ public class Passthrough extends SubsystemBase {
         case COMP:
         }
 
+        // SmartDashboard.putString("passthrough/faults",motorPTFront.getFaults());
+        // SmartDashboard motorPTBack.getFaults();
+
         motorPTFront.setInverted(false);
         motorPTBack.setInverted(true);
 
         //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
         motorPTFront.setSmartCurrentLimit(30);
         motorPTBack.setSmartCurrentLimit(30);
+        motorPTFront.setOpenLoopRampRate(0.2);
+        motorPTBack.setOpenLoopRampRate(0.2);
         
         Ultrasonic.setAutomaticMode(true);
         isCargoInPT = false;

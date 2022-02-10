@@ -31,6 +31,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Chassis.Gear;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -71,6 +72,7 @@ public class RobotContainer {
   //Do not reassign ports in code: Always reassign  ports in your
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
+  JoystickButton shiftButton = new JoystickButton(driver, 7);
   public Joystick operator = new Joystick(1);
   JoystickButton ejectPTButton = new JoystickButton(operator, 6);
   JoystickButton loadPTButton = new JoystickButton(operator, 2);
@@ -121,16 +123,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
+
+    shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
+    shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
+
     loadPTButton.whileHeld(new PTLoadCargo(passthrough));
+    loadFeederButton.whileHeld(new FeederShootCargo(feeder));
     
     ejectPTButton.whileHeld(new PTEjectCargo(passthrough));
     ejectPTButton.whileHeld(new FeederEjectCargo(feeder));
 
     //TEST BUTTONS
     
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.85)));
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.85*.9)));
+    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.0)));
+    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.0*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTLoadCargo(passthrough));
     
@@ -139,9 +145,9 @@ public class RobotContainer {
     
    
 
-    intakeButton.whileHeld(new RunCommand(()->intake.motor.set(0.3)));
+    intakeButton.whileHeld(new RunCommand(()->intake.intakeOn()));
     intakeButton.whileHeld(new PTLoadCargo(passthrough));
-    intakeButton.whenReleased(new RunCommand(()->intake.motor.set(0.0)));
+    intakeButton.whenReleased(new RunCommand(()->intake.intakeOff()));
     
     climbButton.whileHeld(new RunCommand(()->climberTestMotor.set(-0.1)));
     climbButton.whenReleased(new RunCommand(()->climberTestMotor.set(0)));

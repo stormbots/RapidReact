@@ -22,29 +22,11 @@ public final class Constants {
    public enum BotName {COMP,PRACTICE};
    public static BotName botName = BotName.COMP;
 
-
+  public static double kNeoMaxRPM = 5700;
   public static PiecewiseLerp distanceToRPM;
   public static void Initialize() {
     // Called before robot subsystems are generated, and can safely set or re-set values
     // for any constants. Note, this is _not_ a constructor, since constants are static.
-
-  //   /* COMPBOT */
-  //   if(botName==BotName.COMP){
-  //     distanceToRPM =  new PiecewiseLerp(  
-  //         new double[]{0,    9*12,  10*12,  11*12, 12*12, 15*12, 17*12, 19*12, 21*12, 30*12}, 
-  //         new double[]{6500, 6000,  5850,   5800,  5850,   5800, 5900,  6000,   6200, 6500}
-  //         //NOTE: End values are just to constrain the system, and are not viable shot values
-  //      );         
-  // /* PRACTICEBOT */
-  // }else{
-  //     distanceToRPM =  new PiecewiseLerp(  
-  //        new double[]{13*12, 15*12, 17*12, 19*12, 21*12, 23*12}, 
-  //     //    new double[]{4450,  4700,   5000, 5350,   5650, 6000}//actual values
-  //        new double[]{1000,  1200,   1400, 1400,   2000, 2000}//plz be quiet
-  //     );         
-  // }
-  // for(int i=0;i < distanceToRPM.inputs.length;i++) distanceToRPM.inputs[i]*=shotFudgeFactor;
-  // for(int i=0;i < distanceToRPM.outputs.length;i++) distanceToRPM.outputs[i]*=shotFudgeFactor;
 
     /* COMPBOT */
     if (botName==BotName.COMP){

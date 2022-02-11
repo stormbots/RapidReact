@@ -77,9 +77,9 @@ public class Chassis extends SubsystemBase {
     rightEncoder = right.getEncoder();
 
     leftEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
-    leftEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60);
+    leftEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60); // RPM to m/s
     rightEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
-    rightEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60);
+    rightEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60); // RPM to m/s
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
@@ -145,5 +145,7 @@ public class Chassis extends SubsystemBase {
   @Override
   public void periodic() {
     odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    SmartDashboard.putNumber("chassis/x", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());
   }
 }

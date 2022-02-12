@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Vision extends SubsystemBase {
 
   
-  public final double kCameraHeight = 30;
-  public final double kCameraAngle = 25;
+  public final double kCameraHeight = 45;
+  public final double kCameraAngle = 23;
   public final double kUpperHubHeight = 101.625;
 
 

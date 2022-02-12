@@ -22,7 +22,7 @@ public final class Constants {
    public enum BotName {COMP,PRACTICE};
    public static BotName botName = BotName.COMP;
 
-  public static double kNeoMaxRPM = 5700;
+  public static double kNeoMaxRPM = 5400.0;
   public static PiecewiseLerp distanceToRPM;
   public static void Initialize() {
     // Called before robot subsystems are generated, and can safely set or re-set values

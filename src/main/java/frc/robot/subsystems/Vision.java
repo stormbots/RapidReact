@@ -14,7 +14,7 @@ public class Vision extends SubsystemBase {
 
   
   public final double kCameraHeight = 45;
-  public final double kCameraAngle = 23;
+  public final double kCameraAngle = 22;
   public final double kUpperHubHeight = 101.625;
 
 
@@ -23,8 +23,11 @@ public class Vision extends SubsystemBase {
 
     table = NetworkTableInstance.getDefault().getTable("limelight");
 
+
+    //TODO: Dynamic resolution change as robot gets farther from target
     driverPipeline();
-    lightsOff();
+    //lightsOff();
+    lightsOn();
   }
 
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");

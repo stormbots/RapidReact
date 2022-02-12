@@ -29,17 +29,17 @@ public final class Constants {
   //----------------------------------------------
 
   public static double scalar;
-  public static double ksVolts;
-  public static double kvVoltSecondsPerMeter;
-  public static double kaVoltSecondsSquaredPerMeter;
-  public static double kPDriveVel;
-  public static double kTrackwidthMeters;
-  public static DifferentialDriveKinematics kDriveKinematics;
-  public static double kEncoderDistancePerPulse;
-  public static double kMaxSpeedMetersPerSecond;
-  public static double kMaxAccelerationMetersPerSecondSquared;
-  public static double kRamseteB;
-  public static double kRamseteZeta;
+  public static double sVolts;
+  public static double vVoltSecondsPerMeter;
+  public static double aVoltSecondsSquaredPerMeter;
+  public static double PDriveVel;
+  public static double TrackwidthMeters;
+  public static DifferentialDriveKinematics DriveKinematics;
+  public static double EncoderDistancePerPulse;
+  public static double MaxSpeedMetersPerSecond;
+  public static double MaxAccelerationMetersPerSecondSquared;
+  public static double RamseteB;
+  public static double RamseteZeta;
 
   public static void Initialize() {
     // Called before robot subsystems are generated, and can safely set or re-set values
@@ -48,17 +48,17 @@ public final class Constants {
     {
       case TABI:
           scalar = 3.3;
-          ksVolts = 0.10362 * scalar;
-          kvVoltSecondsPerMeter = 0.39906 * scalar;
-          kaVoltSecondsSquaredPerMeter = 0.060961 * scalar;
-          kPDriveVel = 0.0039806;
-          kTrackwidthMeters = 0.3;
-          kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-          kEncoderDistancePerPulse = (14.0 / 72.0) * 0.102 * Math.PI; // Gearing * Wheel Diameter * PI = 0.0623
-          kMaxSpeedMetersPerSecond = 1;
-          kMaxAccelerationMetersPerSecondSquared = 1;
-          kRamseteB = 2 * 2;
-          kRamseteZeta = 0.7 * 4;
+          sVolts = 0.10362 * scalar;
+          vVoltSecondsPerMeter = 0.39906 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.060961 * scalar;
+          PDriveVel = 0.0039806;
+          TrackwidthMeters = 0.3;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
+          EncoderDistancePerPulse = (14.0 / 72.0) * 0.102 * Math.PI; // Gearing * Wheel Diameter * PI = 0.0623
+          MaxSpeedMetersPerSecond = 1;
+          MaxAccelerationMetersPerSecondSquared = 1;
+          RamseteB = 2 * 2;
+          RamseteZeta = 0.7 * 4;
           break;
       case PRACTICE:
           // I'll put some stuff here when we actually HAVE a robot

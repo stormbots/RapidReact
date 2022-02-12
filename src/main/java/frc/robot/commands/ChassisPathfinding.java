@@ -22,11 +22,11 @@ public class ChassisPathfinding extends CommandBase {
     private Chassis chassis;
     
     private DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
-      Constants.kDriveKinematics, 10);
+      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
+      Constants.DriveKinematics, 10);
   
-    private TrajectoryConfig config = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
-      .setKinematics(Constants.kDriveKinematics).addConstraint(autoVoltageConstraint);
+    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedMetersPerSecond, Constants.MaxAccelerationMetersPerSecondSquared)
+      .setKinematics(Constants.DriveKinematics).addConstraint(autoVoltageConstraint);
   
     private RamseteCommand ramseteCommand;
   
@@ -49,12 +49,12 @@ public class ChassisPathfinding extends CommandBase {
       chassis.resetOdometry(trajectory.getInitialPose());
   
       ramseteCommand = new RamseteCommand(trajectory, chassis::getPose,
-          new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
-          new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
-          Constants.kDriveKinematics,
+          new RamseteController(Constants.RamseteB, Constants.RamseteZeta),
+          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
+          Constants.DriveKinematics,
           chassis::getWheelSpeeds,
-          new PIDController(Constants.kPDriveVel, 0, 0),
-          new PIDController(Constants.kPDriveVel, 0, 0),
+          new PIDController(Constants.PDriveVel, 0, 0),
+          new PIDController(Constants.PDriveVel, 0, 0),
           chassis::tankDriveVolts,
           chassis);
       

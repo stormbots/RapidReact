@@ -13,11 +13,9 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -76,10 +74,10 @@ public class Chassis extends SubsystemBase {
     leftEncoder = left.getEncoder();
     rightEncoder = right.getEncoder();
 
-    leftEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
-    leftEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60); // RPM to m/s
-    rightEncoder.setPositionConversionFactor(Constants.kEncoderDistancePerPulse);
-    rightEncoder.setVelocityConversionFactor(Constants.kEncoderDistancePerPulse / 60); // RPM to m/s
+    leftEncoder.setPositionConversionFactor(Constants.EncoderDistancePerPulse);
+    leftEncoder.setVelocityConversionFactor(Constants.EncoderDistancePerPulse / 60); // RPM to m/s
+    rightEncoder.setPositionConversionFactor(Constants.EncoderDistancePerPulse);
+    rightEncoder.setVelocityConversionFactor(Constants.EncoderDistancePerPulse / 60); // RPM to m/s
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);

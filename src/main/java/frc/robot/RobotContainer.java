@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.Rev2mDistanceSensor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
@@ -47,7 +48,7 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard);
+  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
   public Vision vision = new Vision();
   
   CANSparkMax climberTestMotor = new CANSparkMax(15,MotorType.kBrushless);
@@ -109,7 +110,7 @@ public class RobotContainer {
       //   ()->{chassis.tankDrive(.25,.25);}
       //   ,chassis)
       // );
-
+      // adding comment
 
     // Configure the button bindings
     configureButtonBindings();

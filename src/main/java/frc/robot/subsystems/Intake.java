@@ -45,6 +45,9 @@ public class Intake extends SubsystemBase {
     motor.set(0.0);
     intakeSolenoid.set(kUp);
   }
+  public void intakeEject(){
+    motor.set(-kIntakeSpeed);
+  }
   
   @Override
   public void periodic() {

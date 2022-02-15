@@ -21,7 +21,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.FeederEjectCargo;
 import frc.robot.commands.FeederShootCargo;
-import frc.robot.commands.PTEjectCargo;
+import frc.robot.commands.PTEjectCargoBack;
+import frc.robot.commands.PTEjectCargoFront;
 import frc.robot.commands.PTLoadCargo;
 import frc.robot.subsystems.CargoColorSensor;
 import frc.robot.subsystems.Chassis;
@@ -74,7 +75,8 @@ public class RobotContainer {
   public Joystick driver = new Joystick(0);
   JoystickButton shiftButton = new JoystickButton(driver, 7);
   public Joystick operator = new Joystick(1);
-  JoystickButton ejectPTButton = new JoystickButton(operator, 6);
+  JoystickButton ejectBackButton = new JoystickButton(operator, 6);
+  JoystickButton ejectFrontButton = new JoystickButton(operator, 9);
   JoystickButton loadPTButton = new JoystickButton(operator, 2);
   JoystickButton loadFeederButton = new JoystickButton(operator, 4);
   JoystickButton intakeButton = new JoystickButton(operator, 1);
@@ -130,13 +132,15 @@ public class RobotContainer {
     loadPTButton.whileHeld(new PTLoadCargo(passthrough));
     loadFeederButton.whileHeld(new FeederShootCargo(feeder));
     
-    ejectPTButton.whileHeld(new PTEjectCargo(passthrough));
-    ejectPTButton.whileHeld(new FeederEjectCargo(feeder));
+    ejectBackButton.whileHeld(new PTEjectCargoBack(passthrough));
+    ejectBackButton.whileHeld(new FeederEjectCargo(feeder));
 
-    //TEST BUTTONS
+    ejectFrontButton.whileHeld(new PTEjectCargoFront(passthrough));
+    ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
+    //TEST BUTTON
     
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.0)));
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.0*.9)));
+    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.2)));
+    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTLoadCargo(passthrough));
     

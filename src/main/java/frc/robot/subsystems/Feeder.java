@@ -54,7 +54,7 @@ public class Feeder extends SubsystemBase {
     }
 
     public void feederEject(){
-      motorFeederFront.set(-kFeederSpeed);
+      motorFeederFront.set(-kFeederSpeed*.5);
       motorFeederBack.set(-kFeederSpeed);
     }
 

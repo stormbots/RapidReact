@@ -7,10 +7,10 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.Rev2mDistanceSensor;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
-import com.revrobotics.Rev2mDistanceSensor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,20 +20,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.FeederEjectCargo;
 import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.PTEjectCargoBack;
 import frc.robot.commands.PTEjectCargoFront;
 import frc.robot.commands.PTLoadCargo;
 import frc.robot.subsystems.CargoColorSensor;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 import frc.robot.subsystems.Chassis;
+import frc.robot.subsystems.Chassis.Gear;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Chassis.Gear;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -161,15 +163,15 @@ public class RobotContainer {
 
 
 
-    // Trigger ejectCargo = new Trigger(
-    //   ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
-    // );
-    // ejectCargo.toggleWhenActive(new PTEjectCargo(passthrough).withTimeout(3));//TODO needs to be tuned
+    Trigger ejectCargo = new Trigger(
+      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
+    );
+    ejectCargo.toggleWhenActive(new PTEjectCargoFront(passthrough).withTimeout(3));//TODO needs to be tuned
 
-    // Trigger loadCargo = new Trigger(
-    //   ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
-    // );
-    // loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
+    Trigger loadCargo = new Trigger(
+      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
+    );
+    loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

@@ -96,5 +96,6 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/blue", colorSensor.getColor().blue);
     SmartDashboard.putNumber("ColorSensor/confidence", match.confidence);
     SmartDashboard.putNumber("DistanceSensor/distance", distanceSensor.getRange());
+    SmartDashboard.putString("ColorSensor/color", getColor().toString());
   }
 }

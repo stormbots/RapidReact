@@ -23,21 +23,21 @@ public final class Constants {
   public static BotName botName = BotName.COMP;
 
   //----------------------------------------------
-  //----ALL DISTANCE UNITS MUST BE IN METERS!!----
+  //----ALL DISTANCE UNITS MUST BE IN INCHES!!----
   //----------------------------------------------
   //-----(if not, harlod will hunt you down)------
   //----------------------------------------------
 
   public static double scalar;
   public static double sVolts;
-  public static double vVoltSecondsPerMeter;
-  public static double aVoltSecondsSquaredPerMeter;
+  public static double vVoltSecondsPerInch;
+  public static double aVoltSecondsSquaredPerInch;
   public static double PDriveVel;
-  public static double TrackwidthMeters;
+  public static double TrackwidthInches;
   public static DifferentialDriveKinematics DriveKinematics;
   public static double EncoderDistancePerPulse;
-  public static double MaxSpeedMetersPerSecond;
-  public static double MaxAccelerationMetersPerSecondSquared;
+  public static double MaxSpeedInchesPerSecond;
+  public static double MaxAccelerationInchesPerSecondSquared;
   public static double RamseteB;
   public static double RamseteZeta;
 
@@ -47,25 +47,50 @@ public final class Constants {
     switch (botName)
     {
       case TABI:
+          // NEEDS TO BE RECHARACTERIZED IN INCHES
           scalar = 3.3;
           sVolts = 0.10362 * scalar;
-          vVoltSecondsPerMeter = 0.39906 * scalar;
-          aVoltSecondsSquaredPerMeter = 0.060961 * scalar;
+          vVoltSecondsPerInch = 0.39906 * scalar;
+          aVoltSecondsSquaredPerInch = 0.060961 * scalar;
           PDriveVel = 0.0039806;
-          TrackwidthMeters = 0.3;
-          DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
-          EncoderDistancePerPulse = (14.0 / 72.0) * 0.102 * Math.PI; // Gearing * Wheel Diameter * PI = 0.0623
-          MaxSpeedMetersPerSecond = 1;
-          MaxAccelerationMetersPerSecondSquared = 1;
+          TrackwidthInches = 12;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthInches);
+          EncoderDistancePerPulse = (14.0 / 72.0) * 4.0 * Math.PI; // Gearing * Wheel Diameter * PI = 0.0623
+          MaxSpeedInchesPerSecond = 36;
+          MaxAccelerationInchesPerSecondSquared = 36;
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 4;
           break;
       case PRACTICE:
-          // I'll put some stuff here when we actually HAVE a robot
+          scalar = 1.0;
+          sVolts = 0.46035 * scalar;
+          vVoltSecondsPerInch = 0.012599 * scalar;
+          aVoltSecondsSquaredPerInch = 0.0099717 * scalar;
+          PDriveVel = 0;//0.019794;
+          TrackwidthInches = 32;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthInches);
+          EncoderDistancePerPulse = (50.0 / 34.0) * 4.25 * Math.PI; // Gearing * Wheel Diameter * PI
+          MaxSpeedInchesPerSecond = 12;
+          MaxAccelerationInchesPerSecondSquared = 12;
+          RamseteB = 2;
+          RamseteZeta = 0.7;
           break;
       case COMP:
       default:
-          // Ditto
+          // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
+          scalar = 1;
+          sVolts = 1 * scalar;
+          vVoltSecondsPerInch = 1 * scalar;
+          aVoltSecondsSquaredPerInch = 1 * scalar;
+          PDriveVel = 1;
+          TrackwidthInches = 1;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthInches);
+          EncoderDistancePerPulse = (50.0 / 34.0) * 4.25 * Math.PI; // Gearing * Wheel Diameter * PI
+          MaxSpeedInchesPerSecond = 1;
+          MaxAccelerationInchesPerSecondSquared = 1;
+          RamseteB = 2;
+          RamseteZeta = 0.7;
+          break;
     }
   }
 }

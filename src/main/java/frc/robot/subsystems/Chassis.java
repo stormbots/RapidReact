@@ -57,8 +57,8 @@ public class Chassis extends SubsystemBase {
   
   public Chassis(AHRS navX) {
     this.navx = navX;
-    navx.calibrate();
     navx.reset();
+    navx.calibrate();
 
     odometry = new DifferentialDriveOdometry(navx.getRotation2d());
 
@@ -83,7 +83,7 @@ public class Chassis extends SubsystemBase {
     rightEncoder.setPosition(0);
 
     //loop through motors and set common parameters
-    for(CANSparkMax m : new CANSparkMax[]{left,right}){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,leftB,rightA,rightB}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
     }

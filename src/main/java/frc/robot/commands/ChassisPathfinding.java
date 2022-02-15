@@ -7,7 +7,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -22,16 +21,17 @@ public class ChassisPathfinding extends CommandBase {
     private Chassis chassis;
     
     private DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
+      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerInch, Constants.aVoltSecondsSquaredPerInch),
       Constants.DriveKinematics, 10);
   
-    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedMetersPerSecond, Constants.MaxAccelerationMetersPerSecondSquared)
+    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedInchesPerSecond, Constants.MaxAccelerationInchesPerSecondSquared)
       .setKinematics(Constants.DriveKinematics).addConstraint(autoVoltageConstraint);
   
     private RamseteCommand ramseteCommand;
   
     public ChassisPathfinding(Chassis c) {
       chassis = c;
+      addRequirements(chassis);
     }
   
     // Called when the command is initially scheduled.
@@ -40,17 +40,16 @@ public class ChassisPathfinding extends CommandBase {
       Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
         new Pose2d(0, 0, new Rotation2d(0)),
         List.of(
-          new Translation2d(2.3, 0)
-          //new Translation2d(0.5, -0.5)
+          //new Translation2d(2.3, 0)
         ),
-        new Pose2d(2.3, -1, new Rotation2d(0, -1)),
+        new Pose2d(32 * 3, 0, new Rotation2d(0)),
       config);
       
       chassis.resetOdometry(trajectory.getInitialPose());
   
       ramseteCommand = new RamseteCommand(trajectory, chassis::getPose,
           new RamseteController(Constants.RamseteB, Constants.RamseteZeta),
-          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
+          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerInch, Constants.aVoltSecondsSquaredPerInch),
           Constants.DriveKinematics,
           chassis::getWheelSpeeds,
           new PIDController(Constants.PDriveVel, 0, 0),
@@ -64,7 +63,7 @@ public class ChassisPathfinding extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-      
+
     }
   
     // Called once the command ends or is interrupted.

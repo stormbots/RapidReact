@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -106,7 +107,10 @@ public class Chassis extends SubsystemBase {
     setGear(Gear.LOW);
   }
 
+  private SlewRateLimiter forwardSlew = new SlewRateLimiter(1/.35);
+
   public void arcadeDrive(double power, double turn) {
+    power = forwardSlew.calculate(power);
     chassis.arcadeDrive(power,turn);
   }
   

@@ -159,8 +159,8 @@ public class RobotContainer {
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     //TEST BUTTON
     
-    shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
-    shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
+    // shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
+    // shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTLoadCargo(passthrough));
     

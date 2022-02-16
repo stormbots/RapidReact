@@ -60,7 +60,7 @@ public class Chassis extends SubsystemBase {
     //loop through motors and set common parameters
     for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
-      m.setIdleMode(IdleMode.kBrake);
+      m.setIdleMode(IdleMode.kCoast);
       m.setSmartCurrentLimit(240/6, 240/6*2);//240 is sensible current limit to chassis
     }
     //configure followers

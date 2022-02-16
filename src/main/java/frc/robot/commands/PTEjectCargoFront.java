@@ -1,11 +1,10 @@
-
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Passthrough;
 
 /** An example command that uses an example subsystem. */
-public class PTEjectCargo extends CommandBase {
+public class PTEjectCargoFront extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Passthrough passthrough;
 
@@ -14,7 +13,7 @@ public class PTEjectCargo extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PTEjectCargo(Passthrough passthrough) {
+  public PTEjectCargoFront(Passthrough passthrough) {
     this.passthrough = passthrough;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(passthrough);
@@ -27,7 +26,7 @@ public class PTEjectCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    passthrough.ptEject();
+    passthrough.ptEjectFront();
   }
 
   // Called once the command ends or is interrupted.

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -15,25 +17,36 @@ public class Intake extends SubsystemBase {
    */
   public CANSparkMax motor;
   double kIntakeSpeed = 0.3;
-
+  Solenoid intakeSolenoid;
+  boolean kUp;
+  boolean kDown;
   public Intake(CANSparkMax motor) {
-    this.motor = motor;
-
-    motor.setInverted(true);
-    motor.setSmartCurrentLimit(30);
-
     switch(Constants.botName){
       case PRACTICE:
       break;
       case COMP:
       }
+    this.motor = motor;
+
+    motor.setInverted(true);
+    motor.setSmartCurrentLimit(30);
+
+    kUp = false;
+    kDown = true;
+    intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+    intakeSolenoid.set(kUp);
   }
 
   public void intakeOn(){
     motor.set(kIntakeSpeed);
+    intakeSolenoid.set(kDown);
   }
   public void intakeOff(){
     motor.set(0.0);
+    intakeSolenoid.set(kUp);
+  }
+  public void intakeEject(){
+    motor.set(-kIntakeSpeed);
   }
   
   @Override

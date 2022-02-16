@@ -66,7 +66,7 @@ public class CargoColorSensor extends SubsystemBase {
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
 
-    if(distanceSensor.getRange() > 1) return CargoColor.UNDEFINED;
+    if(distanceSensor.getRange() > 1.5) return CargoColor.UNDEFINED;
     else if(distanceSensor.getRange() < 0) return CargoColor.UNDEFINED;
 
     else if (match.confidence <= .95) {
@@ -96,5 +96,6 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/blue", colorSensor.getColor().blue);
     SmartDashboard.putNumber("ColorSensor/confidence", match.confidence);
     SmartDashboard.putNumber("ColorSensor/distance", distanceSensor.getRange());
+    SmartDashboard.putString("ColorSensor/color", getColor().toString());
   }
 }

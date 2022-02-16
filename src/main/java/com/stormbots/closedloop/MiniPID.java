@@ -179,7 +179,7 @@ public class MiniPID{
 	 * represents the motor power necessary to counteract gravity. 
 	 * <li> For a positional system controlling a vertically rotating arm, kPowerAtFullExtension*sin(angle) operation
 	 * to counteract gravity
-	 * @param ff lambda that models the system based on known parameters 
+	 * @param ff Feed forward lambda, which would take (Setpoint, Sensor Actual, error) and return double
 	 * @return
 	 */
 	public MiniPID setF(FeedForwardLambda ff){

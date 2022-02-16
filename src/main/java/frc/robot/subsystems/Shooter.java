@@ -12,6 +12,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.stormbots.Clamp;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,10 +25,8 @@ public class Shooter extends SubsystemBase {
   private final double kPTop = 0;//0.099591e-3;
   private final double kPBottom = 0;//0.094701e-3;
 
-  private CANSparkMax topMotor = new CANSparkMax(13, MotorType.kBrushless);
-  private CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
-  // private CANSparkMax topMotor = new CANSparkMax(1, MotorType.kBrushless);
-  // private CANSparkMax bottomMotor = new CANSparkMax(4, MotorType.kBrushless);
+  public CANSparkMax topMotor = new CANSparkMax(13, MotorType.kBrushless);
+  public CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
   private RelativeEncoder encoderTop;
   private RelativeEncoder encoderBottom;
   private final SparkMaxPIDController pidTop;
@@ -50,6 +49,7 @@ public class Shooter extends SubsystemBase {
     topMotor.restoreFactoryDefaults();
     bottomMotor.restoreFactoryDefaults();
 
+    topMotor.setInverted(false);
     bottomMotor.setInverted(true);
 
     pidTop = topMotor.getPIDController();
@@ -90,6 +90,12 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
 
     setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
+    //Temporarily disabled so the motor values can be run manually on test code
+    // pidTop.setReference(kShooterMotorRatio * rpmSetpoint, ControlType.kVelocity, 0);
+    // pidBottom.setReference(rpmSetpoint, ControlType.kVelocity, 0);
+
+
+
 
     pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
     pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);

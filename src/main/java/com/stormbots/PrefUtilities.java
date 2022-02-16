@@ -9,10 +9,10 @@ public class PrefUtilities{
 	 * Shortcut for handling Preference values on the SmartDashboard.
 	 */
 	public static double getDouble(String key, double backup){
-		if( Preferences.getInstance().containsKey(key) ){
-			return Preferences.getInstance().getDouble(key, backup);
+		if( Preferences.containsKey(key) ){
+			return Preferences.getDouble(key, backup);
 		}else{
-			Preferences.getInstance().putDouble(key, backup);
+			Preferences.initDouble(key, backup);
 			return backup;
 		}
 	}
@@ -21,10 +21,10 @@ public class PrefUtilities{
 	 * Shortcut for handling Preference values on the SmartDashboard.
 	 */
 	public static int getInt(String key, int backup){
-		if( Preferences.getInstance().containsKey(key) ){
-			return Preferences.getInstance().getInt(key, backup);
+		if( Preferences.containsKey(key) ){
+			return Preferences.getInt(key, backup);
 		}else{
-			Preferences.getInstance().putInt(key, backup);
+			Preferences.initInt(key, backup);
 			return backup;
 		}
 	}
@@ -33,13 +33,11 @@ public class PrefUtilities{
 	 * Shortcut for handling Preference values on the SmartDashboard.
 	 */
 	public static boolean getBoolean(String key, boolean backup){
-		if( Preferences.getInstance().containsKey(key) ){
-			return Preferences.getInstance().getBoolean(key, backup);
+		if( Preferences.containsKey(key) ){
+			return Preferences.getBoolean(key, backup);
 		}else{
-			Preferences.getInstance().getBoolean(key, backup);
+			Preferences.initBoolean(key, backup);
 			return backup;
 		}
 	}
-	
-
 }

@@ -19,10 +19,14 @@ public final class Constants {
    // put robot-wide constants and parameters here.
    // For subsystem specific constants, leave them in the relevant subsystem.
    // Everything in this class should be static, but making them final/const is optional
+
+   //Don't change this: It's adjusted in Robot, based on the Robot Preferences saved on the Rio
    public enum BotName {COMP,PRACTICE};
    public static BotName botName = BotName.COMP;
 
   public static double kNeoMaxRPM = 5400.0;
+   private double kChassisLength = 32;
+
   public static PiecewiseLerp distanceToRPM;
   public static void Initialize() {
     // Called before robot subsystems are generated, and can safely set or re-set values

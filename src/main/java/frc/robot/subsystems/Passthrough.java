@@ -49,7 +49,7 @@ public class Passthrough extends SubsystemBase {
         kPTSpeed = 0.6;
         kFeederHeight = 12; //TODO get this from testing
         kUltrasonicMaximumHeight = 50;//TODO get this from testing 
-        kEjectDifference = 0.7;
+        kEjectDifference = .8;
     }
 
     

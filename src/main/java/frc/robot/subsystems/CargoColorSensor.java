@@ -31,7 +31,7 @@ public class CargoColorSensor extends SubsystemBase {
   private final Color kRedTarget = new Color(0.543, 0.338, 0.118);
   ColorMatchResult match = colorMatcher.matchClosestColor(color);
 
-  public enum CargoColor{RED,BLUE,UNDEFINED};
+  
 
   /** Creates a new CargoColorSensor. */
   public CargoColorSensor(I2C.Port colorPort, Rev2mDistanceSensor.Port distancePort) {
@@ -68,7 +68,7 @@ public class CargoColorSensor extends SubsystemBase {
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
 
-    if(distanceSensor.getRange() > 1) return CargoColor.UNDEFINED;
+    if(distanceSensor.getRange() > 1.5) return CargoColor.UNDEFINED;
     else if(distanceSensor.getRange() < 0) return CargoColor.UNDEFINED;
 
     else if (match.confidence <= .95) {
@@ -87,10 +87,6 @@ public class CargoColorSensor extends SubsystemBase {
     else{
       return CargoColor.UNDEFINED;
     }
-  }
-
-  public CargoColor getColor(){
-    return CargoColor.UNDEFINED;
   }
 
   @Override

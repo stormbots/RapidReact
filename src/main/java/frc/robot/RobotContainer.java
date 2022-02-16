@@ -152,8 +152,8 @@ public class RobotContainer {
     
    
 
-    intakeButton.whileHeld(new RunCommand(()->intake.intakeOn()));
-    intakeButton.whileHeld(new PTLoadCargo(passthrough));
+    intakeButton.whenPressed(new RunCommand(()->intake.intakeOn()));
+    intakeButton.whenPressed(new PTLoadCargo(passthrough));
     intakeButton.whenReleased(new RunCommand(()->intake.intakeOff()));
     
     climbButton.whileHeld(new RunCommand(()->climberTestMotor.set(-0.1)));
@@ -166,7 +166,7 @@ public class RobotContainer {
     Trigger ejectCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
     );
-    ejectCargo.toggleWhenActive(new PTEjectCargoFront(passthrough).withTimeout(3));//TODO needs to be tuned
+    ejectCargo.toggleWhenActive(new PTEjectCargoBack(passthrough).withTimeout(3));//TODO needs to be tuned
 
     Trigger loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}

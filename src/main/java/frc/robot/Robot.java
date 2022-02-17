@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -87,6 +88,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.climber.init();
   }
 
   /** This function is called periodically during autonomous. */
@@ -103,6 +106,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.vision.lightsOn();
+    m_robotContainer.climber.init();
   }
 
   /** This function is called periodically during operator control. */

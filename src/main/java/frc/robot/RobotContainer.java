@@ -80,10 +80,9 @@ public class RobotContainer {
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
   JoystickButton ejectFrontButton = new JoystickButton(operator, 9);
-  JoystickButton loadPTButton = new JoystickButton(operator, 2);
-  JoystickButton loadFeederButton = new JoystickButton(operator, 4);
   JoystickButton intakeButton = new JoystickButton(operator, 1);
   JoystickButton shootButton = new JoystickButton(operator, 5);
+  JoystickButton spoolShooterButton = new JoystickButton(operator, 2);
   JoystickButton climbButton = new JoystickButton(operator, 7);
   JoystickButton climbButton2 = new JoystickButton(operator, 8);
   // Used to communicate auto commands to dashboard.
@@ -131,9 +130,6 @@ public class RobotContainer {
 
     shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
-
-    loadPTButton.whileHeld(new PTLoadCargo(passthrough));
-    loadFeederButton.whileHeld(new FeederShootCargo(feeder));
     
     ejectBackButton.whileHeld(new PTEjectCargoBack(passthrough));
     ejectBackButton.whileHeld(new FeederEjectCargo(feeder));
@@ -142,14 +138,13 @@ public class RobotContainer {
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     //TEST BUTTON
     
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.2)));
-    shootButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTLoadCargo(passthrough));
-    
-    shootButton.whenReleased(new RunCommand(()->shooter.shooterMotorTop.set(0.0)));
-    shootButton.whenReleased(new RunCommand(()->shooter.shooterMotorBottom.set(0.0)));
-    
+  
+    spoolShooterButton.whileHeld(new RunCommand(()->shooter.shooterMotorTop.set(0.8)));
+    spoolShooterButton.whileHeld(new RunCommand(()->shooter.shooterMotorBottom.set(0.8*.9)));
+    spoolShooterButton.whenReleased(new RunCommand(()->shooter.shooterMotorTop.set(0.0)));
+    spoolShooterButton.whenReleased(new RunCommand(()->shooter.shooterMotorBottom.set(0.0)));
    
 
     intakeButton.whenPressed(new RunCommand(()->intake.intakeOn()));

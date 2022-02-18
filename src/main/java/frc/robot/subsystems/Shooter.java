@@ -34,6 +34,16 @@ public class Shooter extends SubsystemBase {
       kShooterSpeed = 0.85;
   }
 
+  public void shooterSpoolUpToSpeed(){
+    shooterMotorTop.set(kShooterSpeed);
+    shooterMotorBottom.set(kShooterSpeed*.9);
+  }
+
+  public void shooterOff(){
+    shooterMotorTop.set(0.0);
+    shooterMotorBottom.set(0.0);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -88,10 +88,12 @@ public class RobotContainer {
   JoystickButton spoolShooterButton = new JoystickButton(operator, 2);
   JoystickButton climbButton = new JoystickButton(operator, 7);
   JoystickButton climbButton2 = new JoystickButton(operator, 8);
-  
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+
+  Trigger ejectCargo;
+  Trigger loadCargo;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -155,15 +157,15 @@ public class RobotContainer {
     climbButton2.whenReleased(new InstantCommand(()->climberTestMotor.set(0)));
 
    
-    Trigger ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()!=cargoColorSensor.getTeamColor()/*TODO this needs to be changed to teamcolor*/;}
+    ejectCargo = new Trigger(
+      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
-    ejectCargo.toggleWhenActive(new PTEjectCargoBack(passthrough).withTimeout(1));//TODO needs to be tuned
+    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(3));//TODO needs to be tuned
 
-    Trigger loadCargo = new Trigger(
+    loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
-    loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(1)); 
+    loadCargo.whenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

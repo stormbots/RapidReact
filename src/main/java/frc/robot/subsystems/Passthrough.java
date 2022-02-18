@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -101,6 +102,9 @@ public class Passthrough extends SubsystemBase {
     @Override
     public void periodic() {
       SmartDashboard.getNumber("Ultrasonic Range", passthroughUltrasonic.getRangeInches());
+      Command current = getCurrentCommand();
+      if(current !=null){
+        SmartDashboard.putString("passthrough/command", current.getName());      }
     }
     @Override
     public void simulationPeriodic() {

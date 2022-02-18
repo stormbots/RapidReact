@@ -22,7 +22,7 @@ public class CargoColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor; 
   private Rev2mDistanceSensor distanceSensor; 
 
-  public enum CargoColor {BLUE, RED, UNDEFINED};
+  public enum CargoColor {BLUE, RED, UNDEFINED, NOCARGO};
   private CargoColor teamColor = CargoColor.BLUE; //temp value
   private Color color = Color.kGreen; //temp value
   
@@ -51,6 +51,17 @@ public class CargoColorSensor extends SubsystemBase {
     getTeamColor();
   }
 
+  public CargoColor getOpposingColor(){
+    switch (DriverStation.getAlliance()) {
+      case Red:
+        return CargoColor.BLUE;
+      case Blue:
+        return CargoColor.RED;
+      default:
+        return CargoColor.UNDEFINED;
+    }
+  }
+
   public CargoColor getTeamColor(){
     switch (DriverStation.getAlliance()) {
       case Red:
@@ -70,8 +81,8 @@ public class CargoColorSensor extends SubsystemBase {
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
 
-    if(distanceSensor.getRange() > 1.5) return CargoColor.UNDEFINED;
-    else if(distanceSensor.getRange() < 0) return CargoColor.UNDEFINED;
+    if(distanceSensor.getRange() > 1.5) return CargoColor.NOCARGO;
+    else if(distanceSensor.getRange() < 0) return CargoColor.NOCARGO;
 
     else if (match.confidence <= .95) {
       SmartDashboard.putString("ColorSensor/color", "undefined");

@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
       shooterMotorTop.setSmartCurrentLimit(30);
       shooterMotorBottom.setSmartCurrentLimit(30);
       
-      kShooterSpeed = 0.85;
+      kShooterSpeed = 0.2;
   }
 
   public void shooterSpoolUpToSpeed(){

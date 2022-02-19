@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
   private double rpmSetpoint = 0;
 
   SlewRateLimiter rpmslew = new SlewRateLimiter(0);
+  Vision vision;
 
   public Shooter() {
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
@@ -68,8 +69,11 @@ public class Shooter extends SubsystemBase {
     public void setRPM(double rpmSetpoint){
       this.rpmSetpoint = rpmSetpoint;
     }
+
+    //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
+    //TODO: Automatically grabs distance from limelight:
     public void setRPMForDistance(double distanceIN){
-      this.rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
+      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
     }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.stormbots.closedloop.MiniPID;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,9 +19,11 @@ public class Vision extends SubsystemBase {
   public final double kCameraAngle = 22;
   public final double kUpperHubHeight = 101.625;
 
+  private AHRS gyro;
+  public MiniPID pidTurn;
 
   /** Creates a new Limelight. */
-  public Vision() {
+  public Vision(AHRS gyro) {
 
     table = NetworkTableInstance.getDefault().getTable("limelight");
 
@@ -28,7 +32,19 @@ public class Vision extends SubsystemBase {
     driverPipeline();
     //lightsOff();
     lightsOn();
+
+    this.gyro = gyro;
+
+    //TODO: This was stolen from infinite recharge
+    pidTurn = new MiniPID(0,0,0);
+    pidTurn.setSetpointRange(15); 
+    pidTurn.setP(0.013);
+    pidTurn.setI(0.001);
+    pidTurn.setMaxIOutput(0.15);
+    pidTurn.setOutputLimits(0.35);
+    pidTurn.setF((s,a,e)->{return Math.signum(e)*0.035;/*static FeedForward*/ });
   }
+
 
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
@@ -74,6 +90,12 @@ public class Vision extends SubsystemBase {
   }
   public double getX(){
     return x;
+  }
+    /**
+   * @returns Heading to target (0...360). Allows for going past discontinuity (-X...360++)
+   */
+  public double getTargetHeading() {
+    return gyro.getAngle() + tx.getDouble(0.0);
   }
   public double getDistanceToUpperHub(){
     return ((kUpperHubHeight - kCameraHeight)/(Math.tan(Math.toRadians(y + kCameraAngle))));

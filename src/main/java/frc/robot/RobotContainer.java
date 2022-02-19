@@ -56,7 +56,7 @@ public class RobotContainer {
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
   public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
   public Ultrasonic ptUltrasonic = new Ultrasonic(8,9); //TODO: Find actual configuration for this
-  public Vision vision = new Vision();
+  public Vision vision = new Vision(navx);
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
   
   // 
@@ -119,7 +119,7 @@ public class RobotContainer {
 
     //TODO This is climber test code, be careful
     // testclimbButton.whileHeld(
-      // this one's really basic, but needed to get systems moving right away.
+    //   //this one's really basic, but needed to get systems moving right away.
     //   new RunCommand(
     //     ()->{climber.setWinchPower(-operator.getRawAxis(1)*0.5);}
     //     ,climber

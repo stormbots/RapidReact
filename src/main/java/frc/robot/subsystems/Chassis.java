@@ -146,6 +146,7 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("left", leftEncoder.getPosition());
     odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
     SmartDashboard.putNumber("chassis/x", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());

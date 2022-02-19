@@ -21,10 +21,10 @@ public class ChassisPathfinding extends CommandBase {
     private Chassis chassis;
     
     private DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerInch, Constants.aVoltSecondsSquaredPerInch),
+      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
       Constants.DriveKinematics, 10);
   
-    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedInchesPerSecond, Constants.MaxAccelerationInchesPerSecondSquared)
+    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedMetersPerSecond, Constants.MaxAccelerationMetersPerSecondSquared)
       .setKinematics(Constants.DriveKinematics).addConstraint(autoVoltageConstraint);
   
     private RamseteCommand ramseteCommand;
@@ -42,14 +42,14 @@ public class ChassisPathfinding extends CommandBase {
         List.of(
           //new Translation2d(2.3, 0)
         ),
-        new Pose2d(32 * 3, 0, new Rotation2d(0)),
+        new Pose2d(3, 0, new Rotation2d(0)),
       config);
       
       chassis.resetOdometry(trajectory.getInitialPose());
   
       ramseteCommand = new RamseteCommand(trajectory, chassis::getPose,
           new RamseteController(Constants.RamseteB, Constants.RamseteZeta),
-          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerInch, Constants.aVoltSecondsSquaredPerInch),
+          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
           Constants.DriveKinematics,
           chassis::getWheelSpeeds,
           new PIDController(Constants.PDriveVel, 0, 0),

@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDriveArcade;
+import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
 import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.PTEjectCargoBack;
@@ -82,6 +83,8 @@ public class RobotContainer {
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
   JoystickButton shiftButton = new JoystickButton(driver, 7);
+  JoystickButton aimButton = new JoystickButton(driver, 8);
+
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
   JoystickButton ejectFrontButton = new JoystickButton(operator, 9);
@@ -94,7 +97,8 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 
-
+  private ChassisVisionTargeting chassisVisionTargeting = new ChassisVisionTargeting(()->0,()->0,chassis, vision, navx);
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //Configure our autonomous commands, and make sure drive team can select what they want
@@ -102,6 +106,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Does nothing", new InstantCommand(()->{}));
     autoChooser.addOption("Also nothing", new InstantCommand(()->{}));
     SmartDashboard.putData("autos/autoSelection", autoChooser);
+    SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
+
 
 
     //configure default commands
@@ -145,6 +151,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    aimButton.whileHeld(new ChassisVisionTargeting(
+      ()->-driver.getRawAxis(1),()->driver.getRawAxis(2),
+      chassis, vision, navx));
 
     shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));

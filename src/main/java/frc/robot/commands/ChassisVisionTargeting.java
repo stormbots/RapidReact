@@ -4,8 +4,11 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Vision;
@@ -16,36 +19,53 @@ public class ChassisVisionTargeting extends CommandBase {
   Vision vision;
   AHRS gyro;
 
-  double outputTurn;
+  DoubleSupplier fwdPower;
+  DoubleSupplier turnpower;
+
   /** Creates a new ChassisVisionTargeting. */
-  public ChassisVisionTargeting(Chassis chassis, Vision vision, AHRS gyro) {
+  public ChassisVisionTargeting(DoubleSupplier fwdPower, DoubleSupplier turnpower, Chassis chassis, Vision vision, AHRS gyro) {
     this.chassis = chassis;
     this.vision = vision;
     this.gyro = gyro;
-   
+    this.fwdPower = fwdPower;
+    this.turnpower = turnpower;
+    addRequirements(chassis);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    vision.lightsOn();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double forward = fwdPower.getAsDouble();
+    double outputTurn = turnpower.getAsDouble();
 
-    if (vision.hasValidTarget()){
-      chassis.arcadeDrive(0, 0);
+    //alternative driver locking method
+    //in initialize, set found_target toi false
+    //if we see a target, set found_target to true
+    //found_target == true, no driver turning
+
+    if (vision.hasValidTarget() == false){
+      chassis.arcadeDrive(forward,outputTurn);
       return;
     }
 
-    outputTurn = vision.pidTurn.getOutput(gyro.getAngle(), vision.getTargetHeading());
+    outputTurn = vision.pidTurn.getOutput(0, vision.getX());
 
-    chassis.arcadeDrive(0, outputTurn);
+    // outputTurn = vision.pidTurn.getOutput(gyro.getAngle(), vision.getTargetHeading());
+    SmartDashboard.putNumber("vision/aimOutput", outputTurn);
+    chassis.arcadeDrive(forward, outputTurn);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    vision.lightsOff();
+  }
 
   // Returns true when the command should end.
   @Override

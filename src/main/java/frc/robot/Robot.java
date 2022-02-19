@@ -105,13 +105,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.vision.lightsOn();
+    //m_robotContainer.vision.lightsOn();
     m_robotContainer.climber.init();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    SmartDashboard.putNumber("chassis/turn", m_robotContainer.driver.getRawAxis(2));
+  }
 
   @Override
   public void testInit() {

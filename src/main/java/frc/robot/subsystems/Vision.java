@@ -38,11 +38,12 @@ public class Vision extends SubsystemBase {
     //TODO: This was stolen from infinite recharge
     pidTurn = new MiniPID(0,0,0);
     pidTurn.setSetpointRange(15); 
-    pidTurn.setP(0.013);
+    pidTurn.setP(0.013*.5);
     pidTurn.setI(0.001);
     pidTurn.setMaxIOutput(0.15);
-    pidTurn.setOutputLimits(0.35);
-    pidTurn.setF((s,a,e)->{return Math.signum(e)*0.035;/*static FeedForward*/ });
+    pidTurn.setOutputLimits(0.7);
+    pidTurn.setOutputRampRate(0.7/200.0);
+    pidTurn.setF((s,a,e)->{return Math.signum(e)*0.30;/*static FeedForward*/ });
   }
 
 

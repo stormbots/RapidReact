@@ -97,7 +97,7 @@ public class Climber extends SubsystemBase {
   public void setHookAngle(double angle) {
     //get a distance
     //once distance reached stop
-    hookPID.setReference(angle, ControlType.kPosition);
+    //hookPID.setReference(angle, ControlType.kPosition);
   }
 
   public void setWinchPower(double power){

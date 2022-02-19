@@ -89,6 +89,14 @@ public class Shooter extends SubsystemBase {
       (Clamp.bounded(rpmSetpoint * kShooterMotorRatio, encoderTop.getVelocity()-kRPMTargetBound, encoderTop.getVelocity()+kRPMTargetBound) &&
        Clamp.bounded(rpmSetpoint, encoderBottom.getVelocity()-kRPMTargetBound, encoderBottom.getVelocity()+kRPMTargetBound));
     }
+    double output;
+    double gonnaTryMathNow(){
+      
+
+
+
+      return output;
+    }
 
   @Override
   public void periodic() {

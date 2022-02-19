@@ -175,7 +175,7 @@ public class RobotContainer {
     loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
-    loadCargo.whenActive(new PTLoadCargo(passthrough).withTimeout(2)); 
+    loadCargo.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2)); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

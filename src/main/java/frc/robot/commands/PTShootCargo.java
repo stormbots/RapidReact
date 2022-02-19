@@ -4,8 +4,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Passthrough;
 
-/** Place Cargo where it should be. */
-public class PTLoadCargo extends CommandBase {
+/** An example command that uses an example subsystem. */
+public class PTShootCargo extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Passthrough passthrough;
 
@@ -14,7 +14,7 @@ public class PTLoadCargo extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PTLoadCargo(Passthrough passthrough) {
+  public PTShootCargo(Passthrough passthrough) {
     this.passthrough = passthrough;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(passthrough);
@@ -22,29 +22,19 @@ public class PTLoadCargo extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (passthrough.ptGetNumberOfCargo() == 1){
-      //put cargo in bottom spot 
-      passthrough.ptRun();
-    }
-    else {
-      //put cargo in top spot
-      passthrough.ptRun();
-    }
-    
+    passthrough.ptRun();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     passthrough.ptOff();
-    passthrough.ptIncrementCargo();
+    passthrough.ptResetCargo();
   }
 
   // Returns true when the command should end.

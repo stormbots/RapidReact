@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -26,7 +27,9 @@ import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.PTEjectCargoBack;
 import frc.robot.commands.PTEjectCargoFront;
+import frc.robot.commands.PTIntakeCargo;
 import frc.robot.commands.PTLoadCargo;
+import frc.robot.commands.PTShootCargo;
 import frc.robot.commands.ShooterSpoolUp;
 import frc.robot.subsystems.CargoColorSensor;
 import frc.robot.subsystems.Chassis;
@@ -143,14 +146,21 @@ public class RobotContainer {
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     
     shootButton.whileHeld(new FeederShootCargo(feeder));
-    shootButton.whileHeld(new PTLoadCargo(passthrough));
+    shootButton.whileHeld(new PTShootCargo(passthrough));
   
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
   
-    intakeButton.whileHeld(new IntakeDown(intake));
-    intakeButton.whenPressed(new PTLoadCargo(passthrough));
-    intakeButton.whenReleased(new InstantCommand(()->{},passthrough));//require the passthrough to trigger exigt
-    
+    //do smart cargo aware version
+    intakeButton.whileHeld(new ConditionalCommand(
+      new IntakeDown(intake), 
+      new InstantCommand(()-> intake.intakeOff()), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeButton.whenPressed(new ConditionalCommand(
+      new PTIntakeCargo(passthrough), 
+      new InstantCommand(()->{}, passthrough), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeButton.whenReleased(new InstantCommand(()->{}, passthrough));
+
     climbButton.whileHeld(new RunCommand(()->climberTestMotor.set(-0.1)));
     climbButton.whenReleased(new InstantCommand(()->climberTestMotor.set(0)));
     climbButton2.whileHeld(new RunCommand(()->climberTestMotor.set(0.1)));
@@ -160,12 +170,12 @@ public class RobotContainer {
     ejectCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
-    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(3));//TODO needs to be tuned
+    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(2));//TODO needs to be tuned
 
     loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
-    loadCargo.whenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
+    loadCargo.whenActive(new PTLoadCargo(passthrough).withTimeout(2)); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

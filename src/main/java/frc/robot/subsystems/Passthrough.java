@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stormbots.closedloop.MiniPID;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +17,11 @@ public class Passthrough extends SubsystemBase {
     CANSparkMax motorPTFront = new CANSparkMax(9,MotorType.kBrushless);
     CANSparkMax motorPTBack = new CANSparkMax(10,MotorType.kBrushless);
     
+    RelativeEncoder encoderPTFront;
+    RelativeEncoder encoderPTBack; 
+    
+    MiniPID ptPid;
+
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
     double kPTSpeed;
@@ -23,7 +30,8 @@ public class Passthrough extends SubsystemBase {
     boolean isCargoInFeeder;
     double kFeederHeight;
     double kUltrasonicMaximumHeight;
-  
+    int numberOfCargo;
+   
     public Passthrough() {
         switch(Constants.botName){
         case PRACTICE:
@@ -31,12 +39,18 @@ public class Passthrough extends SubsystemBase {
         break;
         case COMP:
         }
-
+        ptPid = new MiniPID(0,0,0);
         // SmartDashboard.putString("passthrough/faults",motorPTFront.getFaults());
         // SmartDashboard motorPTBack.getFaults();
 
         motorPTFront.setInverted(false);
         motorPTBack.setInverted(true);
+
+        encoderPTBack=motorPTBack.getEncoder();
+        encoderPTFront=motorPTFront.getEncoder();
+        
+        encoderPTBack.setPosition(0.0);
+        encoderPTFront.setPosition(0.0);
 
         //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
         motorPTFront.setSmartCurrentLimit(30);
@@ -51,6 +65,7 @@ public class Passthrough extends SubsystemBase {
         kFeederHeight = 12; //TODO get this from testing
         kUltrasonicMaximumHeight = 50;//TODO get this from testing 
         kEjectDifference = .8;
+        numberOfCargo = 0;
     }
 
     
@@ -72,6 +87,25 @@ public class Passthrough extends SubsystemBase {
     public void ptEjectFront(){
       motorPTFront.set(-kPTSpeed);
       motorPTBack.set(kPTSpeed*kEjectDifference);
+    }
+
+    public void ptIncrementCargo(){
+      numberOfCargo += 1;
+    }
+
+    public void ptResetCargo(){
+      numberOfCargo = 0;
+    }
+
+    public int ptGetNumberOfCargo(){
+      return numberOfCargo;
+    }
+
+    public Boolean ptGetCargoLimit(){
+      if (numberOfCargo <2){
+        return true;
+      }
+      return false;
     }
 
     public Boolean ptCargoInPT(){

@@ -31,11 +31,11 @@ public class Climber extends SubsystemBase {
   private double kMaxHeight = 18.5;
 
   //Class consent variables for the motor for the hookMotor and climber, also gets the encoder for the hook and the PID controller
-  private CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
+  public CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
   private RelativeEncoder hookEncoder = hookMotor.getEncoder();
 
   private SparkMaxPIDController hookPID = hookMotor.getPIDController();
-  private CANSparkMax winchMotor = new CANSparkMax(15, MotorType.kBrushless); //15
+  public CANSparkMax winchMotor = new CANSparkMax(15, MotorType.kBrushless); //15
   private RelativeEncoder winchEncoder = winchMotor.getEncoder();
   MiniPID winchPID = new MiniPID(0,0,0);//TODO: change temp values. 
 

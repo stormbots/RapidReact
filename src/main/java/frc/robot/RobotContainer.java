@@ -178,7 +178,7 @@ public class RobotContainer {
     // shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
     // shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
-    shootButton.whileHeld(new PTLoadCargo(passthrough));
+    shootButton.whileHeld(new PTLoadCargo(passthrough,feeder));
     
     shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
     shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
@@ -196,10 +196,10 @@ public class RobotContainer {
       ()->passthrough.ptGetCargoLimit()));
     intakeButton.whenReleased(new InstantCommand(()->{}, passthrough));
 
-    climbButton.whileHeld(new RunCommand(()->climberTestMotor.set(-0.1)));
-    climbButton.whenReleased(new InstantCommand(()->climberTestMotor.set(0)));
-    climbButton2.whileHeld(new RunCommand(()->climberTestMotor.set(0.1)));
-    climbButton2.whenReleased(new InstantCommand(()->climberTestMotor.set(0)));
+    // climbButton.whileHeld(new RunCommand(()->climber.hookMotor.set(-0.1)));
+    // climbButton.whenReleased(new InstantCommand(()->climber.hookMotor.set(0)));
+    // climbButton2.whileHeld(new RunCommand(()->climber.winchMotor.set(0.1)));
+    // climbButton2.whenReleased(new InstantCommand(()->climber.winchMotor.set(0)));
 
    
     ejectCargo = new Trigger(

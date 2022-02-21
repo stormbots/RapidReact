@@ -91,12 +91,21 @@ public class Shooter extends SubsystemBase {
     }
     double output;
     double gonnaTryMathNow(){
-      
-
-
-
       return output;
+
     }
+
+  public void shooterSpoolUpToSpeed(){
+    double kShooterSpeed = 0.2;
+
+    shooterMotorTop.set(kShooterSpeed);
+    shooterMotorBottom.set(kShooterSpeed*.9);
+  }
+
+  public void shooterOff(){
+    shooterMotorTop.set(0.0);
+    shooterMotorBottom.set(0.0);
+  }
 
   @Override
   public void periodic() {

@@ -67,10 +67,10 @@ public class Passthrough extends SubsystemBase {
         motorPTBack.setOpenLoopRampRate(0.2);
         
         Ultrasonic.setAutomaticMode(true);
-        kPTSpeed = 0.6;
+        kPTSpeed = .8;
         kFeederHeight = 12; //TODO get this from testing
         kUltrasonicMaximumHeight = 50;//TODO get this from testing 
-        kEjectDifference = .8;
+        kEjectDifference = 1.2;
         numberOfCargo = 0;
         setpoint = 0;
     }
@@ -80,6 +80,10 @@ public class Passthrough extends SubsystemBase {
       motorPTFront.set(kPTSpeed);
       motorPTBack.set(kPTSpeed);
     }
+
+    public void ptIntake(){
+      motorPTFront.set(kPTSpeed);
+    }
     
     public void ptOff(){
       motorPTFront.set(0.0);
@@ -87,13 +91,13 @@ public class Passthrough extends SubsystemBase {
     }
 
     public void ptEjectBack(){
-      motorPTFront.set(kPTSpeed*kEjectDifference);
-      motorPTBack.set(-kPTSpeed);
+      motorPTFront.set(kPTSpeed);
+      motorPTBack.set(-kPTSpeed*kEjectDifference);
     }
 
     public void ptEjectFront(){
-      motorPTFront.set(-kPTSpeed);
-      motorPTBack.set(kPTSpeed*kEjectDifference);
+      motorPTFront.set(-kPTSpeed*kEjectDifference);
+      motorPTBack.set(kPTSpeed);
     }
 
     public void ptIncrementCargo(){

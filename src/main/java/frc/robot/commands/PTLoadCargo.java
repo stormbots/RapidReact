@@ -70,6 +70,7 @@ public class PTLoadCargo extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     passthrough.ptOff();
+    feeder.feederOff();
     passthrough.ptIncrementCargo();
   }
 

@@ -74,7 +74,7 @@ public class Climber extends SubsystemBase {
       hookMotor.setInverted(true);
       hookEncoder.setPositionConversionFactor(180/2.3); //TODO set conversion to degres/angle
       hookEncoder.setPosition(210);
-      hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
+      //hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
       hookPID.setP(1/360.0);
       hookMotor.setIdleMode(IdleMode.kCoast);
 

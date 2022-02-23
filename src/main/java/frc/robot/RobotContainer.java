@@ -178,10 +178,10 @@ public class RobotContainer {
     // shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
     // shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
-    shootButton.whileHeld(new PTLoadCargo(passthrough,feeder));
+    shootButton.whileHeld(new PTShootCargo(passthrough));
     
-    shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
-    shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
+    shootButton.whenReleased(new InstantCommand(()->shooter.bottomMotor.set(0.0)));
+    shootButton.whenReleased(new InstantCommand(()->shooter.topMotor.set(0.0)));
     
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
   
@@ -205,12 +205,12 @@ public class RobotContainer {
     ejectCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
-    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(2));//TODO needs to be tuned
+    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(2).withName("EjectingCargo"));//TODO needs to be tuned
 
     loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
-    loadCargo.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2)); 
+    loadCargo.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

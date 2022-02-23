@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
+    m_robotContainer.passthrough.ptIncrementCargo();//we start auto with 1
     m_robotContainer.climber.init();
   }
 

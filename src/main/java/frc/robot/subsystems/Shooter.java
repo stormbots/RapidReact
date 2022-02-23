@@ -118,8 +118,8 @@ public class Shooter extends SubsystemBase {
 
 
 
-    pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
-    pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+    // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+    // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
  
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());

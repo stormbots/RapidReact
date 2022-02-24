@@ -26,14 +26,12 @@ public class Passthrough extends SubsystemBase {
     
     double kPTSpeed;
     double kEjectDifference;
-    boolean isCargoInPT;
-    boolean isCargoInFeeder;
     double kFeederHeight;
     double kUltrasonicMaximumHeight;
-    int numberOfCargo;
+    double numberOfCargo;
     double kDistanceToTop;
     double kDistanceToBottom;
-    double setpoint;
+    
    
     public Passthrough() {
         switch(Constants.botName){
@@ -42,11 +40,6 @@ public class Passthrough extends SubsystemBase {
         break;
         case COMP:
         }
-        // ptPidFront = new MiniPID(0.01,0,0).setOutputLimits(0.1);
-
-        // SmartDashboard.putString("passthrough/faults",motorPTFront.getFaults());
-        // SmartDashboard motorPTBack.getFaults();
-
         motorPTFront.setInverted(false);
         motorPTBack.setInverted(true);
 
@@ -58,21 +51,18 @@ public class Passthrough extends SubsystemBase {
 
         encoderPTFront.setPositionConversionFactor(6.0/10.0);
 
-        // ptPidFront.setSetpoint(encoderPTFront.getPosition());
-
-        //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
         motorPTFront.setSmartCurrentLimit(30);
         motorPTBack.setSmartCurrentLimit(30);
         motorPTFront.setOpenLoopRampRate(0.2);
         motorPTBack.setOpenLoopRampRate(0.2);
         
         Ultrasonic.setAutomaticMode(true);
+
         kPTSpeed = .8;
-        kFeederHeight = 12; //TODO get this from testing
-        kUltrasonicMaximumHeight = 50;//TODO get this from testing 
+        // kFeederHeight = 12; //TODO get this from testing
+        // kUltrasonicMaximumHeight = 50;//TODO get this from testing 
         kEjectDifference = 1.2;
         numberOfCargo = 0;
-        setpoint = 0;
     }
 
     
@@ -81,8 +71,12 @@ public class Passthrough extends SubsystemBase {
       motorPTBack.set(kPTSpeed);
     }
 
-    public void ptIntake(){
+    public void ptIntakeFront(){
       motorPTFront.set(kPTSpeed);
+    }
+
+    public void ptIntakeBack(){
+      motorPTBack.set(kPTSpeed);
     }
     
     public void ptOff(){
@@ -108,7 +102,7 @@ public class Passthrough extends SubsystemBase {
       numberOfCargo = 0;
     }
 
-    public int ptGetNumberOfCargo(){
+    public double ptGetNumberOfCargo(){
       return numberOfCargo;
     }
 
@@ -118,14 +112,6 @@ public class Passthrough extends SubsystemBase {
       }
       return false;
     }
-
-    // public void setDistanceTop(){
-    //   setpoint = kDistanceToTop;
-    // }
-
-    // public void setDistanceBottom(){
-    //   setpoint = kDistanceToBottom;
-    // }
     
     @Override
     public void periodic() {

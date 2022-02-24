@@ -27,7 +27,7 @@ public class PTIntakeCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    passthrough.ptIntake();
+    passthrough.ptIntakeFront();
   }
 
   // Called once the command ends or is interrupted.

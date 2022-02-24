@@ -95,8 +95,8 @@ public class RobotContainer {
   JoystickButton intakeButton = new JoystickButton(operator, 4);
   JoystickButton shootButton = new JoystickButton(operator, 1);
   JoystickButton spoolShooterButton = new JoystickButton(operator, 2);
-  JoystickButton climbButton = new JoystickButton(operator, 7);
-  JoystickButton climbButton2 = new JoystickButton(operator, 8);
+  JoystickButton climbButtonManual = new JoystickButton(operator, 7);
+  
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -163,20 +163,18 @@ public class RobotContainer {
 
     aimButton.whileHeld(new ChassisVisionTargeting(
       ()->-driver.getRawAxis(1),()->driver.getRawAxis(2),
-      chassis, vision, navx));
+      chassis, vision, navx)
+    );
 
     shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
     
-    ejectBackButton.whileHeld(new PTEjectCargoBack(passthrough));
+    ejectBackButton.whileHeld(new PTEjectCargoBack(passthrough, false));
     ejectBackButton.whileHeld(new FeederEjectCargo(feeder));
 
-    ejectFrontButton.whileHeld(new PTEjectCargoFront(passthrough));
+    ejectFrontButton.whileHeld(new PTEjectCargoFront(passthrough,false));
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     
-    
-    // shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
-    // shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
     shootButton.whileHeld(new PTShootCargo(passthrough));
     
@@ -196,16 +194,17 @@ public class RobotContainer {
       ()->passthrough.ptGetCargoLimit()));
     intakeButton.whenReleased(new InstantCommand(()->{}, passthrough));
 
-    // climbButton.whileHeld(new RunCommand(()->climber.hookMotor.set(-0.1)));
-    // climbButton.whenReleased(new InstantCommand(()->climber.hookMotor.set(0)));
-    // climbButton2.whileHeld(new RunCommand(()->climber.winchMotor.set(0.1)));
-    // climbButton2.whenReleased(new InstantCommand(()->climber.winchMotor.set(0)));
+    climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(operator.getRawAxis(1))));
+    climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
+    climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));
+    climbButtonManual.whenReleased(new InstantCommand(()->climber.winchMotor.set(0.0)));
+    
 
    
     ejectCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
-    ejectCargo.whenActive(new PTEjectCargoBack(passthrough).withTimeout(2).withName("EjectingCargo"));//TODO needs to be tuned
+    ejectCargo.whenActive(new PTEjectCargoBack(passthrough, true).withTimeout(2).withName("EjectingCargo"));//TODO needs to be tuned
 
     loadCargo = new Trigger(
       ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}

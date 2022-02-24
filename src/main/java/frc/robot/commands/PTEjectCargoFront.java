@@ -7,14 +7,17 @@ import frc.robot.subsystems.Passthrough;
 public class PTEjectCargoFront extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Passthrough passthrough;
+  private Boolean causedByTrigger;
+  
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PTEjectCargoFront(Passthrough passthrough) {
+  public PTEjectCargoFront(Passthrough passthrough, Boolean causedByTrigger) {
     this.passthrough = passthrough;
+    this.causedByTrigger = causedByTrigger;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(passthrough);
   }
@@ -22,7 +25,14 @@ public class PTEjectCargoFront extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    passthrough.ptResetCargo();
+    if (causedByTrigger == false){
+      // if done by manual button press reset cargo counter
+      passthrough.ptResetCargo();
+    }
+    else{
+      //if caused automatically do not reset cargo counter
+    }
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

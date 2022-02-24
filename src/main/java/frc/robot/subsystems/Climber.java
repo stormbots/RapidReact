@@ -27,8 +27,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
   //Class consents including the min height and max height
-  private double kMinHeight = 0;
-  private double kMaxHeight = 18.5;
+  private double kMinHeight = 45;
+  private double kMaxHeight = 61;
 
   //Class consent variables for the motor for the hookMotor and climber, also gets the encoder for the hook and the PID controller
   public CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
@@ -65,19 +65,19 @@ public class Climber extends SubsystemBase {
       winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)kMinHeight);
       winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
+      
       winchPID.setSetpoint(winchEncoder.getPosition());
       winchMotor.setIdleMode(IdleMode.kCoast);//Want coast on boot, enable brake when climbing
-
+      winchMotor.setSmartCurrentLimit(15);
       //Configure Hook
       hookMotor.setSmartCurrentLimit(2);
       hookMotor.setInverted(true);
       hookEncoder.setPositionConversionFactor(180/2.3); //TODO set conversion to degres/angle
       hookEncoder.setPosition(210);
-      //hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
+      // hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
       hookPID.setP(1/360.0);
       hookMotor.setIdleMode(IdleMode.kCoast);
-
+      hookMotor.set(0);
   } 
 
   // getHeight()

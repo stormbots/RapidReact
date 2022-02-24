@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -72,11 +74,12 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.vision.lightsOff();
+    m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kCoast);
   }
 
   @Override
   public void disabledPeriodic() {
-
+    
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

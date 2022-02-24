@@ -41,14 +41,14 @@ public class PTLoadCargo extends CommandBase {
       passthroughTargetDistance = 30;
       feederTargetDistance = 30;
       feeder.feederRun();
-      passthrough.ptRun();
+      passthrough.setPTpower(1, 1);
       SmartDashboard.putString("passthrough/PTLOADINGCARGO", "Loading 0");
     }
     else if (passthrough.ptGetNumberOfCargo() == 1){
         //put cargo in bottom spot 
       // passthrough.setDistanceBottom();
       passthroughTargetDistance = 18;
-      passthrough.ptRun();
+      passthrough.setPTpower(1, 1);
       SmartDashboard.putString("passthrough/PTLOADINGCARGO", "Loading 1");
     }
     else {
@@ -69,7 +69,7 @@ public class PTLoadCargo extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    passthrough.ptOff();
+    passthrough.setPTpower(0,0);
     feeder.feederOff();
     passthrough.ptIncrementCargo();
   }

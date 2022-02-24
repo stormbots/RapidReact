@@ -24,6 +24,8 @@ public class Passthrough extends SubsystemBase {
 
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
+    public double kHighPower=0.8;
+    public double kLowPower=0.6;
     double kPTSpeed;
     double kEjectDifference;
     double kFeederHeight;
@@ -65,23 +67,9 @@ public class Passthrough extends SubsystemBase {
         numberOfCargo = 0;
     }
 
-    
-    public void ptRun(){
+    public void setPTpower(double front, double rear){
       motorPTFront.set(kPTSpeed);
       motorPTBack.set(kPTSpeed);
-    }
-
-    public void ptIntakeFront(){
-      motorPTFront.set(kPTSpeed);
-    }
-
-    public void ptIntakeBack(){
-      motorPTBack.set(kPTSpeed);
-    }
-    
-    public void ptOff(){
-      motorPTFront.set(0.0);
-      motorPTBack.set(0.0);
     }
 
     public void ptEjectBack(){

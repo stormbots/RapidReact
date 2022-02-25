@@ -34,8 +34,8 @@ public class Feeder extends SubsystemBase {
         case COMP:
         }
         
-        motorFeederFront.setInverted(false);
-        motorFeederBack.setInverted(true);
+        motorFeederFront.setInverted(true);
+        motorFeederBack.setInverted(false);
 
         motorFeederFront.setSmartCurrentLimit(30);
         motorFeederBack.setSmartCurrentLimit(30);

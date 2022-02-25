@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
       }
     this.motor = motor;
 
-    motor.setInverted(false);
+    motor.setInverted(true);
     motor.setSmartCurrentLimit(30);
 
     kUp = false;

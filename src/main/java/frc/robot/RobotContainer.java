@@ -59,8 +59,9 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
-  public Ultrasonic ptUltrasonic = new Ultrasonic(8,9); //TODO: Find actual configuration for this
+  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
+  // public CargoColorSensor cargoColorSensorBack = new CargoColorSensor(I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
+
   public Vision vision = new Vision(navx);
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
   
@@ -118,7 +119,7 @@ public class RobotContainer {
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
 
-
+    // compressor.disable();
     //configure default commands
     
     chassis.setDefaultCommand(
@@ -202,12 +203,12 @@ public class RobotContainer {
 
    
     ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
     ejectCargo.whenActive(new PTEjectCargoBack(passthrough, true).withTimeout(2).withName("EjectingCargo"));//TODO needs to be tuned
 
     loadCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
     loadCargo.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     

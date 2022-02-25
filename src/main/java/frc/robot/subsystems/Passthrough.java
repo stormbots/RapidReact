@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 public class Passthrough extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -71,17 +72,6 @@ public class Passthrough extends SubsystemBase {
       motorPTFront.set(kPTSpeed);
       motorPTBack.set(kPTSpeed);
     }
-
-    public void ptEjectBack(){
-      motorPTFront.set(kPTSpeed);
-      motorPTBack.set(-kPTSpeed*kEjectDifference);
-    }
-
-    public void ptEjectFront(){
-      motorPTFront.set(-kPTSpeed*kEjectDifference);
-      motorPTBack.set(kPTSpeed);
-    }
-
     public void ptIncrementCargo(){
       numberOfCargo += 1;
     }

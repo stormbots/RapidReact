@@ -42,6 +42,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -56,7 +57,7 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
+  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
   //TODO add second color sensor
   public Ultrasonic ptUltrasonic = new Ultrasonic(8,9); //TODO: Find actual configuration for this
   public Vision vision = new Vision(navx);
@@ -237,7 +238,7 @@ public class RobotContainer {
     //make conditional command based on passthrough.cargoSensorEnabled
     //if cargosensorenabled == false, run an instantcommand and don't require passthrough to avoid re-triggering a load
     ejectCargoFrontIntake = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor();}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor();}
     );
     ejectCargoFrontIntake.whenActive(new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(2).withName("EjectingCargoBack"));//TODO needs to be tuned
     
@@ -247,7 +248,7 @@ public class RobotContainer {
     // ejectCargoBackIntake.whenActive(new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough).withTimeout(2).withName("EjectingCargoFront"));
 
     loadCargoFrontIntake = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor();}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor();}
     );
     loadCargoFrontIntake.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     // loadCargoFromBack = new Trigger(

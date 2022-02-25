@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -28,11 +29,11 @@ import frc.robot.commands.ChassisDriveArcade;
 import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
 import frc.robot.commands.FeederShootCargo;
-import frc.robot.commands.PTEjectCargoBack;
-import frc.robot.commands.PTEjectCargoFront;
+import frc.robot.commands.IntakeDown;
 import frc.robot.commands.PTLoadCargo;
+import frc.robot.commands.PTMoveCargo;
+import frc.robot.commands.ShooterSpoolUp;
 import frc.robot.subsystems.CargoColorSensor;
-import frc.robot.subsystems.CargoColorSensor.CargoColor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Chassis.Gear;
 import frc.robot.subsystems.Climber;
@@ -41,6 +42,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,7 +57,8 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
+  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
+  //TODO add second color sensor
   public Ultrasonic ptUltrasonic = new Ultrasonic(8,9); //TODO: Find actual configuration for this
   public Vision vision = new Vision(navx);
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
@@ -64,7 +67,8 @@ public class RobotContainer {
   // SUBSYSTEMS
   //
   public Chassis chassis = new Chassis(navx);
-  public Intake intake = new Intake(new CANSparkMax(7,MotorType.kBrushless));
+  public Intake frontIntake = new Intake(new CANSparkMax(7,MotorType.kBrushless),3);
+  public Intake backIntake = new Intake(new CANSparkMax(8,MotorType.kBrushless), 4);
   public Climber climber = new Climber();
   public Passthrough passthrough = new Passthrough();
   public Feeder feeder = new Feeder();
@@ -87,11 +91,13 @@ public class RobotContainer {
 
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
-  JoystickButton ejectFrontButton = new JoystickButton(operator, 9);
-  JoystickButton loadPTButton = new JoystickButton(operator, 2);
-  JoystickButton loadFeederButton = new JoystickButton(operator, 4);
-  JoystickButton intakeButton = new JoystickButton(operator, 1);
-  JoystickButton shootButton = new JoystickButton(operator, 5);
+  JoystickButton ejectFrontButton = new JoystickButton(operator, 5);
+  JoystickButton intakeFrontButton = new JoystickButton(operator, 4);
+  JoystickButton intakeBackButton = new JoystickButton(operator, 2);
+  JoystickButton shootButton = new JoystickButton(operator, 1);
+  JoystickButton spoolShooterButton = new JoystickButton(operator, 3);
+  JoystickButton climbButtonManual = new JoystickButton(operator, 7);
+  
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -99,6 +105,14 @@ public class RobotContainer {
 
   private ChassisVisionTargeting chassisVisionTargeting = new ChassisVisionTargeting(()->0,()->0,chassis, vision, navx);
   
+  Trigger ejectCargoFrontIntake;
+  Trigger ejectCargoBackIntake;
+  
+  Trigger loadCargoFrontIntake;
+  Trigger loadCargoFromBack;
+
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //Configure our autonomous commands, and make sure drive team can select what they want
@@ -154,45 +168,93 @@ public class RobotContainer {
 
     aimButton.whileHeld(new ChassisVisionTargeting(
       ()->-driver.getRawAxis(1),()->driver.getRawAxis(2),
-      chassis, vision, navx));
+      chassis, vision, navx)
+    );
 
     shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
-
-    loadPTButton.whileHeld(new PTLoadCargo(passthrough));
-    loadFeederButton.whileHeld(new FeederShootCargo(feeder));
     
-    ejectBackButton.whileHeld(new PTEjectCargoBack(passthrough));
+    ejectBackButton.whileHeld(new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower, passthrough));
     ejectBackButton.whileHeld(new FeederEjectCargo(feeder));
 
-    ejectFrontButton.whileHeld(new PTEjectCargoFront(passthrough));
+    ejectFrontButton.whileHeld(new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough));
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
-    //TEST BUTTON
     
-    // shootButton.whileHeld(new RunCommand(()->shooter.topMotor.set(0.2)));
-    // shootButton.whileHeld(new RunCommand(()->shooter.bottomMotor.set(0.2*.9)));
     shootButton.whileHeld(new FeederShootCargo(feeder));
-    shootButton.whileHeld(new PTLoadCargo(passthrough));
+    shootButton.whileHeld(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough));
     
-    shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
-    shootButton.whenReleased(new RunCommand(()->shooter.bottomMotor.set(0.0)));
+    shootButton.whenReleased(new InstantCommand(()->shooter.bottomMotor.set(0.0)));
+    shootButton.whenReleased(new InstantCommand(()->shooter.topMotor.set(0.0)));
     
+    spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
+  
+    //hold button
+      // put down intake, turn on
+      // start passthrough
+      //if cargo
+        //load||eject cargo
+      //resume passthrough
+
+    // whileheld
+      //run intake
+      //start passthrough
+        //detect cargo, load/eject
+      // .withInterrupt(passthrough has no active commands, end)
+      //restart intake
+
+    //passthrough.setdefaultcommand
+      //command looks at buttons
+      //look at buttons and run if needed
+
+    //do smart cargo aware version
+    intakeFrontButton.whileHeld(new ConditionalCommand(
+      new IntakeDown(frontIntake), 
+      new InstantCommand(()-> frontIntake.intakeOff()), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeFrontButton.whenPressed(new ConditionalCommand(
+      new PTMoveCargo(passthrough.kHighPower,0,passthrough), 
+      new InstantCommand(()->{}, passthrough), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeFrontButton.whenReleased(new InstantCommand(()->{}, passthrough));
    
+    intakeBackButton.whileHeld(new ConditionalCommand(
+      new IntakeDown(backIntake), 
+      new InstantCommand(()-> backIntake.intakeOff()), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeBackButton.whenPressed(new ConditionalCommand(
+      new PTMoveCargo(0,passthrough.kHighPower,passthrough), 
+      new InstantCommand(()->{}, passthrough), 
+      ()->passthrough.ptGetCargoLimit()));
+    intakeBackButton.whenReleased(new InstantCommand(()->{}, passthrough));
 
-    intakeButton.whenPressed(new RunCommand(()->intake.intakeOn()));
-    intakeButton.whenPressed(new PTLoadCargo(passthrough));
-    intakeButton.whenReleased(new RunCommand(()->intake.intakeOff()));
+
+    climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(operator.getRawAxis(1))));
+    climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
+    climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));
+    climbButtonManual.whenReleased(new InstantCommand(()->climber.winchMotor.set(0.0)));
     
 
-    Trigger ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.BLUE/*TODO this needs to be changed to teamcolor*/;}
+    //TODO:
+    //make conditional command based on passthrough.cargoSensorEnabled
+    //if cargosensorenabled == false, run an instantcommand and don't require passthrough to avoid re-triggering a load
+    ejectCargoFrontIntake = new Trigger(
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor();}
     );
-    ejectCargo.toggleWhenActive(new PTEjectCargoBack(passthrough).withTimeout(3));//TODO needs to be tuned
+    ejectCargoFrontIntake.whenActive(new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(2).withName("EjectingCargoBack"));//TODO needs to be tuned
+    
+    // ejectCargoBackIntake = new Trigger(
+    //   ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor();}
+    // );
+    // ejectCargoBackIntake.whenActive(new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough).withTimeout(2).withName("EjectingCargoFront"));
 
-    Trigger loadCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==CargoColor.RED/*TODO this needs to be changed to  !teamcolor*/;}
+    loadCargoFrontIntake = new Trigger(
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor();}
     );
-    loadCargo.toggleWhenActive(new PTLoadCargo(passthrough).withTimeout(3)); 
+    loadCargoFrontIntake.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
+    // loadCargoFromBack = new Trigger(
+    //   ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor();}
+    // );
+    // loadCargoFromBack.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     
     // Trigger moveCargoToFeeder = new Trigger(
     //   ()->{return passthrough.ptCargoInPT() == true;}

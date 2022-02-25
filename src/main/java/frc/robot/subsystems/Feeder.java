@@ -17,8 +17,8 @@ public class Feeder extends SubsystemBase {
     CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
     CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
     
-    RelativeEncoder encoderFeederFront = motorFeederFront.getEncoder();
-    RelativeEncoder encoderFeederBack = motorFeederBack.getEncoder();
+    public RelativeEncoder encoderFeederFront = motorFeederFront.getEncoder();
+    public RelativeEncoder encoderFeederBack = motorFeederBack.getEncoder();
     
 
     private double kFeederSpeed;
@@ -44,8 +44,7 @@ public class Feeder extends SubsystemBase {
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
-        
-        
+        encoderFeederFront.setPositionConversionFactor(6.0/10.0);
     }
 
     public void feederRun(){

@@ -22,8 +22,8 @@ public class CargoColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor; 
   private Rev2mDistanceSensor distanceSensor; 
 
-  public enum CargoColor {BLUE, RED, UNDEFINED};
-  private CargoColor teamColor = CargoColor.RED; //temp value
+  public enum CargoColor {BLUE, RED, UNDEFINED, NOCARGO};
+  private CargoColor teamColor = CargoColor.BLUE; //temp value
   private Color color = Color.kGreen; //temp value
   
   private final ColorMatch colorMatcher = new ColorMatch();
@@ -46,6 +46,21 @@ public class CargoColorSensor extends SubsystemBase {
     colorMatcher.addColorMatch(kRedTarget);
     colorMatcher.addColorMatch(kBlueTarget);
 
+    getTeamColor();
+  }
+
+  public CargoColor getOpposingColor(){
+    switch (DriverStation.getAlliance()) {
+      case Red:
+        return CargoColor.BLUE;
+      case Blue:
+        return CargoColor.RED;
+      default:
+        return CargoColor.UNDEFINED;
+    }
+  }
+
+  public CargoColor getTeamColor(){
     switch (DriverStation.getAlliance()) {
       case Red:
         teamColor = CargoColor.RED;
@@ -56,9 +71,7 @@ public class CargoColorSensor extends SubsystemBase {
       default:
         break;
     }
-  }
 
-  public CargoColor getTeamColor(){
     return teamColor;
   }
 
@@ -66,8 +79,8 @@ public class CargoColorSensor extends SubsystemBase {
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
 
-    if(distanceSensor.getRange() > 1.5) return CargoColor.UNDEFINED;
-    else if(distanceSensor.getRange() < 0) return CargoColor.UNDEFINED;
+    if(distanceSensor.getRange() > 1.5) return CargoColor.NOCARGO;
+    else if(distanceSensor.getRange() < 0) return CargoColor.NOCARGO;
 
     else if (match.confidence <= .95) {
       SmartDashboard.putString("ColorSensor/color", "undefined");
@@ -97,5 +110,6 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/confidence", match.confidence);
     SmartDashboard.putNumber("ColorSensor/distance", distanceSensor.getRange());
     SmartDashboard.putString("ColorSensor/color", getColor().toString());
+    SmartDashboard.putString("ColorSensor/TeamColor", getTeamColor().toString());
   }
 }

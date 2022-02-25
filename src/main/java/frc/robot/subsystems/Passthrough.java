@@ -3,26 +3,39 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stormbots.closedloop.MiniPID;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 public class Passthrough extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
     CANSparkMax motorPTFront = new CANSparkMax(9,MotorType.kBrushless);
     CANSparkMax motorPTBack = new CANSparkMax(10,MotorType.kBrushless);
     
+    public RelativeEncoder encoderPTFront;
+    public RelativeEncoder encoderPTBack; 
+    
+    MiniPID ptPidFront;
+
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
+    public double kHighPower=0.8;
+    public double kLowPower=0.6;
     double kPTSpeed;
     double kEjectDifference;
-    boolean isCargoInPT;
-    boolean isCargoInFeeder;
     double kFeederHeight;
     double kUltrasonicMaximumHeight;
-  
+    double numberOfCargo;
+    double kDistanceToTop;
+    double kDistanceToBottom;
+    
+   
     public Passthrough() {
         switch(Constants.botName){
         case PRACTICE:
@@ -30,77 +43,64 @@ public class Passthrough extends SubsystemBase {
         break;
         case COMP:
         }
-
-        // SmartDashboard.putString("passthrough/faults",motorPTFront.getFaults());
-        // SmartDashboard motorPTBack.getFaults();
-
         motorPTFront.setInverted(false);
         motorPTBack.setInverted(true);
 
-        //Set Current Limits TODO Currently arbitrary Increase/Decrease as needed
+        encoderPTBack=motorPTBack.getEncoder();
+        encoderPTFront=motorPTFront.getEncoder();
+        
+        encoderPTBack.setPosition(0.0);
+        encoderPTFront.setPosition(0.0);
+
+        encoderPTFront.setPositionConversionFactor(6.0/10.0);
+
         motorPTFront.setSmartCurrentLimit(30);
         motorPTBack.setSmartCurrentLimit(30);
         motorPTFront.setOpenLoopRampRate(0.2);
         motorPTBack.setOpenLoopRampRate(0.2);
         
         Ultrasonic.setAutomaticMode(true);
-        isCargoInPT = false;
-        isCargoInFeeder = false;
-        kPTSpeed = 0.6;
-        kFeederHeight = 12; //TODO get this from testing
-        kUltrasonicMaximumHeight = 50;//TODO get this from testing 
-        kEjectDifference = .8;
+
+        kPTSpeed = .8;
+        // kFeederHeight = 12; //TODO get this from testing
+        // kUltrasonicMaximumHeight = 50;//TODO get this from testing 
+        kEjectDifference = 1.2;
+        numberOfCargo = 0;
     }
 
-    
-    public void ptRun(){
+    public void setPTpower(double front, double rear){
       motorPTFront.set(kPTSpeed);
       motorPTBack.set(kPTSpeed);
     }
-    
-    public void ptOff(){
-      motorPTFront.set(0.0);
-      motorPTBack.set(0.0);
+    public void ptIncrementCargo(){
+      numberOfCargo += 1;
     }
 
-    public void ptEjectBack(){
-      motorPTFront.set(kPTSpeed*kEjectDifference);
-      motorPTBack.set(-kPTSpeed);
+    public void ptResetCargo(){
+      numberOfCargo = 0;
     }
 
-    public void ptEjectFront(){
-      motorPTFront.set(-kPTSpeed);
-      motorPTBack.set(kPTSpeed*kEjectDifference);
+    public double ptGetNumberOfCargo(){
+      return numberOfCargo;
     }
 
-    public Boolean ptCargoInPT(){
-      if(passthroughUltrasonic.getRangeInches() < kFeederHeight){
-        isCargoInPT = true;
-        return isCargoInPT;
+    public Boolean ptGetCargoLimit(){
+      if (numberOfCargo <2){
+        return true;
       }
-      else{
-        isCargoInPT = false;
-        return isCargoInPT;
-      }
+      return false;
     }
-
-    public Boolean ptCargoInFeeder(){
-      if(passthroughUltrasonic.getRangeInches() > kFeederHeight & passthroughUltrasonic.getRangeInches() < kUltrasonicMaximumHeight){
-        isCargoInFeeder = true;
-        return isCargoInFeeder;
-      }
-      else{
-        isCargoInFeeder = false;
-        return isCargoInFeeder;
-      }
-    }
-    
- 
-
     
     @Override
     public void periodic() {
       SmartDashboard.getNumber("Ultrasonic Range", passthroughUltrasonic.getRangeInches());
+      Command current = getCurrentCommand();
+      if(current !=null){
+        SmartDashboard.putString("passthrough/command", current.getName());}
+      SmartDashboard.putNumber("passthrough/Cargo In Robot", numberOfCargo);
+      SmartDashboard.putNumber("passthrough/PTEncoder", encoderPTFront.getPosition());
+
+      // motorPTFront.set(ptPidFront.getOutput(encoderPTFront.getPosition(),setpoint));
     }
     @Override
     public void simulationPeriodic() {

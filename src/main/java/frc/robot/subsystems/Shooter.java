@@ -5,14 +5,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.stormbots.Clamp;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -92,12 +91,21 @@ public class Shooter extends SubsystemBase {
     }
     double output;
     double gonnaTryMathNow(){
-      
-
-
-
       return output;
+
     }
+
+  public void shooterSpoolUpToSpeed(){
+    double kShooterSpeed = 0.2;
+
+    topMotor.set(kShooterSpeed);
+    bottomMotor.set(kShooterSpeed*.9);
+  }
+
+  public void shooterOff(){
+    topMotor.set(0.0);
+    bottomMotor.set(0.0);
+  }
 
   @Override
   public void periodic() {
@@ -110,8 +118,8 @@ public class Shooter extends SubsystemBase {
 
 
 
-    pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
-    pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+    // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+    // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
  
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());

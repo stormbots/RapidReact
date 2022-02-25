@@ -4,38 +4,30 @@
 
 package frc.robot.subsystems;
 
-import java.lang.annotation.Target;
-
-import javax.sound.sampled.AudioFormat.Encoding;
-
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stormbots.Clamp;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.stormbots.closedloop.MiniPID;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
   //Class consents including the min height and max height
-  private double kMinHeight = 0;
-  private double kMaxHeight = 18.5;
+  private double kMinHeight = 45;
+  private double kMaxHeight = 61;
 
   //Class consent variables for the motor for the hookMotor and climber, also gets the encoder for the hook and the PID controller
-  private CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
+  public CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
   private RelativeEncoder hookEncoder = hookMotor.getEncoder();
 
   private SparkMaxPIDController hookPID = hookMotor.getPIDController();
-  private CANSparkMax winchMotor = new CANSparkMax(15, MotorType.kBrushless); //15
+  public CANSparkMax winchMotor = new CANSparkMax(15, MotorType.kBrushless); //15
   private RelativeEncoder winchEncoder = winchMotor.getEncoder();
   MiniPID winchPID = new MiniPID(0,0,0);//TODO: change temp values. 
 
@@ -65,19 +57,19 @@ public class Climber extends SubsystemBase {
       winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)kMinHeight);
       winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
+      
       winchPID.setSetpoint(winchEncoder.getPosition());
       winchMotor.setIdleMode(IdleMode.kCoast);//Want coast on boot, enable brake when climbing
-
+      winchMotor.setSmartCurrentLimit(15);
       //Configure Hook
       hookMotor.setSmartCurrentLimit(2);
       hookMotor.setInverted(true);
       hookEncoder.setPositionConversionFactor(180/2.3); //TODO set conversion to degres/angle
       hookEncoder.setPosition(210);
-      hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
+      // hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
       hookPID.setP(1/360.0);
       hookMotor.setIdleMode(IdleMode.kCoast);
-
+      hookMotor.set(0);
   } 
 
   // getHeight()

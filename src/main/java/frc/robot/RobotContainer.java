@@ -68,7 +68,7 @@ public class RobotContainer {
   public Climber climber = new Climber();
   public Passthrough passthrough = new Passthrough();
   public Feeder feeder = new Feeder();
-  public Shooter shooter = new Shooter();
+  public Shooter shooter = new Shooter(vision);
   
   // 
   // ROBOT COMMAND DEFINITIONS

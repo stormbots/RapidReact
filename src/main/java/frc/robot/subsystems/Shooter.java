@@ -25,8 +25,8 @@ public class Shooter extends SubsystemBase {
   private final double kPTop = 0;//0.099591e-3;
   private final double kPBottom = 0;//0.094701e-3;
 
-  public CANSparkMax topMotor = new CANSparkMax(13, MotorType.kBrushless);
-  public CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
+  public CANSparkMax topMotor = new CANSparkMax(14, MotorType.kBrushless);
+  public CANSparkMax bottomMotor = new CANSparkMax(13, MotorType.kBrushless);
   private RelativeEncoder encoderTop;
   private RelativeEncoder encoderBottom;
   private final SparkMaxPIDController pidTop;
@@ -50,8 +50,8 @@ public class Shooter extends SubsystemBase {
     topMotor.restoreFactoryDefaults();
     bottomMotor.restoreFactoryDefaults();
 
-    topMotor.setInverted(false);
-    bottomMotor.setInverted(true);
+    topMotor.setInverted(true);
+    bottomMotor.setInverted(false);
 
     pidTop = topMotor.getPIDController();
     pidBottom = bottomMotor.getPIDController();
@@ -96,7 +96,7 @@ public class Shooter extends SubsystemBase {
     }
 
   public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = 0.2;
+    double kShooterSpeed = 0.6;
 
     topMotor.set(kShooterSpeed);
     bottomMotor.set(kShooterSpeed*.9);

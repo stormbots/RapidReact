@@ -63,7 +63,7 @@ public final class Constants {
           break;
       case PRACTICE:
           // Field test -> 10 ft return 35.8 encoder counts on left main
-          // 11.7 -> 1 meter
+          // 11.7 -> 1 meter = 0.085
           scalar = 1.0;
           sVolts = 0.32829 * scalar;
           vVoltSecondsPerMeter = 0.55442 * scalar;
@@ -71,11 +71,11 @@ public final class Constants {
           PDriveVel = 0.80858;
           TrackwidthMeters = 0.8128;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
-          EncoderDistancePerPulse = 1.0/11.7; // =0.085 //(54.0 / 30.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI = 0.6104
-          MaxSpeedMetersPerSecond = 1;
-          MaxAccelerationMetersPerSecondSquared = 1;
-          RamseteB = 2;
-          RamseteZeta = 0.7;
+          EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI = 0.08139
+          MaxSpeedMetersPerSecond = 2;
+          MaxAccelerationMetersPerSecondSquared = 2;
+          RamseteB = 2 * 2;
+          RamseteZeta = 0.7 * 4;
           break;
       case COMP:
       default:
@@ -87,7 +87,7 @@ public final class Constants {
           PDriveVel = 1;
           TrackwidthMeters = 1;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
-          EncoderDistancePerPulse = (50.0 / 34.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
+          EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
           MaxSpeedMetersPerSecond = 1;
           MaxAccelerationMetersPerSecondSquared = 1;
           RamseteB = 2;

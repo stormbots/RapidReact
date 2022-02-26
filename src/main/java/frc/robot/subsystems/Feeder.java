@@ -48,7 +48,9 @@ public class Feeder extends SubsystemBase {
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
+
         encoderFeederFront.setPositionConversionFactor(6.0/10.0);
+        encoderFeederBack.setPositionConversionFactor(6.0/10.0);//TODO get conversion factors for comp bot
     }
 
     public void feederRun(){

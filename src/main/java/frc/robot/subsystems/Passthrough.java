@@ -1,17 +1,14 @@
-
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.stormbots.closedloop.MiniPID;
 import com.revrobotics.RelativeEncoder;
-
+import com.stormbots.closedloop.MiniPID;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 public class Passthrough extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -27,6 +24,8 @@ public class Passthrough extends SubsystemBase {
     
     public double kHighPower=0.8;
     public double kLowPower=0.6;
+    public boolean frontSensorEnabled;
+    public boolean backSensorEnabled;
     double kPTSpeed;
     double kEjectDifference;
     double kFeederHeight;
@@ -34,17 +33,22 @@ public class Passthrough extends SubsystemBase {
     double numberOfCargo;
     double kDistanceToTop;
     double kDistanceToBottom;
-    
    
     public Passthrough() {
         switch(Constants.botName){
         case COMP:
          motorPTFront.setInverted(false);
          motorPTBack.setInverted(true);
+
+         frontSensorEnabled = true;
+         backSensorEnabled = true;
         break;
         case PRACTICE:
          motorPTFront.setInverted(false);
          motorPTBack.setInverted(true);
+
+         frontSensorEnabled = true;
+         backSensorEnabled = false;
         break;
         }
        
@@ -56,6 +60,7 @@ public class Passthrough extends SubsystemBase {
         encoderPTFront.setPosition(0.0);
 
         encoderPTFront.setPositionConversionFactor(6.0/10.0);
+        encoderPTBack.setPositionConversionFactor(6.0/10.0);//TODO get conversion factors
 
         motorPTFront.setSmartCurrentLimit(30);
         motorPTBack.setSmartCurrentLimit(30);
@@ -75,6 +80,12 @@ public class Passthrough extends SubsystemBase {
       motorPTFront.set(front);
       motorPTBack.set(back);
     }
+
+    public void ptEnableColorSensors(boolean frontSensor, boolean backSensor) {
+      frontSensorEnabled = frontSensor; 
+      backSensorEnabled = backSensor;
+    }
+
     public void ptIncrementCargo(){
       numberOfCargo += 1;
     }

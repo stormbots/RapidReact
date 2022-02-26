@@ -243,7 +243,7 @@ public class RobotContainer {
     ejectCargoFrontIntake.whenActive(new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(2).withName("EjectingCargoBack"));//TODO needs to be tuned
     
     // ejectCargoBackIntake = new Trigger(
-    //   ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor();}
+    //   ()->{return cargoColorSensorBack.getColor()==cargoColorSensor.getOpposingColor();}
     // );
     // ejectCargoBackIntake.whenActive(new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough).withTimeout(2).withName("EjectingCargoFront"));
 
@@ -252,15 +252,11 @@ public class RobotContainer {
     );
     loadCargoFrontIntake.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     // loadCargoFromBack = new Trigger(
-    //   ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor();}
+    //   ()->{return cargoColorSensorBack.getColor()==cargoColorSensor.getTeamColor();}
     // );
     // loadCargoFromBack.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     
-    // Trigger moveCargoToFeeder = new Trigger(
-    //   ()->{return passthrough.ptCargoInPT() == true;}
-    // );
-    // moveCargoToFeeder.whileActiveContinuous(new PTLoadCargo(passthrough));
-    
+   
   }
 
   /**

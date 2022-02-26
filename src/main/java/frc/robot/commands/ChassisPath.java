@@ -1,57 +1,45 @@
 package frc.robot.commands;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
 
-public class ChassisPathfinding extends CommandBase {
+public class ChassisPath extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  
     private Chassis chassis;
-    
-    private DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-      new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
-      Constants.DriveKinematics, 10);
-  
-    private TrajectoryConfig config = new TrajectoryConfig(Constants.MaxSpeedMetersPerSecond, Constants.MaxAccelerationMetersPerSecondSquared)
-      .setKinematics(Constants.DriveKinematics).addConstraint(autoVoltageConstraint);
-  
-    private RamseteCommand ramseteCommand;
-  
-    public ChassisPathfinding(Chassis c) {
-      chassis = c;
+    private Command ramseteCommand;
+    private String trajectoryName;
+    private boolean reverse;
+
+    public ChassisPath(Chassis c, String path, boolean reverse) {
+      this.chassis = c;
+      this.trajectoryName = path;
+      this.reverse = reverse;
       addRequirements(chassis);
     }
   
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(0, 0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(2, 0),
-          new Translation2d(2, -1),
-          new Translation2d(3, -1),
-          new Translation2d(3, 0)
-        ),
-        new Pose2d(4, 0, new Rotation2d(1, 0)),
-      config);
+
+      Trajectory trajectory = loadTrajectory(trajectoryName);
       
-      chassis.reverse = false;
+      chassis.reverse = reverse;
       chassis.resetOdometry(trajectory.getInitialPose());
-  
+
       ramseteCommand = new RamseteCommand(trajectory, chassis::getPose,
           new RamseteController(Constants.RamseteB, Constants.RamseteZeta),
           new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
@@ -59,9 +47,8 @@ public class ChassisPathfinding extends CommandBase {
           chassis::getWheelSpeeds,
           new PIDController(Constants.PDriveVel, 0, 0),
           new PIDController(Constants.PDriveVel, 0, 0),
-          chassis::tankDriveVolts,
-          chassis);
-      
+          chassis::tankDriveVolts);
+          /*NOTE would normally add chassis at end of list for requires, but this overseer command handles it*/
       ramseteCommand.schedule();
     }
   
@@ -76,11 +63,25 @@ public class ChassisPathfinding extends CommandBase {
     public void end(boolean interrupted) {
       ramseteCommand.end(false);
       chassis.tankDriveVolts(0, 0);
+      reverse = false;
     }
   
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+      if (ramseteCommand != null && ramseteCommand.isFinished()) {
+        return true;
+      }
       return false;
+    }
+
+    public Trajectory loadTrajectory(String name) {
+      try {
+        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("output/" + name + ".wpilib.json");
+        return TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      } catch (IOException ex) {
+        DriverStation.reportError("Unable to open trajectory!", ex.getStackTrace());
+        return null;
+      }
     }
 }

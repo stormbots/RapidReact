@@ -63,7 +63,7 @@ public class Chassis extends SubsystemBase {
     navx.reset();
     navx.calibrate();
 
-    odometry = new DifferentialDriveOdometry(reverse ? navx.getRotation2d().unaryMinus() : navx.getRotation2d());
+    odometry = new DifferentialDriveOdometry(navx.getRotation2d());
 
     //Instantiate motors.
     left = new CANSparkMax(1,MotorType.kBrushless);
@@ -117,13 +117,18 @@ public class Chassis extends SubsystemBase {
   }
   
   public void tankDrive(double powerLeft, double powerRight) {
-    chassis.tankDrive(powerLeft * (reverse ? -1 : 1)), powerRight * (reverse ? -1 : 1));
+    chassis.tankDrive(powerLeft, powerRight);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    left.setVoltage(leftVolts * (reverse ? -1 : 1));
-    right.setVoltage(rightVolts * (reverse ? -1 : 1));
+    if (reverse) {
+      left.setVoltage(-rightVolts);
+      right.setVoltage(-leftVolts);
+    } else {
+      left.setVoltage(leftVolts);
+      right.setVoltage(rightVolts);
+    }
     chassis.feed();
   }
 
@@ -131,11 +136,15 @@ public class Chassis extends SubsystemBase {
   {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
-    odometry.resetPosition(pose, reverse ? navx.getRotation2d().unaryMinus() : navx.getRotation2d());
+    odometry.resetPosition(pose, navx.getRotation2d());
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity() * (reverse ? -1 : 1), rightEncoder.getVelocity() * (reverse ? -1 : 1));
+    if (reverse) {
+      return new DifferentialDriveWheelSpeeds(-rightEncoder.getVelocity(), -leftEncoder.getVelocity());
+    } else {
+      return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
+    }
   }
   
   public Pose2d getPose() {
@@ -148,8 +157,11 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("left", leftEncoder.getPosition());
-    odometry.update(reverse ? navx.getRotation2d().unaryMinus() : navx.getRotation2d(), leftEncoder.getPosition() * (reverse ? -1 : 1), rightEncoder.getPosition() * (reverse ? -1 : 1));
+    if (reverse) {
+      odometry.update(navx.getRotation2d(), -rightEncoder.getPosition(), -leftEncoder.getPosition());
+    } else {
+      odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    }
     SmartDashboard.putNumber("chassis/x", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());
   }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.commands.ChassisPathfinding;
+import frc.robot.commands.ChassisPath;
 import frc.robot.subsystems.CargoColorSensor;
 import frc.robot.subsystems.Chassis;
 import frc.robot.subsystems.Climber;
@@ -56,7 +56,6 @@ public class RobotContainer {
   // 
   // ROBOT COMMAND DEFINITIONS
   //
-  public Command pathfinding = new ChassisPathfinding(chassis);
 
   // 
   // JOYSTICK AND BUTTON ASSIGNMENTS
@@ -66,18 +65,19 @@ public class RobotContainer {
   public Joystick driver = new Joystick(0);
   public Joystick operator = new Joystick(1);
 
-
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //Configure our autonomous commands, and make sure drive team can select what they want
+    Command testAuto = new InstantCommand(()->{})
+      .andThen(new ChassisPath(chassis, "Test 1", false))
+      .andThen(new ChassisPath(chassis, "Test 1", true))
+    ;
 
-    autoChooser.setDefaultOption("Basic Pathfinding", pathfinding);
-    autoChooser.addOption("Does nothing", new InstantCommand(()->{}));
+    autoChooser.setDefaultOption("Do nothing", new InstantCommand(()->{}));
+    autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);
 
 
@@ -88,12 +88,6 @@ public class RobotContainer {
         ()->{chassis.arcadeDrive(-driver.getRawAxis(1),driver.getRawAxis(2));}
         ,chassis)
       );
-      // new RunCommand(
-      //   ()->{chassis.tankDrive(.25,.25);}
-      //   ,chassis)
-      // );
-
-
 
     // Configure the button bindings
     configureButtonBindings();

@@ -72,8 +72,8 @@ public final class Constants {
           TrackwidthMeters = 0.8128;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
           EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI = 0.08139
-          MaxSpeedMetersPerSecond = 1;
-          MaxAccelerationMetersPerSecondSquared = 1;
+          MaxSpeedMetersPerSecond = 1.5;
+          MaxAccelerationMetersPerSecondSquared = 1.5;
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 4;
           break;

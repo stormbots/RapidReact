@@ -47,6 +47,17 @@ public class Chassis extends SubsystemBase {
   private AHRS navx;
   
   public Chassis(AHRS navx) {
+    switch(Constants.botName){
+      case COMP:
+       shifter = new Solenoid(PneumaticsModuleType.REVPH, 4);
+      break;
+      case PRACTICE:
+      shifter = new Solenoid(PneumaticsModuleType.REVPH, 1);
+      break;
+      
+
+    }
+    
     this.navx = navx;
 
     //Instantiate motors.
@@ -81,7 +92,6 @@ public class Chassis extends SubsystemBase {
 
 
     //Set up the shifter and solenoids
-    shifter = new Solenoid(PneumaticsModuleType.REVPH, 4); //TODO: set to correct channel and/or module
     setGear(Gear.LOW);
   }
 

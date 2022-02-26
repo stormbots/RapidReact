@@ -43,18 +43,17 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
       case COMP:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
       break;
-
       case PRACTICE:
-      default:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
       break;
     }
 
     topMotor.restoreFactoryDefaults();
     bottomMotor.restoreFactoryDefaults();
-
-    topMotor.setInverted(true);
-    bottomMotor.setInverted(false);
 
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);

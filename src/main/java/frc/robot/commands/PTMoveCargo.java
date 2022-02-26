@@ -8,8 +8,6 @@ import frc.robot.subsystems.Passthrough;
 public class PTMoveCargo extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Passthrough passthrough;
-  Boolean direction;
-  Boolean intakeOrShoot;
   private double backPower;
   private double frontPower;
 

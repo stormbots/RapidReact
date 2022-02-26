@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -25,6 +26,25 @@ import frc.robot.Constants.BotName;
 
 /** Creates a new Chassis. */
 public class Chassis extends SubsystemBase {
+
+  //----------------------------------------------
+  //----ALL DISTANCE UNITS MUST BE IN METERS!!----
+  //----------------------------------------------
+  //-----(if not, harlod will hunt you down)------
+  //----------------------------------------------
+
+  public static double scalar;
+  public static double sVolts;
+  public static double vVoltSecondsPerMeter;
+  public static double aVoltSecondsSquaredPerMeter;
+  public static double PDriveVel;
+  public static double TrackwidthMeters;
+  public static DifferentialDriveKinematics DriveKinematics;
+  public static double EncoderDistancePerPulse;
+  public static double MaxSpeedMetersPerSecond;
+  public static double MaxAccelerationMetersPerSecondSquared;
+  public static double RamseteB;
+  public static double RamseteZeta;
 
   /** Utility enum to provide named values for shifted gear states 
    * This is only mostly needed because otherwise, we get jank naming
@@ -65,6 +85,43 @@ public class Chassis extends SubsystemBase {
 
     odometry = new DifferentialDriveOdometry(navx.getRotation2d());
 
+    //Adjust various motor constants
+    switch (Constants.botName)
+    {
+      case PRACTICE:
+          // Field test -> 10 ft return 35.8 encoder counts on left main
+          // 11.7 -> 1 meter = 0.085
+          scalar = 1.0;
+          sVolts = 0.32829 * scalar;
+          vVoltSecondsPerMeter = 0.55442 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.15908 * scalar;
+          PDriveVel = 0.80858;
+          TrackwidthMeters = 0.8128;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
+          EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI = 0.08139
+          MaxSpeedMetersPerSecond = 1.5; // Doesn't work with pathweaver trajectories
+          MaxAccelerationMetersPerSecondSquared = 1.5; // Doesn't work with pathweaver trajectories
+          RamseteB = 2 * 2;
+          RamseteZeta = 0.7 * 4;
+          break;
+      case COMP:
+      default:
+          // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
+          scalar = 1;
+          sVolts = 1 * scalar;
+          vVoltSecondsPerMeter = 1 * scalar;
+          aVoltSecondsSquaredPerMeter = 1 * scalar;
+          PDriveVel = 1;
+          TrackwidthMeters = 1;
+          DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
+          EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
+          MaxSpeedMetersPerSecond = 1; // Doesn't work with pathweaver trajectories
+          MaxAccelerationMetersPerSecondSquared = 1; // Doesn't work with pathweaver trajectories
+          RamseteB = 2;
+          RamseteZeta = 0.7;
+          break;
+    }
+
     //Instantiate motors.
     left = new CANSparkMax(1,MotorType.kBrushless);
     leftA = new CANSparkMax(2,MotorType.kBrushless);
@@ -77,10 +134,10 @@ public class Chassis extends SubsystemBase {
     leftEncoder = left.getEncoder();
     rightEncoder = right.getEncoder();
 
-    leftEncoder.setPositionConversionFactor(Constants.EncoderDistancePerPulse);
-    leftEncoder.setVelocityConversionFactor(Constants.EncoderDistancePerPulse / 60); // RPM to m/s
-    rightEncoder.setPositionConversionFactor(Constants.EncoderDistancePerPulse);
-    rightEncoder.setVelocityConversionFactor(Constants.EncoderDistancePerPulse / 60); // RPM to m/s
+    leftEncoder.setPositionConversionFactor(Chassis.EncoderDistancePerPulse);
+    leftEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
+    rightEncoder.setPositionConversionFactor(Chassis.EncoderDistancePerPulse);
+    rightEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
@@ -96,7 +153,6 @@ public class Chassis extends SubsystemBase {
 
 
     //Set other non-common parameters for motors
-    //TODO: Verify that only the lead motor needs to be inverted. This should be the case
     left.setInverted(true);
     right.setInverted(!left.getInverted());
 
@@ -105,7 +161,7 @@ public class Chassis extends SubsystemBase {
 
 
     //Set up the shifter and solenoids
-    shifter = new Solenoid(PneumaticsModuleType.REVPH, 1); //TODO: set to correct channel and/or module
+    shifter = new Solenoid(PneumaticsModuleType.REVPH, 1);
     setGear(Gear.LOW);
   }
 

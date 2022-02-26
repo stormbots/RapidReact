@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.Constants;
 import frc.robot.subsystems.Chassis;
 
 public class ChassisPath extends CommandBase {
@@ -41,12 +40,12 @@ public class ChassisPath extends CommandBase {
       chassis.resetOdometry(trajectory.getInitialPose());
 
       ramseteCommand = new RamseteCommand(trajectory, chassis::getPose,
-          new RamseteController(Constants.RamseteB, Constants.RamseteZeta),
-          new SimpleMotorFeedforward(Constants.sVolts, Constants.vVoltSecondsPerMeter, Constants.aVoltSecondsSquaredPerMeter),
-          Constants.DriveKinematics,
+          new RamseteController(Chassis.RamseteB, Chassis.RamseteZeta),
+          new SimpleMotorFeedforward(Chassis.sVolts, Chassis.vVoltSecondsPerMeter, Chassis.aVoltSecondsSquaredPerMeter),
+          Chassis.DriveKinematics,
           chassis::getWheelSpeeds,
-          new PIDController(Constants.PDriveVel, 0, 0),
-          new PIDController(Constants.PDriveVel, 0, 0),
+          new PIDController(Chassis.PDriveVel, 0, 0),
+          new PIDController(Chassis.PDriveVel, 0, 0),
           chassis::tankDriveVolts);
           /*NOTE would normally add chassis at end of list for requires, but this overseer command handles it*/
       ramseteCommand.schedule();

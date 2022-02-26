@@ -33,7 +33,6 @@ public class Robot extends TimedRobot {
     switch(botString){
       case "COMP":     Constants.botName = BotName.COMP;break;
       case "PRACTICE": Constants.botName = BotName.PRACTICE;break;
-      case "TABI": Constants.botName = BotName.TABI;break;
       default:
         botString = "COMP";
         Constants.botName = BotName.COMP;

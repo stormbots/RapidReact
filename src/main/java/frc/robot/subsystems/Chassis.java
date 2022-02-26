@@ -47,6 +47,17 @@ public class Chassis extends SubsystemBase {
   private AHRS navx;
   
   public Chassis(AHRS navx) {
+    switch(Constants.botName){
+      case COMP:
+       shifter = new Solenoid(PneumaticsModuleType.REVPH, 4);
+      break;
+      case PRACTICE:
+      shifter = new Solenoid(PneumaticsModuleType.REVPH, 1);
+      break;
+      
+
+    }
+    
     this.navx = navx;
 
     //Instantiate motors.
@@ -60,7 +71,7 @@ public class Chassis extends SubsystemBase {
     //loop through motors and set common parameters
     for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
-      m.setIdleMode(IdleMode.kCoast);
+      m.setIdleMode(IdleMode.kBrake);
       m.setSmartCurrentLimit(240/6, 240/6*2);//240 is sensible current limit to chassis
     }
     //configure followers
@@ -81,7 +92,6 @@ public class Chassis extends SubsystemBase {
 
 
     //Set up the shifter and solenoids
-    shifter = new Solenoid(PneumaticsModuleType.REVPH, 1); //TODO: set to correct channel and/or module
     setGear(Gear.LOW);
   }
 

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -24,8 +25,8 @@ public class Shooter extends SubsystemBase {
   private final double kPTop = 0;//0.099591e-3;
   private final double kPBottom = 0;//0.094701e-3;
 
-  public CANSparkMax topMotor = new CANSparkMax(13, MotorType.kBrushless);
-  public CANSparkMax bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
+  public CANSparkMax topMotor = new CANSparkMax(14, MotorType.kBrushless);
+  public CANSparkMax bottomMotor = new CANSparkMax(13, MotorType.kBrushless);
   private RelativeEncoder encoderTop;
   private RelativeEncoder encoderBottom;
   private final SparkMaxPIDController pidTop;
@@ -39,18 +40,23 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
       case COMP:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
       break;
-
       case PRACTICE:
-      default:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
       break;
     }
 
     topMotor.restoreFactoryDefaults();
     bottomMotor.restoreFactoryDefaults();
 
-    topMotor.setInverted(false);
-    bottomMotor.setInverted(true);
+    topMotor.setIdleMode(IdleMode.kCoast);
+    bottomMotor.setIdleMode(IdleMode.kCoast);
+
+    topMotor.setSmartCurrentLimit(30);
+    bottomMotor.setSmartCurrentLimit(30);
 
     pidTop = topMotor.getPIDController();
     pidBottom = bottomMotor.getPIDController();
@@ -95,7 +101,7 @@ public class Shooter extends SubsystemBase {
     }
 
   public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = 0.2;
+    double kShooterSpeed = .2;
 
     topMotor.set(kShooterSpeed);
     bottomMotor.set(kShooterSpeed*.9);
@@ -119,7 +125,7 @@ public class Shooter extends SubsystemBase {
 
     // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
     // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
- 
+    SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());
   }

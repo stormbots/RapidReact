@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
        motor.setInverted(true);
        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 3);
       case PRACTICE:
-       motor.setInverted(false);
+       motor.setInverted(true);
        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
       break;
     }

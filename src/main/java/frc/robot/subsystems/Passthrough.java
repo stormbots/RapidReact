@@ -71,9 +71,9 @@ public class Passthrough extends SubsystemBase {
         numberOfCargo = 0;
     }
 
-    public void setPTpower(double front, double rear){
-      motorPTFront.set(kPTSpeed);
-      motorPTBack.set(kPTSpeed);
+    public void setPTpower(double front, double back){
+      motorPTFront.set(front);
+      motorPTBack.set(back);
     }
     public void ptIncrementCargo(){
       numberOfCargo += 1;

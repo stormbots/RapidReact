@@ -220,9 +220,9 @@ public class RobotContainer {
       new InstantCommand(()-> frontIntake.intakeOff()), 
       ()->passthrough.ptGetCargoLimit()));
     intakeFrontButton.whenPressed(new ConditionalCommand(
-      new PTMoveCargo(passthrough.kHighPower,0,passthrough), 
+      new PTMoveCargo(passthrough.kHighPower,0.0,passthrough), 
       new InstantCommand(()->{}, passthrough), 
-      ()->passthrough.ptGetCargoLimit()));
+      ()->passthrough.ptGetCargoLimit()).withName("Intaking Front"));
     intakeFrontButton.whenReleased(new InstantCommand(()->{}, passthrough));
    
     intakeBackButton.whileHeld(new ConditionalCommand(

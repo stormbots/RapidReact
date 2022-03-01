@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,10 +72,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.vision.lightsOff();
+    m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.climber.hookMotor.set(0.0);
+    m_robotContainer.climber.winchMotor.set(0.0);
+    }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -84,6 +93,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    m_robotContainer.passthrough.ptIncrementCargo();//we start auto with 1
+    m_robotContainer.climber.init();
   }
 
   /** This function is called periodically during autonomous. */
@@ -99,11 +110,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //m_robotContainer.vision.lightsOn();
+    m_robotContainer.climber.init();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    SmartDashboard.putNumber("chassis/turn", m_robotContainer.driver.getRawAxis(2));
+  }
 
   @Override
   public void testInit() {

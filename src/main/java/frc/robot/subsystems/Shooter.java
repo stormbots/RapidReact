@@ -4,14 +4,126 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.stormbots.Clamp;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
-  public Shooter() {}
+
+  /**  Ratio of RPM for Top Motor : Bottom Motor */
+  private final double kShooterMotorRatio = .9;
+  private final double kRPMTargetBound = 100;
+  private final int kPIDSlot = 0;
+  private final double kPTop = 0;//0.099591e-3;
+  private final double kPBottom = 0;//0.094701e-3;
+
+  public CANSparkMax topMotor = new CANSparkMax(14, MotorType.kBrushless);
+  public CANSparkMax bottomMotor = new CANSparkMax(13, MotorType.kBrushless);
+  private RelativeEncoder encoderTop;
+  private RelativeEncoder encoderBottom;
+  private final SparkMaxPIDController pidTop;
+  private final SparkMaxPIDController pidBottom;
+  private double rpmSetpoint = 0;
+
+  SlewRateLimiter rpmslew = new SlewRateLimiter(0);
+  Vision vision;
+
+  public Shooter() {
+    SmartDashboard.putNumber("rpmSetpoint", 0.0);
+    switch(Constants.botName){
+      case COMP:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
+      break;
+      case PRACTICE:
+        topMotor.setInverted(true);
+        bottomMotor.setInverted(false);
+      break;
+    }
+
+    topMotor.setIdleMode(IdleMode.kCoast);
+    bottomMotor.setIdleMode(IdleMode.kCoast);
+
+    topMotor.setSmartCurrentLimit(30);
+    bottomMotor.setSmartCurrentLimit(30);
+
+    pidTop = topMotor.getPIDController();
+    pidBottom = bottomMotor.getPIDController();
+    encoderTop = topMotor.getEncoder();
+    encoderBottom = bottomMotor.getEncoder();
+
+    pidTop.setP(kPTop);
+    pidBottom.setP(kPBottom);
+
+    rpmslew = new SlewRateLimiter(6000/1.0);
+    pidTop.setFF(1.0/Constants.kNeoMaxRPM);
+    pidBottom.setFF(1.0/Constants.kNeoMaxRPM);
+    }
+    
+    public void setRPM(double rpmSetpoint){
+      this.rpmSetpoint = rpmSetpoint;
+    }
+
+    //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
+    //TODO: Automatically grabs distance from limelight:
+    public void setRPMForDistance(double distanceIN){
+      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
+    }
+    public void setRPMLowerHub(){
+      this.rpmSetpoint = 0;
+    }
+    public double getRPMTop(){
+      return encoderTop.getVelocity();
+    }
+    public double getRPMBottom(){
+      return encoderBottom.getVelocity();
+    }
+    boolean isOnTargetRPM(){
+      return
+      (Clamp.bounded(rpmSetpoint * kShooterMotorRatio, encoderTop.getVelocity()-kRPMTargetBound, encoderTop.getVelocity()+kRPMTargetBound) &&
+       Clamp.bounded(rpmSetpoint, encoderBottom.getVelocity()-kRPMTargetBound, encoderBottom.getVelocity()+kRPMTargetBound));
+    }
+    double output;
+    double gonnaTryMathNow(){
+      return output;
+
+    }
+
+  public void shooterSpoolUpToSpeed(){
+    double kShooterSpeed = .2;
+
+    topMotor.set(kShooterSpeed);
+    bottomMotor.set(kShooterSpeed*.9);
+  }
+
+  public void shooterOff(){
+    topMotor.set(0.0);
+    bottomMotor.set(0.0);
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
+    setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
+    //Temporarily disabled so the motor values can be run manually on test code
+    // pidTop.setReference(kShooterMotorRatio * rpmSetpoint, ControlType.kVelocity, 0);
+    // pidBottom.setReference(rpmSetpoint, ControlType.kVelocity, 0);
+
+
+
+
+    // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+    // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+    SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
+    SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
+    SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());
   }
 }

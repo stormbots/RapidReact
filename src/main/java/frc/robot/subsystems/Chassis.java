@@ -143,13 +143,18 @@ public class Chassis extends SubsystemBase {
     rightEncoder.setPosition(0);
 
     //loop through motors and set common parameters
-    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,leftB,rightA,rightB}){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
+      m.setSmartCurrentLimit(240/6, 240/6*2);//240 is sensible current limit to chassis
     }
     //configure followers
-    for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){ m.follow(left); }
-    for(CANSparkMax m : new CANSparkMax[]{rightA,rightB}){ m.follow(right); }
+    for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){
+      m.follow(left);
+    }
+    for(CANSparkMax m : new CANSparkMax[]{rightA,rightB}){
+      m.follow(right);
+    }
 
 
     //Set other non-common parameters for motors
@@ -159,9 +164,15 @@ public class Chassis extends SubsystemBase {
     //Set up drive train and kinematics
     chassis = new DifferentialDrive(left,right);
 
-
     //Set up the shifter and solenoids
-    shifter = new Solenoid(PneumaticsModuleType.REVPH, 1);
+    switch(Constants.botName){
+      case COMP:
+        shifter = new Solenoid(PneumaticsModuleType.REVPH, 4);
+      break;
+      case PRACTICE:
+        shifter = new Solenoid(PneumaticsModuleType.REVPH, 1);
+      break;
+    }
     setGear(Gear.LOW);
   }
 

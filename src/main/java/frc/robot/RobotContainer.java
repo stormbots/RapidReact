@@ -92,7 +92,7 @@ public class RobotContainer {
   JoystickButton intakeFrontButton = new JoystickButton(operator, 4);
   JoystickButton intakeBackButton = new JoystickButton(operator, 2);
   JoystickButton shootButton = new JoystickButton(operator, 1);
-  JoystickButton spoolShooterButton = new JoystickButton(operator, 3);
+  JoystickButton spoolShooterButton = new JoystickButton(operator, 8);
   JoystickButton climbButtonManual = new JoystickButton(operator, 7);
   
 

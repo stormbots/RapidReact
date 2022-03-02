@@ -98,7 +98,7 @@ public class Shooter extends SubsystemBase {
     }
 
   public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = .2;
+    double kShooterSpeed = .55;
 
     topMotor.set(kShooterSpeed);
     bottomMotor.set(kShooterSpeed*.9);

@@ -222,6 +222,12 @@ public class Chassis extends SubsystemBase {
     shifter.set(gear.bool());
   }
 
+  public void setIdleMode(IdleMode mode){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
+      m.setIdleMode(mode);
+    }
+  }
+
   @Override
   public void periodic() {
     if (reverse) {

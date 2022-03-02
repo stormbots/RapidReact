@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kCoast);
     m_robotContainer.climber.hookMotor.set(0.0);
     m_robotContainer.climber.winchMotor.set(0.0);
+    m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
     }
 
   @Override
@@ -87,6 +88,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -103,6 +106,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

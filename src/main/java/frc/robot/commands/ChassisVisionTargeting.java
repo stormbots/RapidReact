@@ -54,6 +54,8 @@ public class ChassisVisionTargeting extends CommandBase {
       return;
     }
 
+    
+
     outputTurn = vision.pidTurn.getOutput(0, vision.getX());
 
     // outputTurn = vision.pidTurn.getOutput(gyro.getAngle(), vision.getTargetHeading());

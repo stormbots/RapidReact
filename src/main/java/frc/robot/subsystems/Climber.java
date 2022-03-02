@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
   private double kMaxHeight = 61;
 
   //Class consent variables for the motor for the hookMotor and climber, also gets the encoder for the hook and the PID controller
-  public CANSparkMax hookMotor = new CANSparkMax(17, MotorType.kBrushless); //Change the port later, 10 is temp variable
+  public CANSparkMax hookMotor = new CANSparkMax(16, MotorType.kBrushless); //Change the port later, 10 is temp variable
   private RelativeEncoder hookEncoder = hookMotor.getEncoder();
 
   private SparkMaxPIDController hookPID = hookMotor.getPIDController();
@@ -60,12 +60,19 @@ public class Climber extends SubsystemBase {
       
       winchPID.setSetpoint(winchEncoder.getPosition());
       winchMotor.setIdleMode(IdleMode.kCoast);//Want coast on boot, enable brake when climbing
-      winchMotor.setSmartCurrentLimit(15);
+      winchMotor.setSmartCurrentLimit(30);
       //Configure Hook
-      hookMotor.setSmartCurrentLimit(2);
-      hookMotor.setInverted(true);
-      hookEncoder.setPositionConversionFactor(180/2.3); //TODO set conversion to degres/angle
-      hookEncoder.setPosition(210);
+      hookMotor.setSmartCurrentLimit(15);
+      hookMotor.setInverted(false);
+      hookEncoder.setPositionConversionFactor(180.0/306.5); //306.5
+      hookEncoder.setPosition(0);
+
+      
+      hookMotor.setSoftLimit(SoftLimitDirection.kForward, 180);
+      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+      hookMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      hookMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      
       // hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
       hookPID.setP(1/360.0);
       hookMotor.setIdleMode(IdleMode.kCoast);
@@ -101,10 +108,12 @@ public class Climber extends SubsystemBase {
   
   public void init(){
     winchMotor.setIdleMode(IdleMode.kBrake);
+    hookMotor.setIdleMode(IdleMode.kBrake);
+
   }
 
   public void disabledInit(){
-    winchMotor.setIdleMode(IdleMode.kCoast);
+    // winchMotor.setIdleMode(IdleMode.kCoast);
   }
 
   @Override

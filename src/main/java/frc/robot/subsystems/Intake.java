@@ -20,20 +20,26 @@ public class Intake extends SubsystemBase {
   Solenoid intakeSolenoid;
   boolean kUp;
   boolean kDown;
+  
   public Intake(CANSparkMax motor, int solenoidChannel) {
     switch(Constants.botName){
-      case PRACTICE:
-      break;
       case COMP:
-      }
+       motor.setInverted(false);
+       intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
+      break;
+      case PRACTICE:
+      //  motor.setInverted(true);
+      //  intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
+      break;
+    }
     this.motor = motor;
 
-    motor.setInverted(true);
+   
     motor.setSmartCurrentLimit(30);
 
     kUp = false;
     kDown = true;
-    intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
+    
     intakeSolenoid.set(kUp);
   }
 

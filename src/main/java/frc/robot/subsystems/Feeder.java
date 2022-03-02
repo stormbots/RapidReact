@@ -29,13 +29,17 @@ public class Feeder extends SubsystemBase {
     public Feeder() {
 
       switch(Constants.botName){
-        case PRACTICE:
-        break;
         case COMP:
+         motorFeederFront.setInverted(true);
+         motorFeederBack.setInverted(false);
+        break;
+        case PRACTICE:
+         motorFeederFront.setInverted(false);
+         motorFeederBack.setInverted(true);
+        break;
         }
         
-        motorFeederFront.setInverted(false);
-        motorFeederBack.setInverted(true);
+       
 
         motorFeederFront.setSmartCurrentLimit(30);
         motorFeederBack.setSmartCurrentLimit(30);
@@ -44,7 +48,9 @@ public class Feeder extends SubsystemBase {
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
+
         encoderFeederFront.setPositionConversionFactor(6.0/10.0);
+        encoderFeederBack.setPositionConversionFactor(6.0/10.0);//TODO get conversion factors for comp bot
     }
 
     public void feederRun(){

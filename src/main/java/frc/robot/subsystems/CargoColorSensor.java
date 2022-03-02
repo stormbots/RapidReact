@@ -22,7 +22,7 @@ public class CargoColorSensor extends SubsystemBase {
   private ColorSensorV3 colorSensor; 
   private Rev2mDistanceSensor distanceSensor; 
 
-  public enum CargoColor {BLUE, RED, UNDEFINED, NOCARGO};
+  public static enum CargoColor {BLUE, RED, UNDEFINED, NOCARGO};
   private CargoColor teamColor = CargoColor.BLUE; //temp value
   private Color color = Color.kGreen; //temp value
   
@@ -30,13 +30,15 @@ public class CargoColorSensor extends SubsystemBase {
   private final Color kBlueTarget = new Color(0.152, 0.390, 0.457);
   private final Color kRedTarget = new Color(0.543, 0.338, 0.118);
   ColorMatchResult match = colorMatcher.matchClosestColor(color);
+  private String name;
 
   /** Creates a new CargoColorSensor. */
-  public CargoColorSensor(I2C.Port colorPort, Rev2mDistanceSensor.Port distancePort) {
+  public CargoColorSensor(String name, I2C.Port colorPort, Rev2mDistanceSensor.Port distancePort) {
     // NOTE: just future proofing, don't worry about this quite yet.
     // just declare things how you normally do I think.
     this.colorPort = colorPort;
     this.distancePort = distancePort;
+    this.name = name;
 
     colorSensor = new ColorSensorV3(colorPort);
     distanceSensor = new Rev2mDistanceSensor(distancePort);
@@ -83,16 +85,16 @@ public class CargoColorSensor extends SubsystemBase {
     else if(distanceSensor.getRange() < 0) return CargoColor.NOCARGO;
 
     else if (match.confidence <= .95) {
-      SmartDashboard.putString("ColorSensor/color", "undefined");
+      SmartDashboard.putString("ColorSensor/"+name+"/color", "undefined");
       return CargoColor.UNDEFINED;
     }
     
     else if (match.color == kRedTarget) {
-      SmartDashboard.putString("ColorSensor/color", "red");
+      SmartDashboard.putString("ColorSensor/" +name+"/color", "red");
       return CargoColor.RED;
     } 
     else if (match.color == kBlueTarget) {
-      SmartDashboard.putString("ColorSensor/color", "blue");
+      SmartDashboard.putString("ColorSensor/" +name+ "/color", "blue");
       return CargoColor.BLUE;
     } 
     else{
@@ -104,12 +106,12 @@ public class CargoColorSensor extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("ColorSensor/red", colorSensor.getColor().red);
-    SmartDashboard.putNumber("ColorSensor/green", colorSensor.getColor().green);
-    SmartDashboard.putNumber("ColorSensor/blue", colorSensor.getColor().blue);
-    SmartDashboard.putNumber("ColorSensor/confidence", match.confidence);
-    SmartDashboard.putNumber("ColorSensor/distance", distanceSensor.getRange());
-    SmartDashboard.putString("ColorSensor/color", getColor().toString());
-    SmartDashboard.putString("ColorSensor/TeamColor", getTeamColor().toString());
+    SmartDashboard.putNumber("ColorSensor/"+name+"/red", colorSensor.getColor().red);
+    SmartDashboard.putNumber("ColorSensor/"+name+"/green", colorSensor.getColor().green);
+    SmartDashboard.putNumber("ColorSensor/"+name+"/blue", colorSensor.getColor().blue);
+    SmartDashboard.putNumber("ColorSensor/"+name+"/confidence", match.confidence);
+    SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
+    SmartDashboard.putString("ColorSensor/"+name+"/color", getColor().toString());
+    SmartDashboard.putString("ColorSensor/"+name+"/TeamColor", getTeamColor().toString());
   }
 }

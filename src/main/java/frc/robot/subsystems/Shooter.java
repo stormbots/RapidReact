@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
   SlewRateLimiter rpmslew = new SlewRateLimiter(0);
   Vision vision;
 
-  public Shooter() {
+  public Shooter(Vision vision) {
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
       case COMP:
@@ -46,6 +46,7 @@ public class Shooter extends SubsystemBase {
       default:
       break;
     }
+    this.vision = vision;
 
     topMotor.restoreFactoryDefaults();
     bottomMotor.restoreFactoryDefaults();
@@ -72,8 +73,8 @@ public class Shooter extends SubsystemBase {
 
     //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
     //TODO: Automatically grabs distance from limelight:
-    public void setRPMForDistance(double distanceIN){
-      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
+    public void setRPMForDistance(){
+      rpmSetpoint = 6000;//Constants.distanceToRPM.getOutputAt(vision.getDistanceToUpperHub());
     }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;
@@ -94,13 +95,6 @@ public class Shooter extends SubsystemBase {
       return output;
 
     }
-
-  public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = 0.6;
-
-    topMotor.set(kShooterSpeed);
-    bottomMotor.set(kShooterSpeed*.9);
-  }
 
   public void shooterOff(){
     topMotor.set(0.0);

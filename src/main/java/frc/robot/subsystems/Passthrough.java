@@ -35,13 +35,16 @@ public class Passthrough extends SubsystemBase {
    
     public Passthrough() {
         switch(Constants.botName){
-        case PRACTICE:
-        
-        break;
         case COMP:
+         motorPTFront.setInverted(false);
+         motorPTBack.setInverted(true);
+        break;
+        case PRACTICE:
+         motorPTFront.setInverted(false);
+         motorPTBack.setInverted(true);
+        break;
         }
-        motorPTFront.setInverted(false);
-        motorPTBack.setInverted(true);
+       
 
         encoderPTBack=motorPTBack.getEncoder();
         encoderPTFront=motorPTFront.getEncoder();
@@ -67,8 +70,8 @@ public class Passthrough extends SubsystemBase {
 
     
     public void ptRun(){
-      motorPTFront.set(kPTSpeed);
-      motorPTBack.set(kPTSpeed);
+     motorPTFront.set(kPTSpeed);
+     motorPTBack.set(kPTSpeed);
     }
 
     public void ptIntakeFront(){

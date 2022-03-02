@@ -16,24 +16,28 @@ public class Intake extends SubsystemBase {
    * @param canSparkMax
    */
   public CANSparkMax motor;
-  double kIntakeSpeed = -0.3;
+  double kIntakeSpeed = 0.3;
   Solenoid intakeSolenoid;
   boolean kUp;
   boolean kDown;
   public Intake(CANSparkMax motor) {
     switch(Constants.botName){
-      case PRACTICE:
-      break;
       case COMP:
-      }
+       motor.setInverted(true);
+       intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 3);
+      case PRACTICE:
+       motor.setInverted(false);
+       intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+      break;
+    }
     this.motor = motor;
 
-    motor.setInverted(false);
+   
     motor.setSmartCurrentLimit(30);
 
     kUp = false;
     kDown = true;
-    intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 3);
+    
     intakeSolenoid.set(kUp);
   }
 

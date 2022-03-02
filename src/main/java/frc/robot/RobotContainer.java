@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI.Port;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,6 +44,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,8 +59,10 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensor = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
-  public Ultrasonic ptUltrasonic = new Ultrasonic(8,9); //TODO: Find actual configuration for this
+  public CargoColorSensor cargoColorSensorFront;
+  public CargoColorSensor cargoColorSensorBack;
+  
+
   public Vision vision = new Vision(navx);
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
   
@@ -111,14 +113,22 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     //Configure our autonomous commands, and make sure drive team can select what they want
-
+    switch(Constants.botName){
+    case COMP:
+     cargoColorSensorFront = new CargoColorSensor(I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
+     cargoColorSensorBack = new CargoColorSensor(I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
+    break;
+    case PRACTICE:
+     cargoColorSensorFront = new CargoColorSensor(I2C.Port.kOnboard , Rev2mDistanceSensor.Port.kMXP);
+    break;
+    }
     autoChooser.setDefaultOption("Does nothing", new InstantCommand(()->{}));
     autoChooser.addOption("Also nothing", new InstantCommand(()->{}));
     SmartDashboard.putData("autos/autoSelection", autoChooser);
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
 
-
+    // compressor.disable();
     //configure default commands
     
     chassis.setDefaultCommand(
@@ -202,12 +212,12 @@ public class RobotContainer {
 
    
     ejectCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor()/*TODO this needs to be changed to teamcolor*/;}
     );
     ejectCargo.whenActive(new PTEjectCargoBack(passthrough, true).withTimeout(2).withName("EjectingCargo"));//TODO needs to be tuned
 
     loadCargo = new Trigger(
-      ()->{return cargoColorSensor.getColor()==cargoColorSensor.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
+      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor()/*TODO this needs to be changed to  !teamcolor*/;}
     );
     loadCargo.whenActive(new PTLoadCargo(passthrough,feeder).withTimeout(2).withName("LoadingCargo")); 
     

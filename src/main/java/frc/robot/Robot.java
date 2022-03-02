@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import com.stormbots.devices.pixy2.Pixy2;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -66,7 +69,11 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putNumber("pixy/numlines", pixy.getMainFeatures(0,1).length);
   }
+  Pixy2 pixy = new Pixy2(Port.kOnboardCS0);
+
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override

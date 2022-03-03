@@ -79,6 +79,8 @@ public class Chassis extends SubsystemBase {
   private AHRS navx;
   
   public Chassis(AHRS navX) {
+    
+    
     this.navx = navX;
     navx.reset();
     navx.calibrate();
@@ -230,6 +232,9 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (left != null){
+      SmartDashboard.putNumber("chassis/faults",left.getFaults());
+    }
     if (reverse) {
       odometry.update(navx.getRotation2d(), -rightEncoder.getPosition(), -leftEncoder.getPosition());
     } else {

@@ -8,13 +8,13 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.SPI.Port;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,7 +42,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.CargoColorSensor.CargoColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -95,7 +94,8 @@ public class RobotContainer {
   JoystickButton intakeBackButton = new JoystickButton(operator, 2);
   JoystickButton shootButton = new JoystickButton(operator, 1);
   JoystickButton spoolShooterButton = new JoystickButton(operator, 8);
-  JoystickButton climbButtonManual = new JoystickButton(operator, 7);
+  JoystickButton spoolToLimeDistance = new JoystickButton(operator, 7);
+  JoystickButton climbButtonManual = new JoystickButton(operator, 9);
   
 
   // Used to communicate auto commands to dashboard.
@@ -140,7 +140,6 @@ public class RobotContainer {
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
 
-    // compressor.disable();
     //configure default commands
     
     chassis.setDefaultCommand(
@@ -205,9 +204,13 @@ public class RobotContainer {
     
     shootButton.whenReleased(new InstantCommand(()->shooter.bottomMotor.set(0.0)));
     shootButton.whenReleased(new InstantCommand(()->shooter.topMotor.set(0.0)));
+
+    //Only works when driver is holding limelight targeting and has vision target
+    spoolToLimeDistance.whileHeld(new RunCommand(()->shooter.setRPMForDistance(vision.getDistanceToUpperHub())));
+    spoolToLimeDistance.whenReleased(new InstantCommand(()->shooter.setRPM(0)));
     
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
-  
+    
     climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(operator.getRawAxis(1))));
     climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
     climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));

@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.climber.hookMotor.set(0.0);
     m_robotContainer.climber.winchMotor.set(0.0);
     m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.shooter.setRPM(0.0);
     }
 
   @Override

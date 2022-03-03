@@ -15,11 +15,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Vision extends SubsystemBase {
 
   
-  public final double kCameraHeight = 45;
-  public final double kCameraAngle = 22;
+  public final double kCameraHeight = 38;
+  public final double kCameraAngle = 23;
   public final double kUpperHubHeight = 101.625;
 
   private AHRS gyro;
+
   public MiniPID pidTurn;
 
   /** Creates a new Limelight. */
@@ -39,7 +40,7 @@ public class Vision extends SubsystemBase {
     pidTurn = new MiniPID(0,0,0);
     pidTurn.setSetpointRange(15); 
     pidTurn.setP(0.013*.5);
-    pidTurn.setI(0.001);
+    //pidTurn.setI(0.001);
     pidTurn.setMaxIOutput(0.15);
     pidTurn.setOutputLimits(0.7);
     pidTurn.setOutputRampRate(0.7/200.0);
@@ -67,6 +68,7 @@ public class Vision extends SubsystemBase {
   NetworkTableEntry ts = table.getEntry("ts");
   private double skew;
 
+  public double distanceCache = 0;
 
   @Override
   public void periodic() {
@@ -99,7 +101,8 @@ public class Vision extends SubsystemBase {
     return gyro.getAngle() + tx.getDouble(0.0);
   }
   public double getDistanceToUpperHub(){
-    return ((kUpperHubHeight - kCameraHeight)/(Math.tan(Math.toRadians(y + kCameraAngle))));
+    if(!hasValidTarget()) return (9*12);
+    return((kUpperHubHeight - kCameraHeight)/(Math.tan(Math.toRadians(y + kCameraAngle))));
   }
   public void lightsOn(){
      table.getEntry("ledMode").setNumber(3);

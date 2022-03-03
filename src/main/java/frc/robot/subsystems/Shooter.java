@@ -101,7 +101,7 @@ public class Shooter extends SubsystemBase {
     }
 
   public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = .55;
+    double kShooterSpeed = .53;
 
     topMotor.set(kShooterSpeed);
     bottomMotor.set(kShooterSpeed*.9);
@@ -123,8 +123,8 @@ public class Shooter extends SubsystemBase {
 
 
 
-    pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
-    pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+    // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+    // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
     SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());

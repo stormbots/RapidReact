@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +31,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
+    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
     String botString = Preferences.getString("botName", "none").toUpperCase().trim();
     switch(botString){
       case "COMP":     Constants.botName = BotName.COMP;break;

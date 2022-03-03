@@ -85,8 +85,8 @@ public class RobotContainer {
   //Do not reassign ports in code: Always reassign  ports in your
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
-  JoystickButton shiftButton = new JoystickButton(driver, 7);
-  JoystickButton aimButton = new JoystickButton(driver, 8);
+  JoystickButton shiftButton = new JoystickButton(driver, 5);
+  JoystickButton aimButton = new JoystickButton(driver, 6);
 
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);

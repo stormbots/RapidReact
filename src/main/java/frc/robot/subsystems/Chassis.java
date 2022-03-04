@@ -107,18 +107,18 @@ public class Chassis extends SubsystemBase {
       case COMP:
       default:
           // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
-          scalar = 1;
-          sVolts = 1 * scalar;
-          vVoltSecondsPerMeter = 1 * scalar;
-          aVoltSecondsSquaredPerMeter = 1 * scalar;
-          PDriveVel = 1;
-          TrackwidthMeters = 1;
+          scalar = 1.0;
+          sVolts = 0.18023 * scalar;
+          vVoltSecondsPerMeter = 0.54118 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.049099 * scalar;
+          PDriveVel = 0.63273;
+          TrackwidthMeters = 0.68;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
           EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
           MaxSpeedMetersPerSecond = 1; // Doesn't work with pathweaver trajectories
           MaxAccelerationMetersPerSecondSquared = 1; // Doesn't work with pathweaver trajectories
-          RamseteB = 2;
-          RamseteZeta = 0.7;
+          RamseteB = 2 * 2;
+          RamseteZeta = 0.7 * 0.4;
           break;
     }
 
@@ -155,7 +155,6 @@ public class Chassis extends SubsystemBase {
     for(CANSparkMax m : new CANSparkMax[]{rightA,rightB}){
       m.follow(right);
     }
-
 
     //Set other non-common parameters for motors
     left.setInverted(true);
@@ -220,6 +219,10 @@ public class Chassis extends SubsystemBase {
   
   public void setGear(Gear gear){
     shifter.set(gear.bool());
+  }
+
+  public double getAverageDistance() {
+    return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2;
   }
 
   @Override

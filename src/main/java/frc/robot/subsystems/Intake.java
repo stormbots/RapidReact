@@ -28,8 +28,8 @@ public class Intake extends SubsystemBase {
        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
       break;
       case PRACTICE:
-      //  motor.setInverted(true);
-      //  intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
+        motor.setInverted(true);
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
       break;
     }
     this.motor = motor;

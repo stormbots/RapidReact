@@ -108,16 +108,41 @@ public class RobotContainer {
   Trigger loadCargoFrontIntake;
   Trigger loadCargoFromBack;
 
-
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     Command testAuto = new InstantCommand(()->{})
-      .andThen(new ChassisPath(chassis, "Test 1", false))
-      .andThen(new ChassisPath(chassis, "Test 1", true))
+      .andThen(new ChassisPath(chassis, "Main 1", true))
+      .andThen(new ChassisPath(chassis, "Main 2", false))
+    ;
+
+    Command leftAuto = new InstantCommand(()->{})
+      .andThen(new IntakeDown(backIntake))
+      .alongWith(new ChassisPath(chassis, "Internal 1", true))
+      .alongWith(new ShooterSpoolUp(shooter))
+      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new FeederShootCargo(feeder))
+    ;
+
+    Command rightAuto = new InstantCommand(()->{})
+      .andThen(new IntakeDown(backIntake))
+      .alongWith(new ChassisPath(chassis, "Internal 2", true))
+      .alongWith(new ShooterSpoolUp(shooter))
+      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new FeederShootCargo(feeder))
+    ;
+
+    Command taxiAuto = new InstantCommand(()->{})
+      .andThen(new IntakeDown(backIntake))
+      .alongWith(new ChassisPath(chassis, "Internal 2", true))
+      .alongWith(new ShooterSpoolUp(shooter))
+      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new FeederShootCargo(feeder))
     ;
 
     autoChooser.setDefaultOption("Do nothing", new InstantCommand(()->{}));
+    autoChooser.addOption("Left Auto", leftAuto);
+    autoChooser.addOption("Right Auto", rightAuto);
+    autoChooser.addOption("Taxi Auto", taxiAuto);
     autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);
 

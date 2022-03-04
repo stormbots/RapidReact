@@ -243,8 +243,8 @@ public class RobotContainer {
     shootButton.whenReleased(new InstantCommand(()->shooter.topMotor.set(0.0)));
 
     //Only works when driver is holding limelight targeting and has vision target
-    spoolToLimeDistance.whileHeld(new RunCommand(()->shooter.setRPMForDistance(vision.getDistanceToUpperHub())));
-    spoolToLimeDistance.whenReleased(new InstantCommand(()->shooter.setRPM(0)));
+    spoolToLimeDistance.whileHeld(new RunCommand(()->shooter.setRPMForDistance(vision.getDistanceToUpperHub()),shooter));
+    spoolToLimeDistance.whenReleased(new InstantCommand(()->shooter.setRPM(0),shooter));
     
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
     

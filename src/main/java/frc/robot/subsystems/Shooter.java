@@ -76,13 +76,15 @@ public class Shooter extends SubsystemBase {
     }
     
     public void setRPM(double rpmSetpoint){
-      this.rpmSetpoint = rpmSetpoint;
+      pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+      pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+  
     }
 
     //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
     //TODO: Automatically grabs distance from limelight:
     public void setRPMForDistance(double distance){
-      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distance);
+      setRPM(  Constants.distanceToRPM.getOutputAt(distance) );
     }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;
@@ -127,8 +129,6 @@ public class Shooter extends SubsystemBase {
 
 
 
-    pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
-    pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
     SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());

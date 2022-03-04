@@ -7,6 +7,7 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.stormbots.PrefUtilities;
 import com.revrobotics.Rev2mDistanceSensor;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDriveArcade;
@@ -102,6 +104,8 @@ public class RobotContainer {
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
+  SendableChooser<Double> waitTimer = new SendableChooser<>();
+  double autoWaitTimer=0;
 
 
   private ChassisVisionTargeting chassisVisionTargeting = new ChassisVisionTargeting(()->0,()->0,chassis, vision, navx);
@@ -114,13 +118,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
+    autoWaitTimer= SmartDashboard.getNumber("Auto Startup Delay", 0);
+    SmartDashboard.putNumber("Auto Startup Delay",0);
+    SmartDashboard.setPersistent("Auto Startup Delay");
+
     Command testAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new ChassisPath(chassis, "Main 1", true))
       .andThen(new ChassisPath(chassis, "Main 2", false))
     ;
 
     Command leftAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
@@ -136,6 +145,7 @@ public class RobotContainer {
     ;
 
     Command rightAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
@@ -148,6 +158,7 @@ public class RobotContainer {
     ;
 
     Command taxiAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new ChassisPath(chassis, "Internal 2", true))
     ;
 
@@ -156,6 +167,7 @@ public class RobotContainer {
     autoChooser.addOption("Far Side 1 Ball", rightAuto);
     autoChooser.addOption("Taxi", taxiAuto);
     autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
+
 
     //autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);

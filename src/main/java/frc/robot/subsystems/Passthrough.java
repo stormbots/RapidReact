@@ -30,7 +30,7 @@ public class Passthrough extends SubsystemBase {
     double kEjectDifference;
     double kFeederHeight;
     double kUltrasonicMaximumHeight;
-    double numberOfCargo;
+    private double numberOfCargo;
     double kDistanceToTop;
     double kDistanceToBottom;
    
@@ -95,11 +95,11 @@ public class Passthrough extends SubsystemBase {
     }
 
     public double ptGetNumberOfCargo(){
-      return numberOfCargo;
+      return 0;//temp
     }
 
     public Boolean ptGetCargoLimit(){
-      if (numberOfCargo <2){
+      if (ptGetNumberOfCargo() <2){
         return true;
       }
       return false;
@@ -107,11 +107,10 @@ public class Passthrough extends SubsystemBase {
     
     @Override
     public void periodic() {
-      SmartDashboard.getNumber("Ultrasonic Range", passthroughUltrasonic.getRangeInches());
+      //SmartDashboard.getNumber("Ultrasonic Range", passthroughUltrasonic.getRangeInches());
       Command current = getCurrentCommand();
-      if(current !=null){
-        SmartDashboard.putString("passthrough/command", current.getName());}
-      SmartDashboard.putNumber("passthrough/Cargo In Robot", numberOfCargo);
+      //if(current !=null){ SmartDashboard.putString("passthrough/command", current.getName());}
+      //SmartDashboard.putNumber("passthrough/Cargo In Robot", numberOfCargo);
       SmartDashboard.putNumber("passthrough/PTEncoder", encoderPTFront.getPosition());
 
       // motorPTFront.set(ptPidFront.getOutput(encoderPTFront.getPosition(),setpoint));

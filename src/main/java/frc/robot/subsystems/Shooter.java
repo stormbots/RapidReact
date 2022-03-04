@@ -129,7 +129,7 @@ public class Shooter extends SubsystemBase {
 
 
 
-    SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());
   }

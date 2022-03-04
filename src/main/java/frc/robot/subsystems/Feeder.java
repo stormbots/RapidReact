@@ -44,7 +44,7 @@ public class Feeder extends SubsystemBase {
         motorFeederFront.setSmartCurrentLimit(30);
         motorFeederBack.setSmartCurrentLimit(30);
 
-        kFeederSpeed = 1.0;
+        kFeederSpeed = 0.7;
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
@@ -70,7 +70,7 @@ public class Feeder extends SubsystemBase {
     
     @Override
     public void periodic() {
-      SmartDashboard.getNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
+      //SmartDashboard.getNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
     }
     @Override
     public void simulationPeriodic() {

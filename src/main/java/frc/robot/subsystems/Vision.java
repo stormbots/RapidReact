@@ -79,10 +79,10 @@ public class Vision extends SubsystemBase {
     skew = ts.getDouble(0);
 
     //Protip" Don't use "limelight" for your output table, because that's the input table
-    SmartDashboard.putBoolean("vision/HasTargets", hasTargets);
-    SmartDashboard.putNumber("vision/X", getX());
-    SmartDashboard.putNumber("vision/Y", y);
-    SmartDashboard.putNumber("vision/Area", targetArea);
+    // SmartDashboard.putBoolean("vision/HasTargets", hasTargets);
+    // SmartDashboard.putNumber("vision/X", getX());
+    // SmartDashboard.putNumber("vision/Y", y);
+    // SmartDashboard.putNumber("vision/Area", targetArea);
     SmartDashboard.putNumber("vision/distancetohub(in)", getDistanceToUpperHub());
 
 

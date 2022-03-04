@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     CameraServer.startAutomaticCapture();
     CameraServer.startAutomaticCapture();
+    
 
     LiveWindow.disableAllTelemetry();
     String botString = Preferences.getString("botName", "none").toUpperCase().trim();
@@ -80,7 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.vision.lightsOff();
-    m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kCoast);
+    //m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kBrake);
     m_robotContainer.climber.hookMotor.set(0.0);
     m_robotContainer.climber.winchMotor.set(0.0);
     m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
@@ -131,6 +132,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     SmartDashboard.putNumber("chassis/turn", m_robotContainer.driver.getRawAxis(2));
+    m_robotContainer.climber.init();
   }
 
   @Override

@@ -69,7 +69,7 @@ public class Climber extends SubsystemBase {
 
       
       hookMotor.setSoftLimit(SoftLimitDirection.kForward, 180);
-      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 45);
       hookMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       hookMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       

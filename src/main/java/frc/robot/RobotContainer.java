@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.I2C;
@@ -71,7 +72,7 @@ public class RobotContainer {
   public Climber climber = new Climber();
   public Passthrough passthrough = new Passthrough();
   public Feeder feeder = new Feeder();
-  public Shooter shooter = new Shooter();
+  public Shooter shooter = new Shooter(vision);
   
   // 
   // ROBOT COMMAND DEFINITIONS
@@ -83,8 +84,8 @@ public class RobotContainer {
   //Do not reassign ports in code: Always reassign  ports in your
   //local driver station to match these.
   public Joystick driver = new Joystick(0);
-  JoystickButton shiftButton = new JoystickButton(driver, 7);
-  JoystickButton aimButton = new JoystickButton(driver, 8);
+  JoystickButton shiftButton = new JoystickButton(driver, 5);
+  JoystickButton aimButton = new JoystickButton(driver, 6);
 
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
@@ -92,8 +93,9 @@ public class RobotContainer {
   JoystickButton intakeFrontButton = new JoystickButton(operator, 4);
   JoystickButton intakeBackButton = new JoystickButton(operator, 2);
   JoystickButton shootButton = new JoystickButton(operator, 1);
-  JoystickButton spoolShooterButton = new JoystickButton(operator, 3);
-  JoystickButton climbButtonManual = new JoystickButton(operator, 7);
+  JoystickButton spoolShooterButton = new JoystickButton(operator, 8);
+  JoystickButton spoolToLimeDistance = new JoystickButton(operator, 7);
+  JoystickButton climbButtonManual = new JoystickButton(operator, 9);
   
 
   // Used to communicate auto commands to dashboard.
@@ -145,6 +147,8 @@ public class RobotContainer {
     autoChooser.addOption("Taxi Auto", taxiAuto);
     autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);
+    SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
+
 
     //Configure our autonomous commands, and make sure drive team can select what they want
     switch(Constants.botName){
@@ -161,7 +165,6 @@ public class RobotContainer {
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
 
-    // compressor.disable();
     //configure default commands
     
     chassis.setDefaultCommand(
@@ -226,9 +229,13 @@ public class RobotContainer {
     
     shootButton.whenReleased(new InstantCommand(()->shooter.bottomMotor.set(0.0)));
     shootButton.whenReleased(new InstantCommand(()->shooter.topMotor.set(0.0)));
+
+    //Only works when driver is holding limelight targeting and has vision target
+    spoolToLimeDistance.whileHeld(new RunCommand(()->shooter.setRPMForDistance(vision.getDistanceToUpperHub())));
+    spoolToLimeDistance.whenReleased(new InstantCommand(()->shooter.setRPM(0)));
     
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
-  
+    
     climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(operator.getRawAxis(1))));
     climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
     climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));

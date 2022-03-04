@@ -44,7 +44,7 @@ public class Feeder extends SubsystemBase {
         motorFeederFront.setSmartCurrentLimit(30);
         motorFeederBack.setSmartCurrentLimit(30);
 
-        kFeederSpeed = 0.6;
+        kFeederSpeed = 1.0;
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);

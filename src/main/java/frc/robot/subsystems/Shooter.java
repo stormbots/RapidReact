@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -36,7 +37,7 @@ public class Shooter extends SubsystemBase {
   SlewRateLimiter rpmslew = new SlewRateLimiter(0);
   Vision vision;
 
-  public Shooter() {
+  public Shooter(Vision vision) {
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
       case COMP:
@@ -48,6 +49,8 @@ public class Shooter extends SubsystemBase {
         bottomMotor.setInverted(false);
       break;
     }
+
+    this.vision = vision;
 
     topMotor.setIdleMode(IdleMode.kCoast);
     bottomMotor.setIdleMode(IdleMode.kCoast);
@@ -74,8 +77,8 @@ public class Shooter extends SubsystemBase {
 
     //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
     //TODO: Automatically grabs distance from limelight:
-    public void setRPMForDistance(double distanceIN){
-      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distanceIN);
+    public void setRPMForDistance(double distance){
+      rpmSetpoint = Constants.distanceToRPM.getOutputAt(distance);
     }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;
@@ -98,7 +101,7 @@ public class Shooter extends SubsystemBase {
     }
 
   public void shooterSpoolUpToSpeed(){
-    double kShooterSpeed = .2;
+    double kShooterSpeed = .53;
 
     topMotor.set(kShooterSpeed);
     bottomMotor.set(kShooterSpeed*.9);
@@ -112,7 +115,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
 
-    setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
+    //setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
     //Temporarily disabled so the motor values can be run manually on test code
     // pidTop.setReference(kShooterMotorRatio * rpmSetpoint, ControlType.kVelocity, 0);
     // pidBottom.setReference(rpmSetpoint, ControlType.kVelocity, 0);
@@ -120,8 +123,8 @@ public class Shooter extends SubsystemBase {
 
 
 
-    // pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
-    // pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
+    pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
+    pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
     SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());

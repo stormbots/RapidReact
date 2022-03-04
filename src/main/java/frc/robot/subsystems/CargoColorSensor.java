@@ -42,7 +42,7 @@ public class CargoColorSensor extends SubsystemBase {
 
     colorSensor = new ColorSensorV3(colorPort);
     distanceSensor = new Rev2mDistanceSensor(distancePort);
-    
+    distanceSensor.setEnabled(true);
     distanceSensor.setAutomaticMode(true);
 
     colorMatcher.addColorMatch(kRedTarget);

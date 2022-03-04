@@ -80,7 +80,7 @@ public class Vision extends SubsystemBase {
 
     //Protip" Don't use "limelight" for your output table, because that's the input table
     SmartDashboard.putBoolean("vision/HasTargets", hasTargets);
-    SmartDashboard.putNumber("vision/X", x);
+    SmartDashboard.putNumber("vision/X", getX());
     SmartDashboard.putNumber("vision/Y", y);
     SmartDashboard.putNumber("vision/Area", targetArea);
     SmartDashboard.putNumber("vision/distancetohub(in)", getDistanceToUpperHub());
@@ -92,7 +92,7 @@ public class Vision extends SubsystemBase {
     return hasTargets;
   }
   public double getX(){
-    return x;
+    return tx.getDouble(0.0);
   }
     /**
    * @returns Heading to target (0...360). Allows for going past discontinuity (-X...360++)

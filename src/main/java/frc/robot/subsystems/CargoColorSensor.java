@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 public class CargoColorSensor extends SubsystemBase {
   I2C.Port colorPort; 
@@ -44,6 +45,7 @@ public class CargoColorSensor extends SubsystemBase {
     distanceSensor = new Rev2mDistanceSensor(distancePort);
     distanceSensor.setEnabled(true);
     distanceSensor.setAutomaticMode(true);
+    distanceSensor.setDistanceUnits(Unit.kInches);
 
     colorMatcher.addColorMatch(kRedTarget);
     colorMatcher.addColorMatch(kBlueTarget);
@@ -64,7 +66,7 @@ public class CargoColorSensor extends SubsystemBase {
 
   public CargoColor getTeamColor(){
     switch (DriverStation.getAlliance()) {
-      case Red:
+      case Red: 
         teamColor = CargoColor.RED;
         break;
       case Blue:
@@ -113,5 +115,6 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
     SmartDashboard.putString("ColorSensor/"+name+"/color", getColor().toString());
     SmartDashboard.putString("ColorSensor/"+name+"/TeamColor", getTeamColor().toString());
+
   }
 }

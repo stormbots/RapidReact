@@ -66,6 +66,10 @@ public class Shooter extends SubsystemBase {
     pidTop.setP(kPTop);
     pidBottom.setP(kPBottom);
 
+    //TEST:
+    //pidTop.setOutputRange(0, 1);
+    //pidBottom.setOutputRange(0, 1);
+
     rpmslew = new SlewRateLimiter(6000/1.0);
     pidTop.setFF(1.0/Constants.kNeoMaxRPM);
     pidBottom.setFF(1.0/Constants.kNeoMaxRPM);

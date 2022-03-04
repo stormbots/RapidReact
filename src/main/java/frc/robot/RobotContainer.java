@@ -56,12 +56,13 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensorFront;
-  public CargoColorSensor cargoColorSensorBack;
+  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
+  public CargoColorSensor cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
   
 
   public Vision vision = new Vision(navx);
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+  
   
   // 
   // SUBSYSTEMS
@@ -112,6 +113,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
     Command testAuto = new InstantCommand(()->{})
       .andThen(new ChassisPath(chassis, "Main 1", true))
       .andThen(new ChassisPath(chassis, "Main 2", false))
@@ -151,16 +153,16 @@ public class RobotContainer {
 
 
     //Configure our autonomous commands, and make sure drive team can select what they want
-    switch(Constants.botName){
-    case COMP:
-     cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
-     cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
-    break;
-    case PRACTICE:
-     cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kOnboard , Rev2mDistanceSensor.Port.kMXP);
-     cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kOnboard);
-    break;
-    }
+    // switch(Constants.botName){
+    // case COMP:
+    //  cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
+    //  cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
+    // break;
+    // case PRACTICE:
+    //  cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kOnboard , Rev2mDistanceSensor.Port.kMXP);
+    //  cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kOnboard);
+    // break;
+    // }
 
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 

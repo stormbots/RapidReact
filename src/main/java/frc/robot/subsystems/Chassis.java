@@ -106,19 +106,20 @@ public class Chassis extends SubsystemBase {
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 4;
           break;
-      case COMP:
       default:
+      case COMP:
+          // 127.7 rotations per 120 in
           // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
           scalar = 1.0;
-          sVolts = 0.18023 * scalar;
-          vVoltSecondsPerMeter = 0.54118 * scalar;
-          aVoltSecondsSquaredPerMeter = 0.049099 * scalar;
-          PDriveVel = 0.63273;
+          sVolts = 0.17731 * scalar;
+          vVoltSecondsPerMeter = 0.96673 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.080129 * scalar;
+          PDriveVel = 1.0978;
           TrackwidthMeters = 0.68;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
           EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
-          MaxSpeedMetersPerSecond = 1; // Doesn't work with pathweaver trajectories
-          MaxAccelerationMetersPerSecondSquared = 1; // Doesn't work with pathweaver trajectories
+          MaxSpeedMetersPerSecond = 4; // Doesn't work with pathweaver trajectories
+          MaxAccelerationMetersPerSecondSquared = 4; // Doesn't work with pathweaver trajectories
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 0.4;
           break;
@@ -140,6 +141,8 @@ public class Chassis extends SubsystemBase {
     leftEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
     rightEncoder.setPositionConversionFactor(Chassis.EncoderDistancePerPulse);
     rightEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
+
+    // leftEncoder.setPositionConversionFactor(1.0);
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
@@ -226,7 +229,7 @@ public class Chassis extends SubsystemBase {
   public double getAverageDistance() {
     return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2;
   }
-  
+
   public void setIdleMode(IdleMode mode){
     for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setIdleMode(mode);
@@ -235,6 +238,7 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Left", leftEncoder.getPosition());
     if (left != null){
       SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }

@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDriveArcade;
+import frc.robot.commands.ChassisDriveToHeadingBasic;
 import frc.robot.commands.ChassisPath;
 import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
@@ -120,34 +121,43 @@ public class RobotContainer {
     ;
 
     Command leftAuto = new InstantCommand(()->{})
-      .andThen(new IntakeDown(backIntake))
-      .alongWith(new ChassisPath(chassis, "Internal 1", true))
-      .alongWith(new ShooterSpoolUp(shooter))
+      .andThen(new IntakeDown(backIntake)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+        .alongWith(new ShooterSpoolUp(shooter))
+        .alongWith(new ChassisPath(chassis, "Internal 1", true))
+        ).withTimeout(4.0)
       .andThen(new PTLoadCargo(passthrough, feeder, true))
-      .andThen(new FeederShootCargo(feeder))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis)
+        .alongWith(new InstantCommand(()->{shooter.setRPMForDistance(119);}))
+        .withTimeout(3.0)
+        )
+      .andThen(new FeederShootCargo(feeder)) //shoves cargo into feeder
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();shooter.setRPM(0);}, chassis, passthrough, feeder, shooter))
     ;
 
     Command rightAuto = new InstantCommand(()->{})
-      .andThen(new IntakeDown(backIntake))
-      .alongWith(new ChassisPath(chassis, "Internal 2", true))
-      .alongWith(new ShooterSpoolUp(shooter))
+      .andThen(new IntakeDown(backIntake)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+        .alongWith(new ShooterSpoolUp(shooter))
+        .alongWith(new ChassisPath(chassis, "Internal 2", true))
+        ).withTimeout(4.0)
       .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(new FeederShootCargo(feeder))
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, chassis, passthrough, feeder, shooter))
     ;
 
     Command taxiAuto = new InstantCommand(()->{})
-      .andThen(new IntakeDown(backIntake))
-      .alongWith(new ChassisPath(chassis, "Internal 2", true))
-      .alongWith(new ShooterSpoolUp(shooter))
-      .andThen(new PTLoadCargo(passthrough, feeder, true))
-      .andThen(new FeederShootCargo(feeder))
+      .andThen(new ChassisPath(chassis, "Internal 2", true))
     ;
 
-    autoChooser.setDefaultOption("Do nothing", new InstantCommand(()->{}));
-    autoChooser.addOption("Left Auto", leftAuto);
-    autoChooser.addOption("Right Auto", rightAuto);
-    autoChooser.addOption("Taxi Auto", taxiAuto);
-    autoChooser.addOption("Test Auto", testAuto);
+    autoChooser.setDefaultOption("Taxi", taxiAuto);
+    autoChooser.addOption("Center 1 Ball", leftAuto);
+    autoChooser.addOption("Far Side 1 Ball", rightAuto);
+    autoChooser.addOption("Taxi", taxiAuto);
+    autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
+
+    //autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 

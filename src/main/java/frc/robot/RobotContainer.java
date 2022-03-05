@@ -141,7 +141,7 @@ public class RobotContainer {
         ).withTimeout(4.0)
       //.andThen(new PTLoadCargo(passthrough, feeder, true))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis)
-        .alongWith(new InstantCommand(()->{shooter.setRPMForDistance(119);}))
+        .alongWith(new InstantCommand(()->{shooter.setRPM(2950);}))
         .withTimeout(3.0)
         )
       .andThen(new FeederShootCargo(feeder)) //shoves cargo into feeder

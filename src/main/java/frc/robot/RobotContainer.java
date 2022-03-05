@@ -131,7 +131,7 @@ public class RobotContainer {
     .andThen(new IntakeDown(backIntake)
       .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
       .alongWith(new ShooterSpoolUp(shooter))
-      .alongWith(new ChassisPath(chassis, "Internal 2", true))
+      .alongWith(new ChassisPath(chassis, "Internal 3", true))
       ).withTimeout(4.0)
     .andThen(new InstantCommand(() -> {shooter.setRPM(2850);}))
     // .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
@@ -168,7 +168,7 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Internal 2", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2850);}))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2850 - 50);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)

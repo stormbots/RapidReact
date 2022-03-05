@@ -110,6 +110,14 @@ public class ChassisPath extends CommandBase {
             ),
             new Pose2d((39.0/12.0) + (9.0/12.0), 0, new Rotation2d(0, 0)),
           config);
+        case "Internal 3":
+          return TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            List.of(
+              //new Translation2d(0, 0)
+            ),
+            new Pose2d((39.0/12.0) + (15.0/12.0), 0, new Rotation2d(0, 0)),
+          config);
         default:
           DriverStation.reportError("Unable to open trajectory!", ex.getStackTrace());
           return null;

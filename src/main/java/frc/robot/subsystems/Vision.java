@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
     //pidTurn.setI(0.001);
     pidTurn.setMaxIOutput(0.15);
     pidTurn.setOutputLimits(0.7);
-    pidTurn.setOutputRampRate(0.7/200.0);
+    // pidTurn.setOutputRampRate(0.7/200.0);
     pidTurn.setF((s,a,e)->{return Math.signum(e)*0.30;/*static FeedForward*/ });
   }
 

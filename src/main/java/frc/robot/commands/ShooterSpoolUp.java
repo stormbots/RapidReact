@@ -27,7 +27,7 @@ public class ShooterSpoolUp extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setRPM(2950);
+    shooter.setRPM(2900-50);
   }
 
   // Called once the command ends or is interrupted.

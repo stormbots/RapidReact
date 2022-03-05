@@ -127,11 +127,24 @@ public class RobotContainer {
     SmartDashboard.setPersistent("Auto Startup Delay");
 
     Command testAuto = new InstantCommand(()->{})
-      .andThen(new WaitCommand(autoWaitTimer))
-      .andThen(new ChassisPath(chassis, "Main 1", true))
-      .andThen(new ChassisPath(chassis, "Main 2", false))
-    ;
-
+    .andThen(new WaitCommand(autoWaitTimer))
+    .andThen(new IntakeDown(backIntake)
+      .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+      .alongWith(new ShooterSpoolUp(shooter))
+      .alongWith(new ChassisPath(chassis, "Internal 2", true))
+      ).withTimeout(4.0)
+    .andThen(new InstantCommand(() -> {shooter.setRPM(2850);}))
+    // .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+    .andThen(
+      new FeederShootCargo(feeder)
+      .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+      .withTimeout(5)
+      )
+    .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+    .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
+  ;
+  ;
+    //Center Auto
     Command leftAuto = new InstantCommand(()->{})
       .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
@@ -147,7 +160,7 @@ public class RobotContainer {
       .andThen(new FeederShootCargo(feeder)) //shoves cargo into feeder
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();shooter.setRPM(0);}, backIntake, chassis, passthrough, feeder, shooter))
     ;
-
+    //Right side auto
     Command rightAuto = new InstantCommand(()->{})
       .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
@@ -155,7 +168,7 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Internal 2", true))
         ).withTimeout(4.0)
-      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2850);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
@@ -176,6 +189,7 @@ public class RobotContainer {
     autoChooser.addOption("Far Side 1 Ball", rightAuto); //side near guardrail
     autoChooser.addOption("Taxi", taxiAuto);
     autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
+    autoChooser.addOption("Special Auto", testAuto); //who knows
 
 
     //autoChooser.addOption("Test Auto", testAuto);

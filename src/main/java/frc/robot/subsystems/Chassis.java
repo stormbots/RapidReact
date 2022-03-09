@@ -151,7 +151,7 @@ public class Chassis extends SubsystemBase {
     for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
-      m.setSmartCurrentLimit(240/6, 240/6*2);//240 is sensible current limit to chassis
+      m.setSmartCurrentLimit(240/6, 240/6);//240 is sensible current limit to chassis
     }
     //configure followers
     for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){

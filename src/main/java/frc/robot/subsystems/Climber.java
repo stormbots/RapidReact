@@ -55,12 +55,12 @@ public class Climber extends SubsystemBase {
       
       winchMotor.setSoftLimit(SoftLimitDirection.kForward, (float)kMaxHeight);
       winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)kMinHeight);
-      winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-      winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      // winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      // winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       
       winchPID.setSetpoint(winchEncoder.getPosition());
-      winchMotor.setIdleMode(IdleMode.kCoast);//Want coast on boot, enable brake when climbing
-      winchMotor.setSmartCurrentLimit(30);
+      winchMotor.setIdleMode(IdleMode.kBrake);//Want coast on boot, enable brake when climbing
+      winchMotor.setSmartCurrentLimit(80);
       //Configure Hook
       hookMotor.setSmartCurrentLimit(15);
       hookMotor.setInverted(false);
@@ -69,7 +69,7 @@ public class Climber extends SubsystemBase {
 
       
       hookMotor.setSoftLimit(SoftLimitDirection.kForward, 180);
-      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 0);
+      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 45);
       hookMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       hookMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       

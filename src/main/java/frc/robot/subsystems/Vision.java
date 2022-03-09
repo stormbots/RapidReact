@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
     //pidTurn.setI(0.001);
     pidTurn.setMaxIOutput(0.15);
     pidTurn.setOutputLimits(0.7);
-    pidTurn.setOutputRampRate(0.7/200.0);
+    // pidTurn.setOutputRampRate(0.7/200.0);
     pidTurn.setF((s,a,e)->{return Math.signum(e)*0.30;/*static FeedForward*/ });
   }
 
@@ -79,10 +79,10 @@ public class Vision extends SubsystemBase {
     skew = ts.getDouble(0);
 
     //Protip" Don't use "limelight" for your output table, because that's the input table
-    SmartDashboard.putBoolean("vision/HasTargets", hasTargets);
-    SmartDashboard.putNumber("vision/X", getX());
-    SmartDashboard.putNumber("vision/Y", y);
-    SmartDashboard.putNumber("vision/Area", targetArea);
+    // SmartDashboard.putBoolean("vision/HasTargets", hasTargets);
+    // SmartDashboard.putNumber("vision/X", getX());
+    // SmartDashboard.putNumber("vision/Y", y);
+    // SmartDashboard.putNumber("vision/Area", targetArea);
     SmartDashboard.putNumber("vision/distancetohub(in)", getDistanceToUpperHub());
 
 

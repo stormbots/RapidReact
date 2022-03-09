@@ -23,8 +23,13 @@ public class Shooter extends SubsystemBase {
   private final double kShooterMotorRatio = .9;
   private final double kRPMTargetBound = 100;
   private final int kPIDSlot = 0;
-  private final double kPTop = 0;//0.099591e-3;
-  private final double kPBottom = 0;//0.094701e-3;
+  //private final double kPTop = 0;//0.099591e-3;
+  //private final double kPBottom = 0;//0.094701e-3;
+
+  private double kP = 0.0001; //Good P value for now. Lets role with it.
+  private double kI = 0.0;
+  private double kD =0.0;
+  private double IZone = 0.0;
 
   public CANSparkMax topMotor = new CANSparkMax(14, MotorType.kBrushless);
   public CANSparkMax bottomMotor = new CANSparkMax(13, MotorType.kBrushless);
@@ -38,6 +43,12 @@ public class Shooter extends SubsystemBase {
   Vision vision;
 
   public Shooter(Vision vision) {
+    //Temp Values for PID Tuning on the field. Remove later
+    SmartDashboard.putNumber("shooter/kP", 0.0001);
+    SmartDashboard.putNumber("shooter/kI", 0);
+    SmartDashboard.putNumber("shooter/kD", 0.0);
+    SmartDashboard.putNumber("shooter/IZone", 0.0);
+
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
       case COMP:
@@ -63,8 +74,8 @@ public class Shooter extends SubsystemBase {
     encoderTop = topMotor.getEncoder();
     encoderBottom = bottomMotor.getEncoder();
 
-    pidTop.setP(kPTop);
-    pidBottom.setP(kPBottom);
+    // pidTop.setP(kP);
+    // pidBottom.setP(kP);
 
     //TEST:
     //pidTop.setOutputRange(0, 1);
@@ -123,13 +134,37 @@ public class Shooter extends SubsystemBase {
 
     //setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
     //Temporarily disabled so the motor values can be run manually on test code
+    kP = SmartDashboard.getNumber("shooter/kP", 0.0001);
+    kI = SmartDashboard.getNumber("shooter/kI", 0.0);
+    kD = SmartDashboard.getNumber("shooter/kD", 0.0);
+    IZone = SmartDashboard.getNumber("shooter/IZone", 0.0);
+
+
+    pidTop.setP(kP);
+    pidBottom.setP(kP);
+
+    pidTop.setI(kI);
+    pidBottom.setI(kI);
+
+    pidTop.setD(kD);
+    pidBottom.setD(kD);
+
+    pidTop.setIZone(IZone);
+    pidBottom.setIZone(IZone);
+
+    pidTop.setOutputRange(0, 1);
+    pidBottom.setOutputRange(0, 1);
+    
+
+
+
     // pidTop.setReference(kShooterMotorRatio * rpmSetpoint, ControlType.kVelocity, 0);
     // pidBottom.setReference(rpmSetpoint, ControlType.kVelocity, 0);
 
 
 
 
-    SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
+    //SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());
   }

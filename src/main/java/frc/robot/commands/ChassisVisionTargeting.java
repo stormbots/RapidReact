@@ -56,7 +56,7 @@ public class ChassisVisionTargeting extends CommandBase {
 
     
 
-    outputTurn = -vision.pidTurn.getOutput(vision.getX(),0);
+    outputTurn = -vision.pidTurn.getOutput(vision.getX(),1.5);  //Postitive value left. Negative value right.
 
     // outputTurn = vision.pidTurn.getOutput(gyro.getAngle(), vision.getTargetHeading());
     SmartDashboard.putNumber("vision/aimOutput", outputTurn);

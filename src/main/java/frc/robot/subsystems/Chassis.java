@@ -238,7 +238,7 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left", leftEncoder.getPosition());
+    //SmartDashboard.putNumber("Left", leftEncoder.getPosition());
     if (left != null){
       SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }

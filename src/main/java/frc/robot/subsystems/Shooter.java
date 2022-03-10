@@ -133,14 +133,24 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
 
+
+    //Temp Values for PID Tuning on the field. Remove later
     //setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
-    //Temporarily disabled so the motor values can be run manually on test code
     // kP = SmartDashboard.getNumber("shooter/kP", 0.0001);
     // kI = SmartDashboard.getNumber("shooter/kI", 0.0);
     // kD = SmartDashboard.getNumber("shooter/kD", 0.0);
     // IZone = SmartDashboard.getNumber("shooter/IZone", 0.0);
+    // pidTop.setP(kP);
+    // pidBottom.setP(kP);
 
+    // pidTop.setI(kI);
+    // pidBottom.setI(kI);
 
+    // pidTop.setD(kD);
+    // pidBottom.setD(kD);
+
+    // pidTop.setIZone(IZone);
+    // pidBottom.setIZone(IZone);
     
 
 

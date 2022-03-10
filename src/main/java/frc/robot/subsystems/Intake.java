@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
    * @param canSparkMax
    */
   public CANSparkMax motor;
-  double kIntakeSpeed = 0.3;
+  double kIntakeSpeed = 0.8;
   Solenoid intakeSolenoid;
   boolean kUp;
   boolean kDown;

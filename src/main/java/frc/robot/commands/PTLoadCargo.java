@@ -41,20 +41,20 @@ public class PTLoadCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(passthrough.ptGetNumberOfCargo()==0){
+    if(passthrough.ptGetNumberOfCargo(passthrough.numberOfCargo)==0){
       passthroughTargetDistance = 30;//TODO get comp bot distances
       feederTargetDistance = 30;
       if (direction = false/*if direction is back*/){
-        feeder.feederRun();
+        // feeder.feederRun();
         passthrough.setPTpower(0, 1);//TODO determine if this works at 0 not 0.1
       }
       else if(direction = true/*if direction is front*/){
-        feeder.feederRun();
+        // feeder.feederRun();
         passthrough.setPTpower(1, 0);
       }
       SmartDashboard.putString("passthrough/PTLOADINGCARGO", "Loading 0");
     }
-    else if (passthrough.ptGetNumberOfCargo() == 1){
+    else if (passthrough.ptGetNumberOfCargo(passthrough.numberOfCargo) == 1){
         //put cargo in bottom spot 
       // passthrough.setDistanceBottom();
       passthroughTargetDistance = 18;
@@ -94,10 +94,6 @@ public class PTLoadCargo extends CommandBase {
   @Override
   public boolean isFinished() {
     //check encoders and stop it properly
-    if(passthrough.encoderPTFront.getPosition() > passthroughTargetDistance 
-    || passthrough.encoderPTBack.getPosition() > passthroughTargetDistance){
-      return true;
-    }
     return false;
   }
 }

@@ -17,30 +17,25 @@ public class Passthrough extends SubsystemBase {
     
     public RelativeEncoder encoderPTFront;
     public RelativeEncoder encoderPTBack; 
-    
+    public Boolean frontSensorEnabled;
+    public Boolean backSensorEnabled;
     MiniPID ptPidFront;
 
     public Ultrasonic passthroughUltrasonic = new Ultrasonic(1, 2);
     
-    public double kHighPower=0.8;
-    public double kLowPower=0.6;
-    public boolean frontSensorEnabled;
-    public boolean backSensorEnabled;
-    double kPTSpeed;
+    public double kHighPower=1.0;
+    public double kLowPower=0.8;
     double kEjectDifference;
     double kFeederHeight;
-    double kUltrasonicMaximumHeight;
-    private double numberOfCargo;
-    double kDistanceToTop;
-    double kDistanceToBottom;
-   
+    public double numberOfCargo;
+
     public Passthrough() {
         switch(Constants.botName){
         case COMP:
          motorPTFront.setInverted(false);
          motorPTBack.setInverted(true);
 
-         frontSensorEnabled = true;
+         frontSensorEnabled =true;
          backSensorEnabled = true;
         break;
         case PRACTICE:
@@ -49,6 +44,7 @@ public class Passthrough extends SubsystemBase {
 
          frontSensorEnabled = true;
          backSensorEnabled = false;
+
         break;
         }
        
@@ -66,12 +62,6 @@ public class Passthrough extends SubsystemBase {
         motorPTBack.setSmartCurrentLimit(30);
         motorPTFront.setOpenLoopRampRate(0.2);
         motorPTBack.setOpenLoopRampRate(0.2);
-        
-        Ultrasonic.setAutomaticMode(true);
-
-        kPTSpeed = .8;
-        // kFeederHeight = 12; //TODO get this from testing
-        // kUltrasonicMaximumHeight = 50;//TODO get this from testing 
         kEjectDifference = 1.2;
         numberOfCargo = 0;
     }
@@ -79,11 +69,6 @@ public class Passthrough extends SubsystemBase {
     public void setPTpower(double front, double back){
       motorPTFront.set(front);
       motorPTBack.set(back);
-    }
-
-    public void ptEnableColorSensors(boolean frontSensor, boolean backSensor) {
-      frontSensorEnabled = frontSensor; 
-      backSensorEnabled = backSensor;
     }
 
     public void ptIncrementCargo(){
@@ -94,17 +79,22 @@ public class Passthrough extends SubsystemBase {
       numberOfCargo = 0;
     }
 
-    public double ptGetNumberOfCargo(){
-      return 0;//temp
+    public void ptEnableColorSensors(boolean frontSensor, boolean backSensor) {
+      frontSensorEnabled = frontSensor; 
+      backSensorEnabled = backSensor;
+    }
+
+    public double ptGetNumberOfCargo(double numberOfCargo){
+      return numberOfCargo;//temp
     }
 
     public Boolean ptGetCargoLimit(){
-      if (ptGetNumberOfCargo() <2){
+      if (ptGetNumberOfCargo(numberOfCargo) <2){
         return true;
       }
       return false;
     }
-    
+
     @Override
     public void periodic() {
       //SmartDashboard.getNumber("Ultrasonic Range", passthroughUltrasonic.getRangeInches());
@@ -112,6 +102,9 @@ public class Passthrough extends SubsystemBase {
       //if(current !=null){ SmartDashboard.putString("passthrough/command", current.getName());}
       //SmartDashboard.putNumber("passthrough/Cargo In Robot", numberOfCargo);
       SmartDashboard.putNumber("passthrough/PTEncoder", encoderPTFront.getPosition());
+      SmartDashboard.putNumber("passthrough/numberofCargo", numberOfCargo);
+      SmartDashboard.putBoolean("passthrough/frontSensorEnabledState", frontSensorEnabled);
+      SmartDashboard.putBoolean("passthrough/backSensorEnabledState", backSensorEnabled);
 
       // motorPTFront.set(ptPidFront.getOutput(encoderPTFront.getPosition(),setpoint));
     }

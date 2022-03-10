@@ -2,27 +2,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Passthrough;
+import frc.robot.subsystems.Feeder;
 
 /** An example command that uses an example subsystem. */
-public class PTMoveCargo extends CommandBase {
+public class FeederRun extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Passthrough passthrough;
-  private double backPower;
-  private double frontPower;
+  private final Feeder feeder;
 
-  
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PTMoveCargo(double frontPower,double backPower, Passthrough passthrough) {
+  public FeederRun(Feeder feeder) {
+    this.feeder = feeder;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.passthrough=passthrough;
-    this.frontPower=frontPower;
-    this.backPower = backPower;
-    addRequirements(passthrough);
+    addRequirements(feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -32,13 +27,13 @@ public class PTMoveCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    passthrough.setPTpower(frontPower, backPower);
+    feeder.feederRun();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    passthrough.setPTpower(0.0, 0.0);
+    feeder.feederOff();
   }
 
   // Returns true when the command should end.

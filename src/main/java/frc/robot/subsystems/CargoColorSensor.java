@@ -80,13 +80,13 @@ public class CargoColorSensor extends SubsystemBase {
   }
 
   public CargoColor getColor() {
+    if(colorSensor.getProximity() < 1500) return CargoColor.NOCARGO;
+    // else if(colorSensor.getProximity() > 1500) return CargoColor.NOCARGO;
+
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
 
-    if(distanceSensor.getRange() > 1.5) return CargoColor.NOCARGO;
-    else if(distanceSensor.getRange() < 0) return CargoColor.NOCARGO;
-
-    else if (match.confidence <= .95) {
+    if (match.confidence <= .95) {
       //SmartDashboard.putString("ColorSensor/"+name+"/color", "undefined");
       return CargoColor.UNDEFINED;
     }
@@ -114,6 +114,7 @@ public class CargoColorSensor extends SubsystemBase {
     SmartDashboard.putNumber("ColorSensor/"+name+"/confidence", match.confidence);
     SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
     SmartDashboard.putString("ColorSensor/"+name+"/color", getColor().toString());
+    SmartDashboard.putNumber("ColorSensor/"+name+"/proximity", colorSensor.getProximity());
     // SmartDashboard.putString("ColorSensor/"+name+"/TeamColor", getTeamColor().toString());
 
   }

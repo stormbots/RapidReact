@@ -14,8 +14,8 @@ import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-    CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
-    CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
+    public CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
+    public CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
     
     public RelativeEncoder encoderFeederFront = motorFeederFront.getEncoder();
     public RelativeEncoder encoderFeederBack = motorFeederBack.getEncoder();

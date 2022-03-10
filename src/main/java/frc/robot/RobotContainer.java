@@ -30,6 +30,7 @@ import frc.robot.commands.ChassisDriveToHeadingBasic;
 import frc.robot.commands.ChassisPath;
 import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
+import frc.robot.commands.FeederFireOneShot;
 import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.PTLoadCargo;
@@ -118,6 +119,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // SmartDashboard.putData(new FeederFireOneShot(feeder));
+    SmartDashboard.putData(new RunCommand(() -> shooter.setRPM(800)).withName("ShooterFeederTesting"));
 
     /**************************************************
      * Auto Stuff

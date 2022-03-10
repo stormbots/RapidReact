@@ -44,10 +44,10 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(Vision vision) {
     //Temp Values for PID Tuning on the field. Remove later
-    SmartDashboard.putNumber("shooter/kP", 0.0001);
-    SmartDashboard.putNumber("shooter/kI", 0);
-    SmartDashboard.putNumber("shooter/kD", 0.0);
-    SmartDashboard.putNumber("shooter/IZone", 0.0);
+    // SmartDashboard.putNumber("shooter/kP", 0.0001);
+    // SmartDashboard.putNumber("shooter/kI", 0);
+    // SmartDashboard.putNumber("shooter/kD", 0.0);
+    // SmartDashboard.putNumber("shooter/IZone", 0.0);
 
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
@@ -74,9 +74,6 @@ public class Shooter extends SubsystemBase {
     encoderTop = topMotor.getEncoder();
     encoderBottom = bottomMotor.getEncoder();
 
-    // pidTop.setP(kP);
-    // pidBottom.setP(kP);
-
     //TEST:
     //pidTop.setOutputRange(0, 1);
     //pidBottom.setOutputRange(0, 1);
@@ -84,6 +81,10 @@ public class Shooter extends SubsystemBase {
     rpmslew = new SlewRateLimiter(6000/1.0);
     pidTop.setFF(1.0/Constants.kNeoMaxRPM);
     pidBottom.setFF(1.0/Constants.kNeoMaxRPM);
+
+    pidTop.setP(kP);
+    pidBottom.setP(kP);
+    
     }
     
     public void setRPM(double rpmSetpoint){
@@ -95,7 +96,7 @@ public class Shooter extends SubsystemBase {
     //TODO: Command: While held, if has target, put distance into a variable. If aiming and target lost, use old distance
     //TODO: Automatically grabs distance from limelight:
     public void setRPMForDistance(double distance){
-      setRPM(  Constants.distanceToRPM.getOutputAt(distance) );
+      setRPM(Constants.distanceToRPM.getOutputAt(distance));
     }
     public void setRPMLowerHub(){
       this.rpmSetpoint = 0;
@@ -134,26 +135,12 @@ public class Shooter extends SubsystemBase {
 
     //setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
     //Temporarily disabled so the motor values can be run manually on test code
-    kP = SmartDashboard.getNumber("shooter/kP", 0.0001);
-    kI = SmartDashboard.getNumber("shooter/kI", 0.0);
-    kD = SmartDashboard.getNumber("shooter/kD", 0.0);
-    IZone = SmartDashboard.getNumber("shooter/IZone", 0.0);
+    // kP = SmartDashboard.getNumber("shooter/kP", 0.0001);
+    // kI = SmartDashboard.getNumber("shooter/kI", 0.0);
+    // kD = SmartDashboard.getNumber("shooter/kD", 0.0);
+    // IZone = SmartDashboard.getNumber("shooter/IZone", 0.0);
 
 
-    pidTop.setP(kP);
-    pidBottom.setP(kP);
-
-    pidTop.setI(kI);
-    pidBottom.setI(kI);
-
-    pidTop.setD(kD);
-    pidBottom.setD(kD);
-
-    pidTop.setIZone(IZone);
-    pidBottom.setIZone(IZone);
-
-    pidTop.setOutputRange(0, 1);
-    pidBottom.setOutputRange(0, 1);
     
 
 
@@ -166,6 +153,6 @@ public class Shooter extends SubsystemBase {
 
     //SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
-    SmartDashboard.putNumber("shooter.rpmTop", getRPMTop());
+    SmartDashboard.putNumber("shooter/rpmTop", getRPMTop());
   }
 }

@@ -45,8 +45,6 @@ public class CargoColorSensor extends SubsystemBase {
     distanceSensor = new Rev2mDistanceSensor(distancePort);
     distanceSensor.setEnabled(true);
     distanceSensor.setAutomaticMode(true);
-    distanceSensor.setDistanceUnits(Unit.kInches);
-
     colorMatcher.addColorMatch(kRedTarget);
     colorMatcher.addColorMatch(kBlueTarget);
 

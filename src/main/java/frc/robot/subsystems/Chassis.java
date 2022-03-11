@@ -111,10 +111,10 @@ public class Chassis extends SubsystemBase {
           // 127.7 rotations per 120 in
           // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
           scalar = 1.0;
-          sVolts = 0.17731 * scalar;
-          vVoltSecondsPerMeter = 0.96673 * scalar;
-          aVoltSecondsSquaredPerMeter = 0.080129 * scalar;
-          PDriveVel = 1.0978;
+          sVolts = 0.20789 * scalar;
+          vVoltSecondsPerMeter = 1.6062 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.40753 * scalar;
+          PDriveVel = 2.2834;
           TrackwidthMeters = 0.68;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
           EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI

@@ -85,6 +85,9 @@ public class Vision extends SubsystemBase {
     // SmartDashboard.putNumber("vision/Area", targetArea);
     SmartDashboard.putNumber("vision/distancetohub(in)", getDistanceToUpperHub());
 
+    //Testing for distance accuracy. Remove this later
+    // lightsOn();
+
 
   }
 

@@ -151,7 +151,7 @@ public class Chassis extends SubsystemBase {
     for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
-      m.setSmartCurrentLimit(240/6, 240/6*2);//240 is sensible current limit to chassis
+      m.setSmartCurrentLimit(240/4, 240/4);//240 is sensible current limit to chassis
     }
     //configure followers
     for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){
@@ -238,7 +238,7 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left", leftEncoder.getPosition());
+    //SmartDashboard.putNumber("Left", leftEncoder.getPosition());
     if (left != null){
       SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }
@@ -249,5 +249,7 @@ public class Chassis extends SubsystemBase {
     }
     SmartDashboard.putNumber("chassis/x", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());
+    // SmartDashboard.putNumber("chassis/ampsleft", left.getOutputCurrent());
+    // SmartDashboard.putNumber("chassis/ampsright", right.getOutputCurrent());
   }
 }

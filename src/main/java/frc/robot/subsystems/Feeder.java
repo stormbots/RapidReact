@@ -14,8 +14,8 @@ import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-    CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
-    CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
+    public CANSparkMax motorFeederFront = new CANSparkMax(11,MotorType.kBrushless);
+    public CANSparkMax motorFeederBack = new CANSparkMax(12,MotorType.kBrushless);
     
     public RelativeEncoder encoderFeederFront = motorFeederFront.getEncoder();
     public RelativeEncoder encoderFeederBack = motorFeederBack.getEncoder();
@@ -44,7 +44,7 @@ public class Feeder extends SubsystemBase {
         motorFeederFront.setSmartCurrentLimit(30);
         motorFeederBack.setSmartCurrentLimit(30);
 
-        kFeederSpeed = 1.0;
+        kFeederSpeed = 0.7;
 
         encoderFeederFront.setPosition(0.0);
         encoderFeederBack.setPosition(0.0);
@@ -70,7 +70,8 @@ public class Feeder extends SubsystemBase {
     
     @Override
     public void periodic() {
-      SmartDashboard.getNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
+      SmartDashboard.putNumber("Feeder Encoder Front", encoderFeederFront.getPosition());
+      SmartDashboard.putNumber("Feeder Encoder Back", encoderFeederBack.getPosition());
     }
     @Override
     public void simulationPeriodic() {

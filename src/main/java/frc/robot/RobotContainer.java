@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDriveArcade;
@@ -29,6 +30,7 @@ import frc.robot.commands.ChassisDriveToHeadingBasic;
 import frc.robot.commands.ChassisPath;
 import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
+import frc.robot.commands.FeederFireOneShot;
 import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.PTLoadCargo;
@@ -88,6 +90,7 @@ public class RobotContainer {
   public Joystick driver = new Joystick(0);
   JoystickButton shiftButton = new JoystickButton(driver, 5);
   JoystickButton aimButton = new JoystickButton(driver, 6);
+  JoystickButton slowMode = new JoystickButton(driver, 8);
 
   public Joystick operator = new Joystick(1);
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
@@ -95,13 +98,15 @@ public class RobotContainer {
   JoystickButton intakeFrontButton = new JoystickButton(operator, 4);
   JoystickButton intakeBackButton = new JoystickButton(operator, 2);
   JoystickButton shootButton = new JoystickButton(operator, 1);
-  JoystickButton spoolShooterButton = new JoystickButton(operator, 8);
-  JoystickButton spoolToLimeDistance = new JoystickButton(operator, 7);
+  JoystickButton spoolShooterButton = new JoystickButton(operator, 7);
+  JoystickButton spoolToLimeDistance = new JoystickButton(operator, 8);
   JoystickButton climbButtonManual = new JoystickButton(operator, 9);
   
 
   // Used to communicate auto commands to dashboard.
   SendableChooser<Command> autoChooser = new SendableChooser<>();
+  
+  double autoWaitTimer=0;
 
 
   private ChassisVisionTargeting chassisVisionTargeting = new ChassisVisionTargeting(()->0,()->0,chassis, vision, navx);
@@ -114,48 +119,81 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
-    Command testAuto = new InstantCommand(()->{})
-      .andThen(new ChassisPath(chassis, "Main 1", true))
-      .andThen(new ChassisPath(chassis, "Main 2", false))
-    ;
+    // SmartDashboard.putData(new FeederFireOneShot(feeder));
+    SmartDashboard.putData(new RunCommand(() -> shooter.setRPM(800)).withName("ShooterFeederTesting"));
 
+    /**************************************************
+     * Auto Stuff
+     ************************************************/
+    autoWaitTimer= SmartDashboard.getNumber("Auto Startup Delay", 0);
+    SmartDashboard.putNumber("Auto Startup Delay",0);
+    SmartDashboard.setPersistent("Auto Startup Delay");
+
+    Command testAuto = new InstantCommand(()->{})
+    .andThen(new WaitCommand(autoWaitTimer))
+    .andThen(new IntakeDown(backIntake)
+      .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+      .alongWith(new ShooterSpoolUp(shooter))
+      .alongWith(new ChassisPath(chassis, "Internal 3", true))
+      ).withTimeout(4.0)
+    .andThen(new InstantCommand(() -> {shooter.setRPM(2850);}))
+    // .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+    .andThen(
+      new FeederShootCargo(feeder)
+      .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+      .withTimeout(5)
+      )
+    .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+    .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
+  ;
+  ;
+    //Center Auto
     Command leftAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Internal 1", true))
         ).withTimeout(4.0)
-      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      //.andThen(new PTLoadCargo(passthrough, feeder, true))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis)
-        .alongWith(new InstantCommand(()->{shooter.setRPMForDistance(119);}))
+        .alongWith(new InstantCommand(()->{shooter.setRPM(2950);}))
         .withTimeout(3.0)
         )
       .andThen(new FeederShootCargo(feeder)) //shoves cargo into feeder
-      .andThen(new InstantCommand(() -> {backIntake.intakeOff();shooter.setRPM(0);}, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();shooter.setRPM(0);}, backIntake, chassis, passthrough, feeder, shooter))
     ;
-
+    //Right side auto
     Command rightAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Internal 2", true))
         ).withTimeout(4.0)
-      .andThen(new PTLoadCargo(passthrough, feeder, true))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2850 - 50);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
-      .andThen(new FeederShootCargo(feeder))
-      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, chassis, passthrough, feeder, shooter))
+      .andThen(
+        new FeederShootCargo(feeder)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(5)
+        )
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
 
     Command taxiAuto = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
       .andThen(new ChassisPath(chassis, "Internal 2", true))
     ;
 
     autoChooser.setDefaultOption("Taxi", taxiAuto);
-    autoChooser.addOption("Center 1 Ball", leftAuto);
-    autoChooser.addOption("Far Side 1 Ball", rightAuto);
+    autoChooser.addOption("Center 1 Ball", leftAuto); //Center position
+    autoChooser.addOption("Far Side 1 Ball", rightAuto); //side near guardrail
     autoChooser.addOption("Taxi", taxiAuto);
     autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
+    autoChooser.addOption("Special Auto", testAuto); //who knows
+
 
     //autoChooser.addOption("Test Auto", testAuto);
     SmartDashboard.putData("autos/autoSelection", autoChooser);
@@ -177,7 +215,9 @@ public class RobotContainer {
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
 
-    //configure default commands
+    /**************************************************
+     * Default Commands
+     ************************************************/
     
     chassis.setDefaultCommand(
       // this one's really basic, but needed to get systems moving right away.
@@ -185,10 +225,10 @@ public class RobotContainer {
         ()->{chassis.arcadeDrive(-driver.getRawAxis(1),driver.getRawAxis(2));}
         ,chassis)
       );
-      // new RunCommand(
-      //   ()->{chassis.tankDrive(.25,.25);}
-      //   ,chassis)
-      // );
+      slowMode.whileHeld(new RunCommand(
+        ()->{chassis.arcadeDrive(-driver.getRawAxis(1) * .5, driver.getRawAxis(2) * .5);}
+        ,chassis)
+      );
 
     //TODO This is climber test code, be careful
     // testclimbButton.whileHeld(
@@ -281,42 +321,42 @@ public class RobotContainer {
     intakeBackButton.whenReleased(new InstantCommand(()->{}, passthrough));
 
 
-    
+    //TODO sensors busted, need fixing
     //Eject cargo out back intake
-    ejectCargoOutBack = new Trigger(
-      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor();}
-    );
-    ejectCargoOutBack.whenActive(new ConditionalCommand(
-      new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(3).withName("EjectingCargoOutFront"), 
-      new InstantCommand(()->{}), 
-      ()->passthrough.frontSensorEnabled));
+    // ejectCargoOutBack = new Trigger(
+    //   ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor();}
+    // );
+    // ejectCargoOutBack.whenActive(new ConditionalCommand(
+    //   new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(3).withName("EjectingCargoOutFront"), 
+    //   new InstantCommand(()->{}), 
+    //   ()->passthrough.frontSensorEnabled));
     
-    //Eject cargo out front intake
-    ejectCargoOutFront = new Trigger(
-      ()->{return cargoColorSensorBack.getColor()==cargoColorSensorBack.getOpposingColor();}
-    );
-    ejectCargoOutFront.whenActive(new ConditionalCommand(
-      new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough).withTimeout(3).withName("EjectingCargoOutBack"), 
-      new InstantCommand(()->{}), 
-      ()->passthrough.backSensorEnabled));
+    // //Eject cargo out front intake
+    // ejectCargoOutFront = new Trigger(
+    //   ()->{return cargoColorSensorBack.getColor()==cargoColorSensorBack.getOpposingColor();}
+    // );
+    // ejectCargoOutFront.whenActive(new ConditionalCommand(
+    //   new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough).withTimeout(3).withName("EjectingCargoOutBack"), 
+    //   new InstantCommand(()->{}), 
+    //   ()->passthrough.backSensorEnabled));
 
-    //Load cargo from the front intake
-    loadCargoFrontIntake = new Trigger(
-      ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor();}
-    );
-    loadCargoFrontIntake.whenActive(new ConditionalCommand(
-      new PTLoadCargo(passthrough,feeder, true/*direction is front*/).withTimeout(2).withName("LoadingCargo"),
-      new InstantCommand(()->{}), 
-      ()->passthrough.frontSensorEnabled));
+    // //Load cargo from the front intake
+    // loadCargoFrontIntake = new Trigger(
+    //   ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getTeamColor();}
+    // );
+    // loadCargoFrontIntake.whenActive(new ConditionalCommand(
+    //   new PTLoadCargo(passthrough,feeder, true/*direction is front*/).withTimeout(2).withName("LoadingCargo"),
+    //   new InstantCommand(()->{}), 
+    //   ()->passthrough.frontSensorEnabled));
     
-    //Load cargo from the back intake
-    loadCargoFromBack = new Trigger(
-      ()->{return cargoColorSensorBack.getColor()==cargoColorSensorBack.getTeamColor();}
-    );
-    loadCargoFromBack.whenActive(new ConditionalCommand(
-      new PTLoadCargo(passthrough,feeder, false/*direction is back*/).withTimeout(2).withName("LoadingCargo"),
-      new InstantCommand(()->{}), 
-      ()->passthrough.frontSensorEnabled));
+    // //Load cargo from the back intake
+    // loadCargoFromBack = new Trigger(
+    //   ()->{return cargoColorSensorBack.getColor()==cargoColorSensorBack.getTeamColor();}
+    // );
+    // loadCargoFromBack.whenActive(new ConditionalCommand(
+    //   new PTLoadCargo(passthrough,feeder, false/*direction is back*/).withTimeout(2).withName("LoadingCargo"),
+    //   new InstantCommand(()->{}), 
+    //   ()->passthrough.frontSensorEnabled));
   }
 
   /**

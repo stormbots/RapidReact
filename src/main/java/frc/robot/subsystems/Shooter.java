@@ -144,7 +144,7 @@ public class Shooter extends SubsystemBase {
 
 
     //Temp Values for PID Tuning on the field. Remove later
-    setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
+    //setRPM(SmartDashboard.getNumber("rpmSetpoint", 0.0));
     // kP = SmartDashboard.getNumber("shooter/kP", 0.0001);
     // kI = SmartDashboard.getNumber("shooter/kI", 0.0);
     // kD = SmartDashboard.getNumber("shooter/kD", 0.0);

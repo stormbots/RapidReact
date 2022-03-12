@@ -59,7 +59,7 @@ public class RobotContainer {
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
   public CargoColorSensor cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kMXP);
-  //public CargoColorSensor cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
+  public CargoColorSensor cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
   
 
   public Vision vision = new Vision(navx);

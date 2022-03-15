@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.BotName;
+import frc.robot.subsystems.Vision;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, create subsystems, 
     // and put our, and put autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    
   }
 
   /**
@@ -82,7 +85,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_robotContainer.vision.lightsOff();
     //m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kBrake);
-    m_robotContainer.climber.hookMotor.set(0.0);
+    //m_robotContainer.climber.hookMotor.set(0.0);
     m_robotContainer.climber.winchMotor.set(0.0);
     m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
     m_robotContainer.shooter.setRPM(0.0);

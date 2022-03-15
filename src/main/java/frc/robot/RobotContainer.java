@@ -67,6 +67,7 @@ public class RobotContainer {
   Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
   
   
+  
   // 
   // SUBSYSTEMS
   //
@@ -121,6 +122,8 @@ public class RobotContainer {
   public RobotContainer() {
     // SmartDashboard.putData(new FeederFireOneShot(feeder));
     SmartDashboard.putData(new RunCommand(() -> shooter.setRPM(800)).withName("ShooterFeederTesting"));
+    SmartDashboard.putNumber("compressor/amps",compressor.getCurrent());
+
 
     /**************************************************
      * Auto Stuff
@@ -288,9 +291,9 @@ public class RobotContainer {
     
     spoolShooterButton.whileHeld(new ShooterSpoolUp(shooter));
     
-    climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(operator.getRawAxis(1))));
-    climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
-    climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));
+    climbButtonManual.whileHeld(new RunCommand(()->climber.winchMotor.set(-operator.getRawAxis(1))));
+    // climbButtonManual.whileHeld(new RunCommand(()->climber.hookMotor.set(operator.getRawAxis(2))));
+    // climbButtonManual.whenReleased(new InstantCommand(()->climber.hookMotor.set(0.0)));
     climbButtonManual.whenReleased(new InstantCommand(()->climber.winchMotor.set(0.0)));
     
 

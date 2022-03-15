@@ -23,10 +23,10 @@ public class Climber extends SubsystemBase {
   private double kMaxHeight = 61;
 
   //Class consent variables for the motor for the hookMotor and climber, also gets the encoder for the hook and the PID controller
-  public CANSparkMax hookMotor = new CANSparkMax(16, MotorType.kBrushless); //Change the port later, 10 is temp variable
-  private RelativeEncoder hookEncoder = hookMotor.getEncoder();
+  //public CANSparkMax hookMotor = new CANSparkMax(16, MotorType.kBrushless); //Change the port later, 10 is temp variable
+  //private RelativeEncoder hookEncoder = hookMotor.getEncoder();
 
-  private SparkMaxPIDController hookPID = hookMotor.getPIDController();
+  //private SparkMaxPIDController hookPID = hookMotor.getPIDController();
   public CANSparkMax winchMotor = new CANSparkMax(15, MotorType.kBrushless); //15
   private RelativeEncoder winchEncoder = winchMotor.getEncoder();
   MiniPID winchPID = new MiniPID(0,0,0);//TODO: change temp values. 
@@ -44,40 +44,41 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
     //Get the position of the encoder
-    hookEncoder.getPosition();
+    //hookEncoder.getPosition();
 
     //configure climber hook/motors
       //configure conversion factor for encoder so that X rotations  = linear distance
       //configure offset for that value
-      winchMotor.setInverted(true);
-      winchEncoder.setPositionConversionFactor((kMaxHeight-kMinHeight)/136.25); //TODO set conversion to inches from floor;
-      winchEncoder.setPosition(kMinHeight); //TODO Set to resting height from floor
+      winchMotor.setInverted(false);
+      //255 rotations upper limit
+      winchEncoder.setPositionConversionFactor(1); //TODO set conversion to inches from floor;
+      winchEncoder.setPosition(0); //TODO Set to resting height from floor
       
-      winchMotor.setSoftLimit(SoftLimitDirection.kForward, (float)kMaxHeight);
-      winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)kMinHeight);
-      // winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-      // winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      winchMotor.setSoftLimit(SoftLimitDirection.kForward, (float)255.0);
+      winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)0.0);
+      winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       
       winchPID.setSetpoint(winchEncoder.getPosition());
       winchMotor.setIdleMode(IdleMode.kBrake);//Want coast on boot, enable brake when climbing
       winchMotor.setSmartCurrentLimit(80);
       //Configure Hook
-      hookMotor.setSmartCurrentLimit(15);
-      hookMotor.setInverted(false);
-      hookEncoder.setPositionConversionFactor(180.0/306.5); //306.5
-      hookEncoder.setPosition(0);
+      // hookMotor.setSmartCurrentLimit(15);
+      // hookMotor.setInverted(false);
+      // hookEncoder.setPositionConversionFactor(180.0/306.5); //306.5
+      // hookEncoder.setPosition(0);
 
       
-      hookMotor.setSoftLimit(SoftLimitDirection.kForward, 180);
-      hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 45);
-      hookMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-      hookMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+      // hookMotor.setSoftLimit(SoftLimitDirection.kForward, 180);
+      // hookMotor.setSoftLimit(SoftLimitDirection.kReverse, 45);
+      // hookMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      // hookMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       
       // hookPID.setReference(hookEncoder.getPosition(), ControlType.kPosition);
-      hookPID.setP(1/360.0);
-      hookMotor.setIdleMode(IdleMode.kCoast);
-      hookMotor.set(0);
-  } 
+  //     hookPID.setP(1/360.0);
+  //     hookMotor.setIdleMode(IdleMode.kCoast);
+  //     hookMotor.set(0);
+   } 
 
   // getHeight()
   public double getHeight(){
@@ -108,7 +109,7 @@ public class Climber extends SubsystemBase {
   
   public void init(){
     winchMotor.setIdleMode(IdleMode.kBrake);
-    hookMotor.setIdleMode(IdleMode.kBrake);
+    //hookMotor.setIdleMode(IdleMode.kBrake);
 
   }
 
@@ -135,9 +136,9 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putNumber("climber/winch/output", winchMotor.getAppliedOutput());
     SmartDashboard.putNumber("climber/winch/position", winchMotor.getEncoder().getPosition());
 
-    SmartDashboard.putNumber("climber/hook/amps", hookMotor.getOutputCurrent());
-    SmartDashboard.putNumber("climber/hook/output", hookMotor.getAppliedOutput());    
-    SmartDashboard.putNumber("climber/hook/position", hookMotor.getEncoder().getPosition());
+    // SmartDashboard.putNumber("climber/hook/amps", hookMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("climber/hook/output", hookMotor.getAppliedOutput());    
+    // SmartDashboard.putNumber("climber/hook/position", hookMotor.getEncoder().getPosition());
     
   }
 

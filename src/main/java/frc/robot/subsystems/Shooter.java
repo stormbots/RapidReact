@@ -26,9 +26,9 @@ public class Shooter extends SubsystemBase {
   //private final double kPTop = 0;//0.099591e-3;
   //private final double kPBottom = 0;//0.094701e-3;
 
-  private double kP = 0.0001; //Good P value for now. Lets role with it.
+  private double kP = 0.0003; //Good P value for now. Lets role with it.
   private double kI = 0.0;
-  private double kD =0.0;
+  private double kD =0.003125;
   private double IZone = 0.0;
 
   public CANSparkMax topMotor = new CANSparkMax(14, MotorType.kBrushless);
@@ -43,11 +43,14 @@ public class Shooter extends SubsystemBase {
   Vision vision;
 
   public Shooter(Vision vision) {
-    //Temp Values for PID Tuning on the field. Remove later
+    
+    // //Temp Values for PID Tuning on the field. Remove later
     // SmartDashboard.putNumber("shooter/kP", 0.0001);
     // SmartDashboard.putNumber("shooter/kI", 0);
     // SmartDashboard.putNumber("shooter/kD", 0.0);
     // SmartDashboard.putNumber("shooter/IZone", 0.0);
+
+    
 
     SmartDashboard.putNumber("rpmSetpoint", 0.0);
     switch(Constants.botName){
@@ -74,6 +77,9 @@ public class Shooter extends SubsystemBase {
     encoderTop = topMotor.getEncoder();
     encoderBottom = bottomMotor.getEncoder();
 
+    pidTop.setIAccum(0);
+    pidBottom.setIAccum(0);
+
     //TEST:
     //pidTop.setOutputRange(0, 1);
     //pidBottom.setOutputRange(0, 1);
@@ -84,6 +90,9 @@ public class Shooter extends SubsystemBase {
 
     pidTop.setP(kP);
     pidBottom.setP(kP);
+
+    pidTop.setD(kD);
+    pidBottom.setD(kD);
     
     }
     
@@ -140,6 +149,7 @@ public class Shooter extends SubsystemBase {
     // kI = SmartDashboard.getNumber("shooter/kI", 0.0);
     // kD = SmartDashboard.getNumber("shooter/kD", 0.0);
     // IZone = SmartDashboard.getNumber("shooter/IZone", 0.0);
+    // //kFF = SmartDashboard.getNumber("shooter/FF", 1/5400);
     // pidTop.setP(kP);
     // pidBottom.setP(kP);
 
@@ -151,6 +161,8 @@ public class Shooter extends SubsystemBase {
 
     // pidTop.setIZone(IZone);
     // pidBottom.setIZone(IZone);
+
+  
     
 
 

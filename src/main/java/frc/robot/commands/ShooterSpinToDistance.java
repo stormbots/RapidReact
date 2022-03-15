@@ -29,9 +29,7 @@ public class ShooterSpinToDistance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (vision.hasValidTarget()){
       distanceCache = vision.getDistanceToUpperHub();
-    }
     //MAYBE: Have distance slew rate
     shooter.setRPMForDistance(distanceCache);
   }

@@ -255,5 +255,9 @@ public class Chassis extends SubsystemBase {
     SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());
     // SmartDashboard.putNumber("chassis/ampsleft", left.getOutputCurrent());
     // SmartDashboard.putNumber("chassis/ampsright", right.getOutputCurrent());
+    // SmartDashboard.putNumber("chassis/ampsleftA", leftA.getOutputCurrent());
+    // SmartDashboard.putNumber("chassis/ampsrightA", rightA.getOutputCurrent());
+    // SmartDashboard.putNumber("chassis/ampsleftB", leftB.getOutputCurrent());
+    // SmartDashboard.putNumber("chassis/ampsrightB", rightB.getOutputCurrent());
   }
 }

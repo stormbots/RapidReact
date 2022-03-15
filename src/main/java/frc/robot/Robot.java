@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
@@ -142,6 +143,10 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.climber.winchMotor.setSmartCurrentLimit(1);
+    m_robotContainer.climber.winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    m_robotContainer.climber.winchMotor.set(-0.1);
+    m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kCoast);
   }
 
   /** This function is called periodically during test mode. */

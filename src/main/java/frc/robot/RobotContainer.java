@@ -157,13 +157,15 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Center Internal", true))
         ).withTimeout(4.0)
-      //.andThen(new PTLoadCargo(passthrough, feeder, true))
-      .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis)
-        .alongWith(new InstantCommand(()->{shooter.setRPM(2950);}))
-        .withTimeout(3.0)
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);}))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+      .andThen(
+        new FeederShootCargo(feeder)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(5)
         )
-      .andThen(new FeederShootCargo(feeder)) //shoves cargo into feeder
-      .andThen(new InstantCommand(() -> {backIntake.intakeOff();shooter.setRPM(0);}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
     //Right side auto
     Command rightAuto2Shot = new InstantCommand(()->{})
@@ -191,8 +193,8 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Left Internal", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2850 - 50);}))
-      .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2500);})) // Bad battery while testing, plz fix
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->-25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
@@ -208,8 +210,8 @@ public class RobotContainer {
     ;
 
     Command testAuto = new InstantCommand(()->{})
-      //.andThen(new ChassisPath(chassis, "Right Basic", true))
-      .andThen(new ChassisPath(chassis, "Test", false))
+      .andThen(new ChassisPath(chassis, "Right Basic", true))
+      .andThen(new ChassisPath(chassis, "Right 4", false))
     ;
 
     autoChooser.setDefaultOption("Taxi", taxiAuto);

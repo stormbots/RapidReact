@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -85,7 +86,7 @@ public class Chassis extends SubsystemBase {
     navx.reset();
     navx.calibrate();
 
-    odometry = new DifferentialDriveOdometry(navx.getRotation2d());
+    odometry = new DifferentialDriveOdometry(getHeading());
 
     //Adjust various motor constants
     switch (Constants.botName)
@@ -101,25 +102,24 @@ public class Chassis extends SubsystemBase {
           TrackwidthMeters = 0.8128;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
           EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI = 0.08139
-          MaxSpeedMetersPerSecond = 1.5; // Doesn't work with pathweaver trajectories
-          MaxAccelerationMetersPerSecondSquared = 1.5; // Doesn't work with pathweaver trajectories
+          MaxSpeedMetersPerSecond = 2.0; // Doesn't work with pathweaver trajectories
+          MaxAccelerationMetersPerSecondSquared = 4.0; // Doesn't work with pathweaver trajectories
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 4;
           break;
       default:
       case COMP:
-          // 127.7 rotations per 120 in
           // NEEDS TO BE UPDATED BEFORE RUNNING (remember harlod? yeah....)
           scalar = 1.0;
-          sVolts = 0.20789 * scalar;
-          vVoltSecondsPerMeter = 1.6062 * scalar;
-          aVoltSecondsSquaredPerMeter = 0.40753 * scalar;
-          PDriveVel = 2.2834;
+          sVolts = 0.26543 * scalar;
+          vVoltSecondsPerMeter = 5.6256 * scalar;
+          aVoltSecondsSquaredPerMeter = 0.89596 * scalar;
+          PDriveVel = 0.068869;
           TrackwidthMeters = 0.68;
           DriveKinematics = new DifferentialDriveKinematics(TrackwidthMeters);
-          EncoderDistancePerPulse = (12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
-          MaxSpeedMetersPerSecond = 4; // Doesn't work with pathweaver trajectories
-          MaxAccelerationMetersPerSecondSquared = 4; // Doesn't work with pathweaver trajectories
+          EncoderDistancePerPulse = (3.048/132.4); //(12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
+          MaxSpeedMetersPerSecond = 1.99; // Doesn't work with pathweaver trajectories
+          MaxAccelerationMetersPerSecondSquared = 4.0; // Doesn't work with pathweaver trajectories
           RamseteB = 2 * 2;
           RamseteZeta = 0.7 * 0.4;
           break;
@@ -138,11 +138,11 @@ public class Chassis extends SubsystemBase {
     rightEncoder = right.getEncoder();
 
     leftEncoder.setPositionConversionFactor(Chassis.EncoderDistancePerPulse);
-    leftEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
+    leftEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60.0); // RPM to m/s
     rightEncoder.setPositionConversionFactor(Chassis.EncoderDistancePerPulse);
-    rightEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60); // RPM to m/s
+    rightEncoder.setVelocityConversionFactor(Chassis.EncoderDistancePerPulse / 60.0); // RPM to m/s
 
-    // leftEncoder.setPositionConversionFactor(1.0);
+    //leftEncoder.setPositionConversionFactor(1.0);
 
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
@@ -207,7 +207,7 @@ public class Chassis extends SubsystemBase {
   {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
-    odometry.resetPosition(pose, navx.getRotation2d());
+    odometry.resetPosition(pose, getHeading());
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -236,16 +236,20 @@ public class Chassis extends SubsystemBase {
     }
   }
 
+  public Rotation2d getHeading() {
+    return navx.getRotation2d().unaryMinus();
+  }
+
   @Override
   public void periodic() {
-    //SmartDashboard.putNumber("Left", leftEncoder.getPosition());
+    SmartDashboard.putData("Compass", navx);
     if (left != null){
       SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }
     if (reverse) {
-      odometry.update(navx.getRotation2d(), -rightEncoder.getPosition(), -leftEncoder.getPosition());
+      odometry.update(getHeading(), -rightEncoder.getPosition(), -leftEncoder.getPosition());
     } else {
-      odometry.update(navx.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+      odometry.update(getHeading(), leftEncoder.getPosition(), rightEncoder.getPosition());
     }
     SmartDashboard.putNumber("chassis/x", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("chassis/y", odometry.getPoseMeters().getY());

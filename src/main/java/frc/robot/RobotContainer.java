@@ -167,6 +167,27 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
+    //Center Auto (4 Ball)
+    Command centerAuto4Shot = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
+      .andThen(new IntakeDown(backIntake)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+        .alongWith(new ShooterSpoolUp(shooter))
+        .alongWith(new ChassisPath(chassis, "Center Internal", true))
+        ).withTimeout(4.0)
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);}))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+      .andThen(
+        new FeederShootCargo(feeder)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(1.2)
+        )
+      .andThen(new ChassisPath(chassis, "Center 4", true)
+        .alongWith(new IntakeDown(backIntake))
+        )
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
+    ;
     //Right side auto
     Command rightAuto2Shot = new InstantCommand(()->{})
       .andThen(new WaitCommand(autoWaitTimer))
@@ -175,13 +196,35 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Right Internal", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);}))
-      .andThen(new ChassisDriveToHeadingBasic(0, ()->25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(5)
         )
+      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
+    ;
+    //Right side auto (4 Ball)
+    Command rightAuto4Shot = new InstantCommand(()->{})
+      .andThen(new WaitCommand(autoWaitTimer))
+      .andThen(new IntakeDown(backIntake)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
+        .alongWith(new ShooterSpoolUp(shooter))
+        .alongWith(new ChassisPath(chassis, "Right Internal", true))
+        ).withTimeout(4.0)
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
+      .andThen(new ChassisDriveToHeadingBasic(0, ()->30, 5, 5/12.0, navx, chassis).withTimeout(2.0))
+      .andThen(
+        new FeederShootCargo(feeder)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(1.2)
+        )
+      .andThen(new ChassisPath(chassis, "Right 4", false)
+      .alongWith(new IntakeDown(frontIntake))
+      )
+
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
@@ -216,7 +259,9 @@ public class RobotContainer {
 
     autoChooser.setDefaultOption("Taxi", taxiAuto);
     autoChooser.addOption("Center 2 Ball", centerAuto2Shot);
+    autoChooser.addOption("Center 4 Ball", centerAuto4Shot);
     autoChooser.addOption("Right 2 Ball", rightAuto2Shot);
+    autoChooser.addOption("Right 4 Ball", rightAuto4Shot);
     autoChooser.addOption("Left 2 Ball", leftAuto2Shot);
     autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
     autoChooser.addOption("Special Auto", specialAuto); //who knows

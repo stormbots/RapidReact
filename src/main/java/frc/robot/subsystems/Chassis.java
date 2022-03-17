@@ -120,8 +120,8 @@ public class Chassis extends SubsystemBase {
           EncoderDistancePerPulse = (3.048/132.4); //(12.0 / 50.0) * 0.10795 * Math.PI; // Gearing * Wheel Diameter * PI
           MaxSpeedMetersPerSecond = 1.0; // Doesn't work with pathweaver trajectories (should be 1.99)
           MaxAccelerationMetersPerSecondSquared = 2.0; // Doesn't work with pathweaver trajectories (should be 4.0)
-          RamseteB = 2 * 2;
-          RamseteZeta = 0.7 * 0.4;
+          RamseteB = 2;// * 2;
+          RamseteZeta = 0.7;// * 0.4;
           break;
     }
 

@@ -29,8 +29,7 @@ public class ChassisPath extends CommandBase {
     new SimpleMotorFeedforward(Chassis.sVolts, Chassis.vVoltSecondsPerMeter, Chassis.aVoltSecondsSquaredPerMeter),
     Chassis.DriveKinematics, 10);
 
-  private TrajectoryConfig config = new TrajectoryConfig(Chassis.MaxSpeedMetersPerSecond, Chassis.MaxAccelerationMetersPerSecondSquared)
-    .setKinematics(Chassis.DriveKinematics).addConstraint(autoVoltageConstraint);
+  private TrajectoryConfig config ;
     
   private Chassis chassis;
   private Command ramseteCommand;
@@ -41,6 +40,19 @@ public class ChassisPath extends CommandBase {
     this.chassis = c;
     this.trajectoryName = path;
     this.reverse = reverse;
+    config = new TrajectoryConfig(Chassis.MaxSpeedMetersPerSecond, Chassis.MaxAccelerationMetersPerSecondSquared)
+    .setKinematics(Chassis.DriveKinematics).addConstraint(autoVoltageConstraint);
+    addRequirements(chassis);
+  }
+
+  public ChassisPath(Chassis c, String path, boolean reverse, double maxaccel, double maxv) {
+    this.chassis = c;
+    this.trajectoryName = path;
+    this.reverse = reverse;
+    config = new TrajectoryConfig(maxv, maxaccel)
+    .setKinematics(Chassis.DriveKinematics).addConstraint(autoVoltageConstraint);
+    addRequirements(chassis);
+
     addRequirements(chassis);
   }
 

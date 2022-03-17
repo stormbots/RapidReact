@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -173,18 +174,42 @@ public class RobotContainer {
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
-        .alongWith(new ChassisPath(chassis, "Center Internal", true))
-        ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);}))
+        .alongWith(new ChassisPath(chassis, "Center Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2))
+        ).withTimeout(2.5)
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2200);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.2)
         )
-      .andThen(new ChassisPath(chassis, "Center 4", true)
-        .alongWith(new IntakeDown(backIntake))
+      .andThen(new ChassisPath(chassis, "Center 4", true))
+
+      .andThen(new IntakeDown(backIntake)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(1)
+      )
+
+      .andThen(new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Return", false), 
+        new Command[] {
+          new IntakeDown(backIntake),
+          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough),
+          new InstantCommand(() -> {shooter.setRPM(2300);})
+        }))
+      // .andThen(new ChassisPath(chassis, "Center 4 Return", false)
+      //   .alongWith(new IntakeDown(backIntake).withTimeout(2.5))
+      //   .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough).withTimeout(2.5))
+      //   .alongWith(new ShooterSpoolUp(shooter).withTimeout(2.5))
+      //   )
+
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
+      // .andThen(new ChassisDriveToHeadingBasic(0, ()->15, 5, 5/12.0, navx, chassis).withTimeout(1.5))
+      .andThen(
+        new FeederShootCargo(feeder)
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .withTimeout(1.2)
         )
+
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
@@ -216,16 +241,16 @@ public class RobotContainer {
         ).withTimeout(4.0)
       .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->30, 5, 5/12.0, navx, chassis).withTimeout(2.0))
-      .andThen(
-        new FeederShootCargo(feeder)
+      .andThen(new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.2)
-        )
+      )
       .andThen(new ChassisPath(chassis, "Right 4", false)
-      .alongWith(new IntakeDown(frontIntake))
+        .alongWith(new IntakeDown(frontIntake))
+        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
       )
 
-      .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
+      .andThen(new InstantCommand(() -> {frontIntake.intakeOff();}, frontIntake, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
     //Left side auto

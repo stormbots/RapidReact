@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
       winchEncoder.setPositionConversionFactor(1); //TODO set conversion to inches from floor;
       winchEncoder.setPosition(0); //TODO Set to resting height from floor
       
-      winchMotor.setSoftLimit(SoftLimitDirection.kForward, (float)255.0);
+      winchMotor.setSoftLimit(SoftLimitDirection.kForward, (float)280.0);
       winchMotor.setSoftLimit(SoftLimitDirection.kReverse, (float)0.0);
       winchMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       winchMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);

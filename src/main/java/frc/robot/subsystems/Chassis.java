@@ -244,7 +244,7 @@ public class Chassis extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putData("Compass", navx);
     if (left != null){
-      SmartDashboard.putNumber("chassis/faults",left.getFaults());
+      // SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }
     if (reverse) {
       odometry.update(getHeading(), -rightEncoder.getPosition(), -leftEncoder.getPosition());

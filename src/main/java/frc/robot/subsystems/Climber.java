@@ -132,8 +132,8 @@ public class Climber extends SubsystemBase {
     //Target Outputs
     //SmartDashboard.putNumber("climber/target", value);
     // //PID Outputs
-    SmartDashboard.putNumber("climber/winch/amps", winchMotor.getOutputCurrent());
-    SmartDashboard.putNumber("climber/winch/output", winchMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("climber/winch/amps", winchMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("climber/winch/output", winchMotor.getAppliedOutput());
     SmartDashboard.putNumber("climber/winch/position", winchMotor.getEncoder().getPosition());
 
     // SmartDashboard.putNumber("climber/hook/amps", hookMotor.getOutputCurrent());

@@ -121,6 +121,12 @@ public class ChassisPath extends CommandBase {
             List.of(),
             new Pose2d(1.2 + 0.254, 0, new Rotation2d(0, 0)),
           config);
+        case "Center 4 Internal"://CenterAuto2Shot
+          return TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            List.of(),
+            new Pose2d(1.270665, 0.1143, Rotation2d.fromDegrees(12.5)),
+          config);
         case "Right Internal"://RightAuto2Shot
           return TrajectoryGenerator.generateTrajectory(
             new Pose2d(0, 0, new Rotation2d(0)),

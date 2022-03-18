@@ -64,9 +64,7 @@ public class Chassis extends SubsystemBase {
   private CANSparkMax left;
   private CANSparkMax right;
   private CANSparkMax leftA;
-  private CANSparkMax leftB;
   private CANSparkMax rightA;
-  private CANSparkMax rightB;
 
   public RelativeEncoder leftEncoder;
   public RelativeEncoder rightEncoder;
@@ -128,10 +126,8 @@ public class Chassis extends SubsystemBase {
     //Instantiate motors.
     left = new CANSparkMax(1,MotorType.kBrushless);
     leftA = new CANSparkMax(2,MotorType.kBrushless);
-    leftB = new CANSparkMax(3,MotorType.kBrushless);
     right = new CANSparkMax(4,MotorType.kBrushless);
     rightA = new CANSparkMax(5,MotorType.kBrushless);
-    rightB = new CANSparkMax(6,MotorType.kBrushless);
 
     //Get encoder references and apply conversions
     leftEncoder = left.getEncoder();
@@ -148,18 +144,14 @@ public class Chassis extends SubsystemBase {
     rightEncoder.setPosition(0);
 
     //loop through motors and set common parameters
-    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA}){
       m.setOpenLoopRampRate(0.2);
       m.setIdleMode(IdleMode.kBrake);
       m.setSmartCurrentLimit(240/4, 240/4);//240 is sensible current limit to chassis
     }
     //configure followers
-    for(CANSparkMax m : new CANSparkMax[]{leftA,leftB}){
-      m.follow(left);
-    }
-    for(CANSparkMax m : new CANSparkMax[]{rightA,rightB}){
-      m.follow(right);
-    }
+    leftA.follow(left);
+    rightA.follow(right);
 
     //Set other non-common parameters for motors
     left.setInverted(true);
@@ -231,7 +223,7 @@ public class Chassis extends SubsystemBase {
   }
 
   public void setIdleMode(IdleMode mode){
-    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA,leftB,rightB}){
+    for(CANSparkMax m : new CANSparkMax[]{left,right,leftA,rightA}){
       m.setIdleMode(mode);
     }
   }
@@ -257,7 +249,5 @@ public class Chassis extends SubsystemBase {
     // SmartDashboard.putNumber("chassis/ampsright", right.getOutputCurrent());
     // SmartDashboard.putNumber("chassis/ampsleftA", leftA.getOutputCurrent());
     // SmartDashboard.putNumber("chassis/ampsrightA", rightA.getOutputCurrent());
-    // SmartDashboard.putNumber("chassis/ampsleftB", leftB.getOutputCurrent());
-    // SmartDashboard.putNumber("chassis/ampsrightB", rightB.getOutputCurrent());
   }
 }

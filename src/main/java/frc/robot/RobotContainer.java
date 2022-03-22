@@ -368,11 +368,11 @@ public class RobotContainer {
     shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
     
-    ejectBackButton.whileHeld(new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower, passthrough));
+    ejectBackButton.whileHeld(new PTMoveCargo(-0.2, -1.0, passthrough));
     ejectBackButton.whileHeld(new FeederEjectCargo(feeder));
     ejectBackButton.whenPressed(()->passthrough.ptEnableColorSensors(false/*turn off front*/, false/*turn off back*/));
 
-    ejectFrontButton.whileHeld(new PTMoveCargo(-passthrough.kHighPower, passthrough.kLowPower, passthrough));
+    ejectFrontButton.whileHeld(new PTMoveCargo(-1.0, -0.2, passthrough));
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     ejectFrontButton.whenPressed(()->passthrough.ptEnableColorSensors(false/*turn off front*/, false/*turn off back*/));
     

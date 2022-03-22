@@ -21,7 +21,7 @@ public class CargoColorSensor extends SubsystemBase {
   Rev2mDistanceSensor.Port distancePort;
   
   private ColorSensorV3 colorSensor; 
-  private Rev2mDistanceSensor distanceSensor; 
+  // private Rev2mDistanceSensor distanceSensor; 
 
   public static enum CargoColor {BLUE, RED, UNDEFINED, NOCARGO};
   private CargoColor teamColor = CargoColor.BLUE; //temp value
@@ -32,6 +32,7 @@ public class CargoColorSensor extends SubsystemBase {
   private final Color kRedTarget = new Color(0.543, 0.338, 0.118);
   ColorMatchResult match = colorMatcher.matchClosestColor(color);
   private String name;
+  private CargoColor currentCargoColor= CargoColor.NOCARGO;
 
   /** Creates a new CargoColorSensor. */
   public CargoColorSensor(String name, I2C.Port colorPort, Rev2mDistanceSensor.Port distancePort) {
@@ -42,10 +43,10 @@ public class CargoColorSensor extends SubsystemBase {
     this.name = name;
 
     colorSensor = new ColorSensorV3(colorPort);
-    distanceSensor = new Rev2mDistanceSensor(distancePort);
-    distanceSensor.setEnabled(true);
-    distanceSensor.setAutomaticMode(true);
-    distanceSensor.setDistanceUnits(Unit.kInches);
+    // distanceSensor = new Rev2mDistanceSensor(distancePort);
+    // distanceSensor.setEnabled(true);
+    // distanceSensor.setAutomaticMode(true);
+    // distanceSensor.setDistanceUnits(Unit.kInches);
 
     colorMatcher.addColorMatch(kRedTarget);
     colorMatcher.addColorMatch(kBlueTarget);
@@ -79,28 +80,33 @@ public class CargoColorSensor extends SubsystemBase {
     return teamColor;
   }
 
-  public CargoColor getColor() {
-    if(colorSensor.getProximity() < 1500) return CargoColor.NOCARGO;
-    // else if(colorSensor.getProximity() > 1500) return CargoColor.NOCARGO;
+  public CargoColor getColor(){
+    return this.currentCargoColor;
+  }
 
+  public void updateCargoColor() {
     color = colorSensor.getColor();
     match = colorMatcher.matchClosestColor(color);
+    if(colorSensor.getProximity() < 1500){
+      this.currentCargoColor= CargoColor.NOCARGO;
+    }
+    // else if(colorSensor.getProximity() > 1500) return CargoColor.NOCARGO;
 
-    if (match.confidence <= .95) {
+    else if (match.confidence <= .95) {
       //SmartDashboard.putString("ColorSensor/"+name+"/color", "undefined");
-      return CargoColor.UNDEFINED;
+      this.currentCargoColor=  CargoColor.UNDEFINED;
     }
     
     else if (match.color == kRedTarget) {
       //SmartDashboard.putString("ColorSensor/" +name+"/color", "red");
-      return CargoColor.RED;
+      this.currentCargoColor=  CargoColor.RED;
     } 
     else if (match.color == kBlueTarget) {
       //SmartDashboard.putString("ColorSensor/" +name+ "/color", "blue");
-      return CargoColor.BLUE;
+      this.currentCargoColor=  CargoColor.BLUE;
     } 
     else{
-      return CargoColor.UNDEFINED;
+      this.currentCargoColor=  CargoColor.UNDEFINED;
     }
   }
 
@@ -108,11 +114,12 @@ public class CargoColorSensor extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // This method will be called once per scheduler run
+    updateCargoColor();
     // SmartDashboard.putNumber("ColorSensor/"+name+"/red", colorSensor.getColor().red);
     // SmartDashboard.putNumber("ColorSensor/"+name+"/green", colorSensor.getColor().green);
     // SmartDashboard.putNumber("ColorSensor/"+name+"/blue", colorSensor.getColor().blue);
     SmartDashboard.putNumber("ColorSensor/"+name+"/confidence", match.confidence);
-    SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
+    // SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
     SmartDashboard.putString("ColorSensor/"+name+"/color", getColor().toString());
     SmartDashboard.putNumber("ColorSensor/"+name+"/proximity", colorSensor.getProximity());
     // SmartDashboard.putString("ColorSensor/"+name+"/TeamColor", getTeamColor().toString());

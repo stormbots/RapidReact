@@ -36,7 +36,12 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     CameraServer.startAutomaticCapture();
     
-
+    
+    //Start sensor reading task
+    addPeriodic(()->{
+      m_robotContainer.cargoColorSensorBack.updateCargoColor();
+      m_robotContainer.cargoColorSensorFront.updateCargoColor();
+    }, 0.01);
     LiveWindow.disableAllTelemetry();
     String botString = Preferences.getString("botName", "none").toUpperCase().trim();
     switch(botString){
@@ -76,6 +81,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putData("Scheduler",CommandScheduler.getInstance());
+
+      
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

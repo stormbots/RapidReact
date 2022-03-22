@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
   public Intake(CANSparkMax motor, int solenoidChannel) {
     switch(Constants.botName){
       case COMP:
-       motor.setInverted(false);
+       motor.setInverted(true);
        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidChannel);
       break;
       case PRACTICE:

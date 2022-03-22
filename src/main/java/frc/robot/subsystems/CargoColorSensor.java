@@ -78,17 +78,16 @@ public class CargoColorSensor extends SubsystemBase {
   }
 
   public CargoColor getColor() {
-    color = colorSensor.getColor();
-    match = colorMatcher.matchClosestColor(color);
-
     if(distanceSensor.getRange() > 1.5) return CargoColor.NOCARGO;
     else if(distanceSensor.getRange() < 0) return CargoColor.NOCARGO;
 
-    else if (match.confidence <= .95) {
+    color = colorSensor.getColor();
+    match = colorMatcher.matchClosestColor(color);
+
+    if (match.confidence <= .95) {
       //SmartDashboard.putString("ColorSensor/"+name+"/color", "undefined");
       return CargoColor.UNDEFINED;
     }
-    
     else if (match.color == kRedTarget) {
       //SmartDashboard.putString("ColorSensor/" +name+"/color", "red");
       return CargoColor.RED;
@@ -105,10 +104,10 @@ public class CargoColorSensor extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // This method will be called once per scheduler run
-    // SmartDashboard.putNumber("ColorSensor/"+name+"/red", colorSensor.getColor().red);
-    // SmartDashboard.putNumber("ColorSensor/"+name+"/green", colorSensor.getColor().green);
-    // SmartDashboard.putNumber("ColorSensor/"+name+"/blue", colorSensor.getColor().blue);
+    // Color color = colorSensor.getColor();
+    // SmartDashboard.putNumber("ColorSensor/"+name+"/red", color.red);
+    // SmartDashboard.putNumber("ColorSensor/"+name+"/green", color.green);
+    // SmartDashboard.putNumber("ColorSensor/"+name+"/blue", color.blue);
     // SmartDashboard.putNumber("ColorSensor/"+name+"/confidence", match.confidence);
     // SmartDashboard.putNumber("ColorSensor/"+name+"/distance", distanceSensor.getRange());
     // SmartDashboard.putString("ColorSensor/"+name+"/color", getColor().toString());

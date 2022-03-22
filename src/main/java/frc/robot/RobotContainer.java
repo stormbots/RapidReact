@@ -60,8 +60,8 @@ public class RobotContainer {
   // Global sensors/sensor subsystems
   //
   public AHRS navx = new AHRS(Port.kMXP); // NOTE: Some prior years required usb for good performance. Port may change.
-  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
-  public CargoColorSensor cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
+  public CargoColorSensor cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kOnboard);
+  // public CargoColorSensor cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
   
 
   public Vision vision = new Vision(navx);
@@ -170,45 +170,52 @@ public class RobotContainer {
     ;
     //Center Auto (4 Ball)
     Command centerAuto4Shot = new InstantCommand(()->{})
-      .andThen(new WaitCommand(autoWaitTimer))
+    .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
+    .andThen(new WaitCommand(autoWaitTimer))
+
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2200);}))
+
+      .andThen(
+        new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2.0), 
+        new Command[] {
+          new IntakeDown(backIntake),
+          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough)
+        }))
+
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
-        .alongWith(new InstantCommand(() -> {shooter.setRPM(2200);}))
-        .alongWith(new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2))
-        ).withTimeout(2.5)
-      // .andThen(new InstantCommand(() -> {shooter.setRPM(2200);}))
-      // .andThen(new ChassisDriveToHeadingBasic(0, ()->-30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
+        ).withTimeout(0.6)
+
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.2)
         )
       .andThen(new ChassisPath(chassis, "Center 4", true))
+      .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
 
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.5)
       )
 
-      .andThen(new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Return", false), 
-        new Command[] {
-          new IntakeDown(backIntake),
-          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough),
-          new InstantCommand(() -> {shooter.setRPM(2300);})
-        }))
-      // .andThen(new ChassisPath(chassis, "Center 4 Return", false)
-      //   .alongWith(new IntakeDown(backIntake).withTimeout(2.5))
-      //   .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough).withTimeout(2.5))
-      //   .alongWith(new ShooterSpoolUp(shooter).withTimeout(2.5))
-      //   )
-
       .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
-      // .andThen(new ChassisDriveToHeadingBasic(0, ()->15, 5, 5/12.0, navx, chassis).withTimeout(1.5))
+
+      .andThen(
+        new ParallelDeadlineGroup(
+          new ChassisPath(chassis, "Center 4 Return", false), 
+          new Command[] {
+            new IntakeDown(backIntake),
+            new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough)
+          })
+      )
+      .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
+
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.2)
-        )
+      )
 
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
@@ -221,7 +228,7 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Right Internal", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2300 + 50);}))
       .andThen(new ChassisDriveToHeadingBasic(0, ()->30, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
@@ -261,7 +268,7 @@ public class RobotContainer {
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Left Internal", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2500);})) // Bad battery while testing, plz fix
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2500+50+75);})) // Bad battery while testing, plz fix
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)
@@ -278,15 +285,14 @@ public class RobotContainer {
     ;
 
     Command testAuto = new InstantCommand(()->{})
-      .andThen(new ChassisPath(chassis, "Right Basic", true))
-      .andThen(new ChassisPath(chassis, "Right 4", false))
+      .andThen(new ChassisPath(chassis, "Center 4 Return", false))
     ;
 
     autoChooser.setDefaultOption("Taxi", taxiAuto);
     autoChooser.addOption("Center 2 Ball", centerAuto2Shot);
     autoChooser.addOption("Center 4 Ball", centerAuto4Shot);
     autoChooser.addOption("Right 2 Ball", rightAuto2Shot);
-    autoChooser.addOption("Right 4 Ball", rightAuto4Shot);
+    // autoChooser.addOption("Right 4 Ball", rightAuto4Shot);
     autoChooser.addOption("Left 2 Ball", leftAuto2Shot);
     autoChooser.addOption("Do nothing", new InstantCommand(()->{}));
     autoChooser.addOption("Special Auto", specialAuto); //who knows
@@ -300,16 +306,16 @@ public class RobotContainer {
 
 
     //Configure our autonomous commands, and make sure drive team can select what they want
-    // switch(Constants.botName){
-    // case COMP:
-    //  cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
+    switch(Constants.botName){
+    case COMP:
+    cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kMXP);
     //  cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kOnboard, Rev2mDistanceSensor.Port.kOnboard);
-    // break;
-    // case PRACTICE:
-    //  cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kOnboard , Rev2mDistanceSensor.Port.kMXP);
+    break;
+    case PRACTICE:
+     cargoColorSensorFront = new CargoColorSensor("front",I2C.Port.kOnboard , Rev2mDistanceSensor.Port.kMXP);
     //  cargoColorSensorBack = new CargoColorSensor("back",I2C.Port.kMXP, Rev2mDistanceSensor.Port.kOnboard);
-    // break;
-    // }
+    break;
+    }
 
     SmartDashboard.putData("ChassisVisionTargeting", chassisVisionTargeting);
 
@@ -421,7 +427,7 @@ public class RobotContainer {
 
 
     //TODO sensors busted, need fixing
-    //Eject cargo out back intake
+    // Eject cargo out back intake
     // ejectCargoOutBack = new Trigger(
     //   ()->{return cargoColorSensorFront.getColor()==cargoColorSensorFront.getOpposingColor();}
     // );
@@ -429,7 +435,7 @@ public class RobotContainer {
     //   new PTMoveCargo(passthrough.kLowPower, -passthrough.kHighPower,passthrough).withTimeout(3).withName("EjectingCargoOutFront"), 
     //   new InstantCommand(()->{}), 
     //   ()->passthrough.frontSensorEnabled));
-    
+
     // //Eject cargo out front intake
     // ejectCargoOutFront = new Trigger(
     //   ()->{return cargoColorSensorBack.getColor()==cargoColorSensorBack.getOpposingColor();}

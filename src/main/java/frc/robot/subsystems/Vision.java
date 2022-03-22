@@ -31,8 +31,7 @@ public class Vision extends SubsystemBase {
 
     //TODO: Dynamic resolution change as robot gets farther from target
     driverPipeline();
-    //lightsOff();
-    lightsOn();
+    lightsOff();
 
     this.gyro = gyro;
 

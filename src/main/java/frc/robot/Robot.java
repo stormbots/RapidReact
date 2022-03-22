@@ -8,15 +8,15 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.BotName;
-import frc.robot.subsystems.Vision;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,14 +29,28 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  UsbCamera cam1;
+  UsbCamera cam2;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    CameraServer.startAutomaticCapture();
-    CameraServer.startAutomaticCapture();
+    // UsbCamera cam1 = CameraServer.startAutomaticCapture(0);
+    // UsbCamera cam2 = CameraServer.startAutomaticCapture(2);
+    
+
+    
+
+    // cam1.setResolution(50, 50);
+    // cam2.setResolution(50, 50);
+
+    // cam1.setFPS(24);
+    // cam2.setFPS(24);
+
+    
     
 
     LiveWindow.disableAllTelemetry();
@@ -115,9 +129,16 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
+  
+
 
   @Override
   public void teleopInit() {
+
+    // if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
+    // if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
+     
+
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
 
     // This makes sure that the autonomous stops running when

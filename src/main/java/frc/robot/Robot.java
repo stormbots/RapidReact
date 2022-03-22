@@ -35,9 +35,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    CameraServer.startAutomaticCapture();
-    CameraServer.startAutomaticCapture();
-    
 
     LiveWindow.disableAllTelemetry();
     String botString = Preferences.getString("botName", "none").toUpperCase().trim();
@@ -118,6 +115,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
+    
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
 
     // This makes sure that the autonomous stops running when

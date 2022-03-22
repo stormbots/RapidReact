@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -75,6 +77,8 @@ public class ChassisPath extends CommandBase {
         chassis::tankDriveVolts);
         /*NOTE would normally add chassis at end of list for requires, but this overseer command handles it*/
     ramseteCommand.schedule();
+
+    chassis.setIdleMode(IdleMode.kCoast);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -89,6 +93,7 @@ public class ChassisPath extends CommandBase {
     ramseteCommand.end(false);
     chassis.tankDriveVolts(0, 0);
     chassis.reverse = false;
+    chassis.setIdleMode(IdleMode.kBrake);
   }
 
   // Returns true when the command should end.

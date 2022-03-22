@@ -178,7 +178,7 @@ public class RobotContainer {
         new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough),
         new InstantCommand(() -> {shooter.setRPM(2200);})
       }))
-      .andThen(new WaitCommand(1.0))
+      .andThen(new WaitCommand(0.5))
 
       .andThen(
         new FeederShootCargo(feeder)

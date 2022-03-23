@@ -170,21 +170,15 @@ public class RobotContainer {
     ;
     //Center Auto (4 Ball)
     Command centerAuto4Shot = new InstantCommand(()->{})
-    .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
-    .andThen(new WaitCommand(autoWaitTimer))
-
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2200);}))
-
-      .andThen(
-        new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2.0), 
-        new Command[] {
-          new IntakeDown(backIntake),
-          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough)
-        }))
-
-      .andThen(new IntakeDown(backIntake)
-        .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
-        ).withTimeout(0.6)
+      .andThen(new WaitCommand(autoWaitTimer))
+      .andThen(new ParallelDeadlineGroup(
+      new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2),
+      new Command[] {
+        new IntakeDown(backIntake),
+        new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough),
+        new InstantCommand(() -> {shooter.setRPM(2200);})
+      }))
+      .andThen(new WaitCommand(0.5))
 
       .andThen(
         new FeederShootCargo(feeder)

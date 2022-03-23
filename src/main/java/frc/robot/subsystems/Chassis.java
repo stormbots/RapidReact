@@ -219,7 +219,7 @@ public class Chassis extends SubsystemBase {
   }
 
   public double getAverageDistance() {
-    return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2;
+    return (leftEncoder.getPosition() + rightEncoder.getPosition()) * 0.5;
   }
 
   public void setIdleMode(IdleMode mode){
@@ -234,7 +234,7 @@ public class Chassis extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("Compass", navx);
+    //SmartDashboard.putData("Compass", navx);
     if (left != null){
       // SmartDashboard.putNumber("chassis/faults",left.getFaults());
     }

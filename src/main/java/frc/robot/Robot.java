@@ -38,20 +38,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // UsbCamera cam1 = CameraServer.startAutomaticCapture(0);
-    // UsbCamera cam2 = CameraServer.startAutomaticCapture(2);
-    
-
-    
-
-    // cam1.setResolution(50, 50);
-    // cam2.setResolution(50, 50);
-
-    // cam1.setFPS(24);
-    // cam2.setFPS(24);
-
-    
-    
 
     LiveWindow.disableAllTelemetry();
     String botString = Preferences.getString("botName", "none").toUpperCase().trim();
@@ -135,8 +121,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
-    // if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
-    // if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
+    if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
+    if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
      
 
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);

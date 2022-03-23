@@ -186,30 +186,31 @@ public class RobotContainer {
         .withTimeout(1.2)
         )
       .andThen(new ChassisPath(chassis, "Center 4", true))
-      .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
 
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.5)
       )
 
+      .andThen(new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Return", false), 
+        new Command[] {
+          new IntakeDown(backIntake),
+          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough),
+          new InstantCommand(() -> {shooter.setRPM(2300);})
+        }))
+      // .andThen(new ChassisPath(chassis, "Center 4 Return", false)
+      //   .alongWith(new IntakeDown(backIntake).withTimeout(2.5))
+      //   .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough).withTimeout(2.5))
+      //   .alongWith(new ShooterSpoolUp(shooter).withTimeout(2.5))
+      //   )
+
       .andThen(new InstantCommand(() -> {shooter.setRPM(2300);}))
-
-      .andThen(
-        new ParallelDeadlineGroup(
-          new ChassisPath(chassis, "Center 4 Return", false), 
-          new Command[] {
-            new IntakeDown(backIntake),
-            new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough)
-          })
-      )
-      .andThen(new InstantCommand(()->{chassis.arcadeDrive(0,0);},chassis))
-
+      // .andThen(new ChassisDriveToHeadingBasic(0, ()->15, 5, 5/12.0, navx, chassis).withTimeout(1.5))
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
         .withTimeout(1.2)
-      )
+        )
 
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))

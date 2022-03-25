@@ -170,7 +170,7 @@ public class RobotContainer {
     ;
     //Center Auto (4 Ball)
     Command centerAuto4Shot = new InstantCommand(()->{})
-      .andThen(new WaitCommand(autoWaitTimer))
+      .andThen(new WaitCommand(0)) // Should be autowait timer
       .andThen(new ParallelDeadlineGroup(
       new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2),
       new Command[] {
@@ -178,7 +178,7 @@ public class RobotContainer {
         new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough),
         new InstantCommand(() -> {shooter.setRPM(2200);})
       }))
-      .andThen(new WaitCommand(0.5))
+      .andThen(new WaitCommand(0.4))
 
       .andThen(
         new FeederShootCargo(feeder)
@@ -189,7 +189,7 @@ public class RobotContainer {
 
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
-        .withTimeout(1.5)
+        .withTimeout(1.2)
       )
 
       .andThen(new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Return", false), 

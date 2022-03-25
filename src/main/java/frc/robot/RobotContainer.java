@@ -175,27 +175,27 @@ public class RobotContainer {
       new ChassisPath(chassis, "Center 4 Internal", true, Chassis.MaxAccelerationMetersPerSecondSquared, 2),
       new Command[] {
         new IntakeDown(backIntake),
-        new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough),
+        new PTMoveCargo(1, 1, passthrough),
         new InstantCommand(() -> {shooter.setRPM(2200);})
       }))
       .andThen(new WaitCommand(0.4))
 
       .andThen(
         new FeederShootCargo(feeder)
-        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .alongWith(new PTMoveCargo(1,1,passthrough))
         .withTimeout(1.2)
         )
       .andThen(new ChassisPath(chassis, "Center 4", true))
 
       .andThen(new IntakeDown(backIntake)
-        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .alongWith(new PTMoveCargo(1,1,passthrough))
         .withTimeout(1.2)
       )
 
       .andThen(new ParallelDeadlineGroup(new ChassisPath(chassis, "Center 4 Return", false), 
         new Command[] {
           new IntakeDown(backIntake),
-          new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough),
+          new PTMoveCargo(1,1,passthrough),
           new InstantCommand(() -> {shooter.setRPM(2300);})
         }))
       // .andThen(new ChassisPath(chassis, "Center 4 Return", false)
@@ -208,7 +208,7 @@ public class RobotContainer {
       // .andThen(new ChassisDriveToHeadingBasic(0, ()->15, 5, 5/12.0, navx, chassis).withTimeout(1.5))
       .andThen(
         new FeederShootCargo(feeder)
-        .alongWith(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough))
+        .alongWith(new PTMoveCargo(1,1,passthrough))
         .withTimeout(1.2)
         )
 

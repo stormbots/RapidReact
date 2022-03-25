@@ -325,10 +325,17 @@ public class RobotContainer {
         ()->{chassis.arcadeDrive(-driver.getRawAxis(1),driver.getRawAxis(2));}
         ,chassis)
       );
-      slowMode.whileHeld(new RunCommand(
+      // slowMode.whileHeld(new RunCommand(
+      //   ()->{chassis.arcadeDrive(-driver.getRawAxis(1) * .5, driver.getRawAxis(2) * .5);}
+      //   ,chassis)
+      // );
+
+      //Went from a held to a toggle. Eva wanted it. Might change later.
+      slowMode.toggleWhenPressed(new RunCommand(
         ()->{chassis.arcadeDrive(-driver.getRawAxis(1) * .5, driver.getRawAxis(2) * .5);}
-        ,chassis)
-      );
+        ,chassis));
+
+
 
     //TODO This is climber test code, be careful
     // testclimbButton.whileHeld(
@@ -364,8 +371,28 @@ public class RobotContainer {
       chassis, vision, navx)
     );
 
-    shiftButton.whileHeld(new RunCommand(()->chassis.setGear(Gear.HIGH)));
-    shiftButton.whenReleased(new RunCommand(()->chassis.setGear(Gear.LOW)));
+    shiftButton.whenPressed(new InstantCommand(()->chassis.setGear(Gear.HIGH)));
+    shiftButton.whenReleased(new InstantCommand(()->chassis.setGear(Gear.LOW)));
+
+    shiftButton.whileHeld(new RunCommand(
+      ()->{chassis.arcadeDrive(-driver.getRawAxis(1), driver.getRawAxis(2) * .825,true);}
+      ,chassis)
+    );
+    
+    // shiftButton.whenPressed(new InstantCommand(
+    //   ()->{chassis.setGear(chassis.getGear() == Gear.HIGH ? Gear.LOW : Gear.HIGH);}
+    //   )
+    // );
+    // whileheld ()
+    // {
+    //   set gear to LOW
+    //   arcadedrive( ()->-driver.getRawAxis(1),()->driver.getRawAxis(2)*.5,)
+
+
+    // }
+    // .whenreleaded shift low
+
+
     
     ejectBackButton.whileHeld(new PTMoveCargo(-0.2, -1.0, passthrough));
     ejectBackButton.whileHeld(new FeederEjectCargo(feeder));

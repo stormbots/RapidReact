@@ -76,6 +76,7 @@ public class Chassis extends SubsystemBase {
   DifferentialDrive chassis;
   Solenoid shifter;
   private AHRS navx;
+  Gear gear = Gear.LOW;
   
   public Chassis(AHRS navX) {
     
@@ -172,13 +173,26 @@ public class Chassis extends SubsystemBase {
     setGear(Gear.LOW);
   }
 
-  private SlewRateLimiter forwardSlew = new SlewRateLimiter(1/.35);
+  public SlewRateLimiter forwardSlew = new SlewRateLimiter(1/.35);
+  public SlewRateLimiter forwardSlewHighGear = new SlewRateLimiter(1/.7);
 
   public void arcadeDrive(double power, double turn) {
     power = forwardSlew.calculate(power);
     chassis.arcadeDrive(power,turn);
+    forwardSlewHighGear.reset(power);
   }
-  
+
+  public void arcadeDrive(double power, double turn,boolean highgear) {
+    power = forwardSlewHighGear.calculate(power);
+    chassis.arcadeDrive(power,turn);
+    forwardSlew.reset(power);
+  }
+
+  public void curvatureDrive(double power, double turn) {
+    power = forwardSlew.calculate(power);
+    chassis.curvatureDrive(power, turn, false);
+  }
+
   public void tankDrive(double powerLeft, double powerRight) {
     chassis.tankDrive(powerLeft, powerRight);
   }
@@ -215,7 +229,12 @@ public class Chassis extends SubsystemBase {
   }
   
   public void setGear(Gear gear){
+    this.gear = gear;
     shifter.set(gear.bool());
+  }
+
+  public Gear getGear(){
+    return this.gear;
   }
 
   public double getAverageDistance() {

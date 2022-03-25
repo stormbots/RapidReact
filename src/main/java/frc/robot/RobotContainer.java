@@ -168,7 +168,7 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> {backIntake.intakeOff();}, backIntake, chassis, passthrough, feeder, shooter))
       .andThen(new InstantCommand(() -> {shooter.setRPM(0);}))
     ;
-    //Center Auto (4 Ball)
+    //Center Auto (4 Ball) Confirmed to Work!
     Command centerAuto4Shot = new InstantCommand(()->{})
       .andThen(new WaitCommand(0)) // Should be autowait timer
       .andThen(new ParallelDeadlineGroup(
@@ -176,7 +176,7 @@ public class RobotContainer {
       new Command[] {
         new IntakeDown(backIntake),
         new PTMoveCargo(1, 1, passthrough),
-        new InstantCommand(() -> {shooter.setRPM(2200);})
+        new InstantCommand(() -> {shooter.setRPM(2200-25);})
       }))
       .andThen(new WaitCommand(0.4))
 

@@ -258,12 +258,12 @@ public class RobotContainer {
     //Left side auto
     Command leftAuto2Shot = new InstantCommand(()->{})
       .andThen(new WaitCommand(autoWaitTimer))
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);})) // Bad battery while testing, plz fix
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
         .alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Left Internal", true))
         ).withTimeout(4.0)
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2500+50+75);})) // Bad battery while testing, plz fix
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
       .andThen(
         new FeederShootCargo(feeder)

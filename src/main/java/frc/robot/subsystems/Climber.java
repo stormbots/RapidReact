@@ -49,6 +49,8 @@ public class Climber extends SubsystemBase {
     //configure climber hook/motors
       //configure conversion factor for encoder so that X rotations  = linear distance
       //configure offset for that value
+
+      winchMotor.setOpenLoopRampRate(.2);
       winchMotor.setInverted(false);
       //255 rotations upper limit
       winchEncoder.setPositionConversionFactor(1); //TODO set conversion to inches from floor;

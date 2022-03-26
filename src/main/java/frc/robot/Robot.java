@@ -9,13 +9,15 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.BotName;
 
 /**
@@ -31,6 +33,8 @@ public class Robot extends TimedRobot {
 
   UsbCamera cam1;
   UsbCamera cam2;
+
+    Spark ledModule = new Spark(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -88,7 +92,8 @@ public class Robot extends TimedRobot {
     //m_robotContainer.climber.winchMotor.setIdleMode(IdleMode.kBrake);
     //m_robotContainer.climber.hookMotor.set(0.0);
     m_robotContainer.climber.winchMotor.set(0.0);
-    m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
+    // m_robotContainer.chassis.setIdleMode(IdleMode.kCoast);
+
     m_robotContainer.shooter.setRPM(0.0);
     }
 
@@ -100,6 +105,17 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+
+    switch(DriverStation.getAlliance()){
+      case Blue: 
+      ledModule.set(.87);
+      break;
+      case Red:
+      ledModule.set(.61);
+      break;
+      default:
+      }
+    
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -121,6 +137,16 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
 
+    switch(DriverStation.getAlliance()){
+    case Blue: 
+    ledModule.set(.87);
+    break;
+    case Red:
+    ledModule.set(.61);
+    break;
+    default:
+    }
+  
     if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
     if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
      

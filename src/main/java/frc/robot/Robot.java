@@ -140,14 +140,14 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
 
     switch(DriverStation.getAlliance()){
-    case Blue: 
-    ledModule.set(.83);
-    break;
-    case Red:
-    ledModule.set(.61);
-    break;
-    default:
-    }
+      case Blue: 
+      ledModule.set(.83);
+      break;
+      case Red:
+      ledModule.set(.61);
+      break;
+      default:
+      }
 
     SmartDashboard.putNumber("LED/value", 0.57);
   
@@ -171,7 +171,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    //Quick LED Debugging.
     // ledModule.set(SmartDashboard.getNumber("LED/value", 0.57));
+
+
+    // if (DriverStation.getMatchTime() <= 30.0){
+    //   ledModule.set(0.63);
+    // }
 
 
     SmartDashboard.putNumber("chassis/turn", m_robotContainer.driver.getRawAxis(2));

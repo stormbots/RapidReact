@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   UsbCamera cam1;
   UsbCamera cam2;
 
-    Spark ledModule = new Spark(0);
+  Spark ledModule = new Spark(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -108,13 +108,15 @@ public class Robot extends TimedRobot {
 
     switch(DriverStation.getAlliance()){
       case Blue: 
-      ledModule.set(.87);
+      ledModule.set(.83);
       break;
       case Red:
       ledModule.set(.61);
       break;
       default:
       }
+    
+    
     
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
 
@@ -139,13 +141,15 @@ public class Robot extends TimedRobot {
 
     switch(DriverStation.getAlliance()){
     case Blue: 
-    ledModule.set(.87);
+    ledModule.set(.83);
     break;
     case Red:
     ledModule.set(.61);
     break;
     default:
     }
+
+    SmartDashboard.putNumber("LED/value", 0.57);
   
     if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
     if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
@@ -167,8 +171,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // ledModule.set(SmartDashboard.getNumber("LED/value", 0.57));
+
 
     SmartDashboard.putNumber("chassis/turn", m_robotContainer.driver.getRawAxis(2));
+
     m_robotContainer.climber.init();
   }
 

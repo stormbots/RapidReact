@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +28,7 @@ public class Feeder extends SubsystemBase {
     double previousDistance = 15;
     
     public Feeder() {
+      setIdleMode(IdleMode.kCoast);
 
       switch(Constants.botName){
         case COMP:
@@ -66,6 +68,11 @@ public class Feeder extends SubsystemBase {
     public void feederOff(){
       motorFeederFront.set(0.0);
       motorFeederBack.set(0.0);
+    }
+
+    public void setIdleMode(IdleMode idleMode){
+      motorFeederFront.setIdleMode(idleMode);
+      motorFeederBack.setIdleMode(idleMode);
     }
     
     @Override

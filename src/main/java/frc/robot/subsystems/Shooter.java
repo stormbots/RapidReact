@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
 
   /**  Ratio of RPM for Top Motor : Bottom Motor */
   private final double kShooterMotorRatio = .9;
-  private final double kRPMTargetBound = 100;
+  // private final double kRPMTargetBound = 100;
   private final int kPIDSlot = 0;
   //private final double kPTop = 0;//0.099591e-3;
   //private final double kPBottom = 0;//0.094701e-3;
@@ -97,6 +97,7 @@ public class Shooter extends SubsystemBase {
     }
     
     public void setRPM(double rpmSetpoint){
+      this.rpmSetpoint = rpmSetpoint;
       pidTop.setReference(rpmslew.calculate(rpmSetpoint) * kShooterMotorRatio, ControlType.kVelocity, kPIDSlot);
       pidBottom.setReference(rpmslew.calculate(rpmSetpoint), ControlType.kVelocity, kPIDSlot);
   
@@ -116,11 +117,13 @@ public class Shooter extends SubsystemBase {
     public double getRPMBottom(){
       return encoderBottom.getVelocity();
     }
-    boolean isOnTargetRPM(){
+
+    public boolean isOnTargetRPM(double tolerance){
       return
-      (Clamp.bounded(rpmSetpoint * kShooterMotorRatio, encoderTop.getVelocity()-kRPMTargetBound, encoderTop.getVelocity()+kRPMTargetBound) &&
-       Clamp.bounded(rpmSetpoint, encoderBottom.getVelocity()-kRPMTargetBound, encoderBottom.getVelocity()+kRPMTargetBound));
+      // (Clamp.bounded(rpmSetpoint * kShooterMotorRatio, encoderTop.getVelocity()-tolerance, encoderTop.getVelocity()+tolerance) &&
+       Clamp.bounded(rpmSetpoint, encoderBottom.getVelocity()-tolerance, encoderBottom.getVelocity()+tolerance);
     }
+
     double output;
     double gonnaTryMathNow(){
       return output;
@@ -176,5 +179,6 @@ public class Shooter extends SubsystemBase {
     //SmartDashboard.putNumber("shooter/bottomamps", bottomMotor.getOutputCurrent());
     SmartDashboard.putNumber("shooter/rpmBottom", getRPMBottom());
     SmartDashboard.putNumber("shooter/rpmTop", getRPMTop());
+    SmartDashboard.putNumber("shooter/error", getRPMBottom() - rpmSetpoint);
   }
 }

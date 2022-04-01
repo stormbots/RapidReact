@@ -98,7 +98,7 @@ public class RobotContainer {
   JoystickButton ejectBackButton = new JoystickButton(operator, 6);
   JoystickButton ejectFrontButton = new JoystickButton(operator, 5);
   JoystickButton intakeFrontButton = new JoystickButton(operator, 4);
-  JoystickButton intakeBackButton = new JoystickButton(operator, 2);
+  JoystickButton intakeBackButton = new JoystickButton(operator, 3);
   JoystickButton shootButton = new JoystickButton(operator, 1);
   JoystickButton spoolShooterButton = new JoystickButton(operator, 7);
   JoystickButton spoolToLimeDistance = new JoystickButton(operator, 8);
@@ -178,7 +178,7 @@ public class RobotContainer {
         new PTMoveCargo(1, 1, passthrough),
         new InstantCommand(() -> {shooter.setRPM(2200-25);})
       }))
-      .andThen(new WaitCommand(0.4))
+      .andThen(new PTMoveCargo(1, 1, passthrough).withTimeout(0.4))
 
       .andThen(
         new FeederShootCargo(feeder)
@@ -402,7 +402,16 @@ public class RobotContainer {
     ejectFrontButton.whileHeld(new FeederEjectCargo(feeder));
     ejectFrontButton.whenPressed(()->passthrough.ptEnableColorSensors(false/*turn off front*/, false/*turn off back*/));
     
-    shootButton.whileHeld(new FeederShootCargo(feeder));
+    // shootButton.whileHeld(new FeederShootCargo(feeder));
+    // shootButton.whileHeld(new FeederShootCargo(feeder,shooter));
+
+    shootButton.whileHeld(new ConditionalCommand(
+      new FeederShootCargo(feeder),
+      new FeederShootCargo(feeder,shooter),
+      ()->vision.getDistanceToUpperHub()<150 // back bumper closer to the launchpad than the front bumper is to tarmack
+    ));
+
+
     shootButton.whileHeld(new PTMoveCargo(passthrough.kHighPower,passthrough.kHighPower,passthrough));
     shootButton.whenPressed(()->passthrough.ptEnableColorSensors(true, true));
     

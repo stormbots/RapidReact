@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
   UsbCamera cam1;
   UsbCamera cam2;
 
-  Spark ledModule = new Spark(0);
+  Spark ledModule = new Spark(1);
 
   /**
    * This function is run when the robot is first started up and should be used for any

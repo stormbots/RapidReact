@@ -183,7 +183,7 @@ public class RobotContainer {
       .andThen(
         new FeederShootCargo(feeder)
         .alongWith(new PTMoveCargo(1,1,passthrough))
-        .withTimeout(1.2)
+        .withTimeout(0.7)
         )
       .andThen(new ChassisPath(chassis, "Center 4", true))
 

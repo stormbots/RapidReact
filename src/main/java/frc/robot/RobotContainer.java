@@ -31,10 +31,8 @@ import frc.robot.commands.ChassisDriveToHeadingBasic;
 import frc.robot.commands.ChassisPath;
 import frc.robot.commands.ChassisVisionTargeting;
 import frc.robot.commands.FeederEjectCargo;
-import frc.robot.commands.FeederFireOneShot;
 import frc.robot.commands.FeederShootCargo;
 import frc.robot.commands.IntakeDown;
-import frc.robot.commands.PTLoadCargo;
 import frc.robot.commands.PTMoveCargo;
 import frc.robot.commands.ShooterSpoolUp;
 import frc.robot.subsystems.CargoColorSensor;
@@ -43,6 +41,7 @@ import frc.robot.subsystems.Chassis.Gear;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Passthrough;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -79,6 +78,7 @@ public class RobotContainer {
   public Passthrough passthrough = new Passthrough();
   public Feeder feeder = new Feeder();
   public Shooter shooter = new Shooter(vision);
+  public LED led = new LED();
   
   // 
   // ROBOT COMMAND DEFINITIONS
@@ -258,10 +258,10 @@ public class RobotContainer {
     //Left side auto
     Command leftAuto2Shot = new InstantCommand(()->{})
       .andThen(new WaitCommand(autoWaitTimer))
-      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);})) // Bad battery while testing, plz fix
+      .andThen(new InstantCommand(() -> {shooter.setRPM(2100);}))
       .andThen(new IntakeDown(backIntake)
         .alongWith(new PTMoveCargo(passthrough.kHighPower, passthrough.kHighPower, passthrough))
-        .alongWith(new ShooterSpoolUp(shooter))
+        //.alongWith(new ShooterSpoolUp(shooter))
         .alongWith(new ChassisPath(chassis, "Left Internal", true))
         ).withTimeout(4.0)
       .andThen(new ChassisDriveToHeadingBasic(0, ()->-25, 5, 5/12.0, navx, chassis).withTimeout(3.0))
@@ -370,6 +370,8 @@ public class RobotContainer {
       ()->-driver.getRawAxis(1),()->driver.getRawAxis(2),
       chassis, vision, navx)
     );
+    aimButton.whenPressed(new InstantCommand(()-> led.setGreen()));
+    aimButton.whenReleased(new InstantCommand(()-> led.reset()));
 
     shiftButton.whenPressed(new InstantCommand(()->chassis.setGear(Gear.HIGH)));
     shiftButton.whenReleased(new InstantCommand(()->chassis.setGear(Gear.LOW)));

@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -33,8 +32,6 @@ public class Robot extends TimedRobot {
 
   UsbCamera cam1;
   UsbCamera cam2;
-
-  Spark ledModule = new Spark(1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -105,17 +102,6 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-
-    switch(DriverStation.getAlliance()){
-      case Blue: 
-      ledModule.set(.83);
-      break;
-      case Red:
-      ledModule.set(.61);
-      break;
-      default:
-      }
-    
     
     
     m_robotContainer.chassis.setIdleMode(IdleMode.kBrake);
@@ -138,16 +124,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
-    switch(DriverStation.getAlliance()){
-      case Blue: 
-      ledModule.set(.83);
-      break;
-      case Red:
-      ledModule.set(.61);
-      break;
-      default:
-      }
 
     SmartDashboard.putNumber("LED/value", 0.57);
   

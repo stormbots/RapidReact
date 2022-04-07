@@ -4,14 +4,22 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Driver;
+
 import com.stormbots.devices.BlinkenPattern;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
+
+  private double delay = Timer.getFPGATimestamp();
+  private double matchTime;
+  private boolean defualt = true;
 
   Spark ledModule = new Spark(0);
   public LED() {
@@ -24,12 +32,59 @@ public class LED extends SubsystemBase {
       ledModule.set(.61);
       break;
       default:
-      }
+    }
+  }
 
+  public void setGreen(){
+    defualt = false;
+    ledModule.set(0.77);
+  }
+
+  public void reset(){
+    defualt = true;
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(defualt){
+
+      matchTime = Timer.getMatchTime();
+      SmartDashboard.putNumber("MatchTime", matchTime);
+
+      if(matchTime <= 30.0 && matchTime > 15.0 && matchTime != -1 && DriverStation.isTeleop()){
+        if (delay <= Timer.getFPGATimestamp()){
+          delay = Timer.getFPGATimestamp() + 1;
+          if(ledModule.get() >= 0.9){
+            ledModule.set(.69);
+          }
+          else{
+            ledModule.set(0.99);
+          }
+        }
+      } 
+      else if(matchTime <= 15.0 && matchTime != -1 && DriverStation.isTeleop()){
+          if (delay <= Timer.getFPGATimestamp()){
+            delay = Timer.getFPGATimestamp() + 0.4;
+            if(ledModule.get() >= 0.9){
+              ledModule.set(.69);
+            }
+            else{
+              ledModule.set(0.99);
+            }
+          }
+      } else {
+        switch(DriverStation.getAlliance()){
+          case Blue: 
+          ledModule.set(.83);
+          break;
+          case Red:
+          ledModule.set(.61);
+          break;
+          default:
+          }
+      }
+    }
+
   }
 }
+

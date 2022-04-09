@@ -81,6 +81,7 @@ public class Feeder extends SubsystemBase {
       SmartDashboard.putNumber("Feeder/Encoder Back", encoderFeederBack.getPosition());
       SmartDashboard.putNumber("Feeder/front current", motorFeederFront.getOutputCurrent());
       SmartDashboard.putNumber("Feeder/back current", motorFeederBack.getOutputCurrent());
+      //SmartDashboard.putNumber("Feeder Front/rpm", motorFeederFront.getRPM());
     }
     @Override
     public void simulationPeriodic() {

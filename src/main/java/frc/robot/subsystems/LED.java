@@ -22,7 +22,10 @@ public class LED extends SubsystemBase {
   private boolean defualt = true;
 
   Spark ledModule = new Spark(0);
+
   public LED() {
+    SmartDashboard.putNumber("LED/Debugging Value", 0.69);
+    SmartDashboard.putBoolean("LED/Debugging", false);
 
     switch(DriverStation.getAlliance()){
       case Blue: 
@@ -44,10 +47,16 @@ public class LED extends SubsystemBase {
     defualt = true;
   }
 
+  public void setRainbow(){
+    defualt = false;
+  }
+
   @Override
   public void periodic() {
-    if(defualt){
-
+    if(SmartDashboard.getBoolean("LED/Debugging", false)){
+      ledModule.set(SmartDashboard.getNumber("LED/Debugging Value", 0.69));
+    }
+    else if(defualt){
       matchTime = Timer.getMatchTime();
       SmartDashboard.putNumber("MatchTime", matchTime);
 
@@ -66,7 +75,7 @@ public class LED extends SubsystemBase {
           if (delay <= Timer.getFPGATimestamp()){
             delay = Timer.getFPGATimestamp() + 0.4;
             if(ledModule.get() >= 0.9){
-              ledModule.set(.69);
+              ledModule.set(.63);
             }
             else{
               ledModule.set(0.99);

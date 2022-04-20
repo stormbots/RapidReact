@@ -124,8 +124,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
-    SmartDashboard.putNumber("LED/value", 0.57);
   
     if(cam1 == null) {cam1 = CameraServer.startAutomaticCapture(0);}
     if(cam2 ==null)  {cam2 = CameraServer.startAutomaticCapture(2);}
